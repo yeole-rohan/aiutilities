@@ -21,13 +21,15 @@ pip install -r requirements/dev.txt
 cp .env.example .env
 ```
 
-Open `.env` and fill in:
+Open `.env` and fill in at minimum:
 
-- `SECRET_KEY` — generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
-- `DATABASE_URL` — your PostgreSQL connection string
-- `REDIS_URL` — your Redis URL
+- `SECRET_KEY` — generate with:
+  ```bash
+  python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+  ```
+- `DATABASE_URL` — PostgreSQL connection string, or use the SQLite option in `.env.example` for quick local dev without Docker
 
-Leave billing and OAuth keys blank for now — you can add them when you're ready.
+Leave billing and OAuth keys blank for now — add them when you're ready for that step.
 
 ## 3. Rename the project (optional but recommended)
 
@@ -36,8 +38,8 @@ The project directory is `saas_starter/`. To rename to `myapp/`:
 ```bash
 mv saas_starter myapp
 # Then find+replace all occurrences of "saas_starter" in:
-# manage.py, myapp/wsgi.py, myapp/celery.py, myapp/__init__.py
-grep -r "saas_starter" . --include="*.py" -l
+# manage.py, myapp/wsgi.py, myapp/celery.py, myapp/__init__.py, setup.cfg
+grep -r "saas_starter" . --include="*.py" --include="*.cfg" -l
 ```
 
 ## 4. Run migrations
@@ -50,7 +52,19 @@ python manage.py runserver
 
 Visit http://localhost:8000/ (landing page) and http://localhost:8000/admin/.
 
-## 5. Configure Google OAuth
+## 5. Run the test suite
+
+Tests use an in-memory SQLite database — no postgres or Docker needed:
+
+```bash
+pytest
+```
+
+All 42 tests should pass. CI runs the same command. If you see database
+connection errors, make sure you haven't set `DJANGO_SETTINGS_MODULE` to
+something other than `saas_starter.settings.test` in your shell.
+
+## 6. Configure Google OAuth
 
 1. Go to https://console.cloud.google.com/ → APIs & Services → Credentials
 2. Create an OAuth 2.0 Client ID (Web application)
@@ -62,7 +76,7 @@ Visit http://localhost:8000/ (landing page) and http://localhost:8000/admin/.
    GOOGLE_CLIENT_SECRET=...
    ```
 
-## 6. Configure Stripe billing
+## 7. Configure Stripe billing
 
 1. Create a Stripe account and products at https://dashboard.stripe.com/
 2. Create two prices (Pro monthly, Team monthly)
@@ -77,7 +91,7 @@ Visit http://localhost:8000/ (landing page) and http://localhost:8000/admin/.
 5. Register webhook at Stripe Dashboard → `https://yourdomain.com/billing/stripe/webhook/`
    Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 
-## 7. Configure Lemon Squeezy (India / global alternative)
+## 8. Configure Lemon Squeezy (India / global alternative)
 
 1. Create a store at https://app.lemonsqueezy.com/
 2. Create products with Pro and Team variants
@@ -92,7 +106,7 @@ Visit http://localhost:8000/ (landing page) and http://localhost:8000/admin/.
 
 Pass `custom_data: { org_id: "123" }` in the checkout URL so the webhook knows which org to activate.
 
-## 8. Configure email
+## 9. Configure email
 
 For development, `console` backend prints emails to stdout — no config needed.
 
@@ -106,23 +120,37 @@ EMAIL_HOST_PASSWORD=your-api-token
 DEFAULT_FROM_EMAIL=hello@yourdomain.com
 ```
 
-## 9. Customize the DaisyUI theme
+## 10. Customize the DaisyUI theme
 
 Open `templates/base.html` and change `data-theme` on the `<html>` tag.
 Available themes: https://daisyui.com/docs/themes/
 No build step needed.
 
-## 10. Customize plans
+## 11. Customize plans
 
 Edit `billing/models.py` → `Plan` choices.
 Update `billing/backends/stripe_backend.py` and `lemonsqueezy.py` to map your variant IDs to plan slugs.
 Update the upgrade page template (`templates/billing/upgrade.html`) with correct prices.
 
-## 11. Deploy
+## 12. Deploy
 
 See `deploy/` for nginx config and systemd service files.
 See `docker-compose.yml` for Docker-based deployment.
 Full docs: https://djangoproject.in/saas-starter/docs/deployment/
+
+---
+
+## Settings files
+
+| File | Used for |
+|---|---|
+| `saas_starter/settings/base.py` | Shared settings for all environments |
+| `saas_starter/settings/development.py` | Local development (debug toolbar, eager Celery) |
+| `saas_starter/settings/test.py` | Test suite (SQLite in-memory, no external services) |
+| `saas_starter/settings/production.py` | Production (set via `DJANGO_SETTINGS_MODULE` on server) |
+
+`pytest` uses `test.py` automatically (configured in `setup.cfg`).
+Your dev server uses `development.py` — set `DJANGO_SETTINGS_MODULE=saas_starter.settings.development` in your shell or `.env`.
 
 ---
 

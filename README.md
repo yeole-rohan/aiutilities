@@ -22,7 +22,7 @@ git clone <this-repo> myapp
 cd myapp
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements/dev.txt
-cp .env.example .env   # fill in SECRET_KEY and DATABASE_URL at minimum
+cp .env.example .env   # set SECRET_KEY; DATABASE_URL defaults to SQLite for quick start
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -30,26 +30,45 @@ python manage.py runserver
 
 Open http://localhost:8000
 
+## Run tests
+
+Tests use SQLite in-memory — no postgres or Docker required:
+
+```bash
+pytest
+```
+
 ## Docker
 
 ```bash
-cp .env.example .env
+cp .env.example .env   # uses postgres + redis via Docker by default
 docker compose up --build
 ```
 
 Services started: `web`, `postgres`, `redis`, `celery`, `celery-beat`.
 
+## Settings
+
+| Module | Purpose |
+|---|---|
+| `settings/base.py` | Shared configuration |
+| `settings/development.py` | Local dev — debug toolbar, eager Celery |
+| `settings/test.py` | Test suite — SQLite in-memory, no external services |
+| `settings/production.py` | Production — configure via environment variables |
+
 ## Version support
 
-- Python 3.11 / 3.12 / 3.13
-- Django 4.2 LTS
+| | Supported |
+|---|---|
+| Python | 3.11 · 3.12 · 3.13 |
+| Django | 4.2 LTS |
 
 ## Documentation
 
-Full setup guide including Google OAuth, Stripe, Lemon Squeezy, and deployment:
+Full setup guide — Google OAuth, Stripe, Lemon Squeezy, deployment:
 https://djangoproject.in/saas-starter/docs/
 
 ## License
 
-Paid license — see your purchase confirmation for terms.
-One license per project (Starter) or unlimited projects (Lifetime).
+Paid licence — see your purchase confirmation for terms.
+Starter: one project. Lifetime: unlimited projects.
