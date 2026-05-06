@@ -1,81 +1,155 @@
 {% extends "base.html" %}
+
 {% block title %}Members — {{ current_org.name }}{% endblock %}
+{% block description %}Manage members and invites for {{ current_org.name }}.{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto px-4 py-10">
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold">Members</h1>
-    <span class="badge badge-ghost">{{ current_org.name }}</span>
+<div class="app-page-medium" style="max-width:52rem;">
+
+  <!-- ── Page header ─────────────────────────────── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.75rem;">
+    <div>
+      <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.375rem;">
+        <a href="{% url 'orgs:dashboard' %}" style="font-size:.875rem;color:#64748b;text-decoration:none;font-weight:500;">Dashboard</a>
+        <span style="color:#cbd5e1;">/</span>
+        <span style="font-size:.875rem;color:#0f172a;font-weight:500;">Members</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <h1 style="font-size:1.5rem;font-weight:700;color:#0f172a;letter-spacing:-.01em;">Members</h1>
+        <span class="app-badge app-badge-gray">{{ current_org.name }}</span>
+      </div>
+    </div>
+    {% if current_membership.is_admin_or_owner %}
+    <a href="#invite-form" class="app-btn app-btn-primary app-btn-sm">
+      <svg style="width:.875rem;height:.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Invite member
+    </a>
+    {% endif %}
   </div>
 
-  <!-- Member list -->
-  <div class="card bg-base-200 mb-6">
-    <div class="card-body p-0">
-      <table class="table">
-        <thead>
-          <tr><th>Member</th><th>Role</th><th>Joined</th></tr>
-        </thead>
-        <tbody>
-          {% for m in org_members %}
-          <tr>
-            <td>
-              <div class="flex items-center gap-2">
-                <div class="avatar placeholder"><div class="bg-neutral text-neutral-content rounded-full w-8"><span class="text-sm">{{ m.user.email|first|upper }}</span></div></div>
-                <span class="text-sm">{{ m.user.email }}</span>
+  <!-- ── Members table ────────────────────────────── -->
+  <div class="app-card" style="margin-bottom:1.5rem;overflow:hidden;">
+    <div class="app-card-header">
+      <span class="app-card-title">Team members</span>
+      <span style="font-size:.8125rem;color:#64748b;">{{ org_members|length }} member{{ org_members|length|pluralize }}</span>
+    </div>
+    <table class="app-table">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Role</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in org_members %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:.625rem;">
+              <div class="app-avatar app-avatar-sm">{{ m.user.email|first|upper }}</div>
+              <div>
+                <p style="font-size:.875rem;font-weight:500;color:#0f172a;margin:0;">{{ m.user.get_full_name|default:m.user.email }}</p>
+                {% if m.user.get_full_name %}
+                <p style="font-size:.75rem;color:#64748b;margin:0;">{{ m.user.email }}</p>
+                {% endif %}
               </div>
-            </td>
-            <td><span class="badge badge-ghost badge-sm">{{ m.get_role_display }}</span></td>
-            <td class="text-sm text-base-content/60">{{ m.joined_at|date:"d M Y" }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+              {% if m.user == request.user %}
+              <span class="app-badge" style="font-size:.625rem;margin-left:.25rem;">You</span>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            {% if m.role == "owner" %}
+            <span class="app-badge app-badge-blue" style="font-size:.75rem;">{{ m.get_role_display }}</span>
+            {% elif m.role == "admin" %}
+            <span class="app-badge app-badge-yellow" style="font-size:.75rem;">{{ m.get_role_display }}</span>
+            {% else %}
+            <span class="app-badge app-badge-gray" style="font-size:.75rem;">{{ m.get_role_display }}</span>
+            {% endif %}
+          </td>
+          <td style="color:#64748b;white-space:nowrap;">{{ m.joined_at|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" style="text-align:center;padding:2rem;color:#94a3b8;">No members yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
-  <!-- Pending invites -->
+  <!-- ── Pending invites ──────────────────────────── -->
   {% if pending_invites %}
-  <h2 class="font-bold mb-3">Pending invites</h2>
-  <div class="card bg-base-200 mb-6">
-    <div class="card-body p-0">
-      <table class="table">
-        <thead><tr><th>Email</th><th>Role</th><th>Sent</th></tr></thead>
-        <tbody>
-          {% for inv in pending_invites %}
-          <tr>
-            <td class="text-sm">{{ inv.email }}</td>
-            <td><span class="badge badge-outline badge-sm">{{ inv.get_role_display }}</span></td>
-            <td class="text-sm text-base-content/60">{{ inv.created_at|date:"d M Y" }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+  <div class="app-card" style="margin-bottom:1.5rem;overflow:hidden;">
+    <div class="app-card-header">
+      <span class="app-card-title">Pending invites</span>
+      <span style="font-size:.8125rem;color:#64748b;">{{ pending_invites|length }} pending</span>
     </div>
+    <table class="app-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Sent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inv in pending_invites %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:.625rem;">
+              <div style="width:1.75rem;height:1.75rem;border-radius:50%;background:#f1f5f9;border:1px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;">
+                <svg style="width:.75rem;height:.75rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <span style="font-size:.875rem;color:#374151;">{{ inv.email }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="app-badge app-badge-gray" style="font-size:.75rem;">{{ inv.get_role_display }}</span>
+          </td>
+          <td style="color:#64748b;white-space:nowrap;">{{ inv.created_at|date:"d M Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   {% endif %}
 
-  <!-- Invite form -->
+  <!-- ── Invite form ──────────────────────────────── -->
   {% if current_membership.is_admin_or_owner %}
-  <div class="card bg-base-200">
-    <div class="card-body">
-      <h2 class="card-title text-base">Invite a member</h2>
-      <form method="post" action="{% url 'orgs:invite' %}" class="flex flex-wrap gap-3 mt-3 items-end">
+  <div class="app-card" id="invite-form">
+    <div class="app-card-header">
+      <span class="app-card-title">Invite a member</span>
+    </div>
+    <div class="app-card-body">
+      <p style="font-size:.875rem;color:#64748b;margin-bottom:1.25rem;">
+        An invitation email will be sent. They'll join this organisation when they accept.
+      </p>
+      <form method="post" action="{% url 'orgs:invite' %}">
         {% csrf_token %}
-        <div class="form-control flex-1 min-w-[200px]">
-          <label class="label"><span class="label-text text-sm">Email</span></label>
-          <input type="email" name="email" class="input input-bordered input-sm" placeholder="colleague@example.com" required>
+        <div style="display:flex;gap:.875rem;flex-wrap:wrap;align-items:flex-end;">
+          <div class="app-form-field" style="flex:1;min-width:14rem;margin-bottom:0;">
+            <label for="invite-email">Email address</label>
+            <input type="email" id="invite-email" name="email" placeholder="colleague@example.com" required>
+          </div>
+          <div class="app-form-field" style="min-width:9rem;margin-bottom:0;">
+            <label for="invite-role">Role</label>
+            <select id="invite-role" name="role">
+              <option value="member">Member</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div style="padding-bottom:.0625rem;">
+            <button type="submit" class="app-btn app-btn-primary">
+              <svg style="width:.875rem;height:.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Send invite
+            </button>
+          </div>
         </div>
-        <div class="form-control">
-          <label class="label"><span class="label-text text-sm">Role</span></label>
-          <select name="role" class="select select-bordered select-sm">
-            <option value="member">Member</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary btn-sm">Send invite</button>
       </form>
     </div>
   </div>
   {% endif %}
+
 </div>
 {% endblock %}

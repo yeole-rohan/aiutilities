@@ -1,83 +1,140 @@
 {% extends "base.html" %}
-{% block title %}Upgrade — {{ current_org.name }}{% endblock %}
+
+{% block title %}Plans &amp; Pricing — {{ current_org.name }}{% endblock %}
+{% block description %}Upgrade your plan. Simple pricing for teams of all sizes.{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-16">
-  <h1 class="text-3xl font-bold text-center mb-4">Upgrade your plan</h1>
-  <p class="text-center text-base-content/60 mb-12">Choose the plan that works for your team.</p>
+<div class="app-page">
 
-  <div class="flex flex-wrap gap-6 justify-center">
+  <!-- ── Header ──────────────────────────────────── -->
+  <div style="text-align:center;margin-bottom:3rem;">
+    <h1 style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.75rem;">Upgrade your plan</h1>
+    <p style="font-size:1rem;color:#64748b;max-width:28rem;margin:0 auto;">
+      Choose the plan that works for your team.
+      {% if current_org.subscription and current_org.subscription.is_active %}
+      You are currently on the <strong style="color:#0f172a;">{{ current_org.subscription.plan|capfirst }}</strong> plan.
+      {% else %}
+      You are currently on the <strong style="color:#0f172a;">Free</strong> plan.
+      {% endif %}
+    </p>
+  </div>
+
+  <!-- ── Pricing cards ───────────────────────────── -->
+  <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:flex-start;margin-bottom:3rem;">
+
     <!-- Free -->
-    <div class="card bg-base-200 w-72 shadow-sm">
-      <div class="card-body">
-        <h2 class="font-bold text-lg">Free</h2>
-        <div class="text-4xl font-extrabold mt-1">$0<span class="text-base font-normal text-base-content/60">/mo</span></div>
-        <ul class="text-sm mt-4 space-y-2">
-          <li class="flex gap-2">✓ Up to 3 members</li>
-          <li class="flex gap-2">✓ Core features</li>
-          <li class="flex gap-2">✓ API access</li>
-        </ul>
-        <div class="card-actions mt-6">
-          {% if not current_org.subscription or current_org.subscription.plan == "free" %}
-          <button class="btn btn-ghost btn-block" disabled>Current plan</button>
-          {% else %}
-          <form method="post" action="{% url 'billing:portal' %}">{% csrf_token %}<button class="btn btn-ghost btn-block">Downgrade</button></form>
-          {% endif %}
-        </div>
+    <div class="app-card" style="width:20rem;padding:2rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Free</div>
+      <div style="font-size:3rem;font-weight:800;color:#0f172a;letter-spacing:-.03em;line-height:1;margin-bottom:.375rem;">
+        $0<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span>
       </div>
+      <p style="font-size:.875rem;color:#64748b;margin:.625rem 0 1.5rem;line-height:1.5;">Get started with the essentials.</p>
+      <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Up to 3 team members
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Core features
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          API access
+        </li>
+      </ul>
+      {% if not current_org.subscription or current_org.subscription.plan == "free" %}
+      <button class="app-btn app-btn-outline app-btn-block" disabled>Current plan</button>
+      {% else %}
+      <form method="post" action="{% url 'billing:portal' %}">
+        {% csrf_token %}
+        <button type="submit" class="app-btn app-btn-outline app-btn-block">Downgrade to Free</button>
+      </form>
+      {% endif %}
     </div>
 
     <!-- Pro — CUSTOMIZE: update price_id to your Stripe price ID -->
-    <div class="card bg-primary text-primary-content w-72 shadow-sm ring-2 ring-primary ring-offset-2">
-      <div class="card-body">
-        <div class="badge badge-primary-content badge-outline text-xs mb-2">Most popular</div>
-        <h2 class="font-bold text-lg">Pro</h2>
-        <div class="text-4xl font-extrabold mt-1">$29<span class="text-base font-normal opacity-70">/mo</span></div>
-        <ul class="text-sm mt-4 space-y-2 opacity-90">
-          <li>✓ Unlimited members</li>
-          <li>✓ All features</li>
-          <li>✓ Priority support</li>
-        </ul>
-        <div class="card-actions mt-6">
-          {% if current_org.subscription and current_org.subscription.plan == "pro" %}
-          <a href="{% url 'billing:portal' %}" class="btn btn-primary-content btn-block">Manage subscription</a>
-          {% else %}
-          <form method="post" action="{% url 'billing:checkout' %}">
-            {% csrf_token %}
-            <!-- CUSTOMIZE: set this to your Stripe Pro price ID or LS variant URL -->
-            <input type="hidden" name="price_id" value="{{ settings.STRIPE_PRO_PRICE_ID }}">
-            <button type="submit" class="btn btn-primary-content btn-block">Upgrade to Pro</button>
-          </form>
-          {% endif %}
-        </div>
+    <div class="app-card" style="width:20rem;padding:2rem;border-color:#16a34a;box-shadow:0 0 0 2px #16a34a,0 8px 32px rgba(22,163,74,.15);position:relative;">
+      <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);">
+        <span style="background:#16a34a;color:#fff;font-size:.6875rem;font-weight:600;padding:.25rem .875rem;border-radius:0 0 .5rem .5rem;white-space:nowrap;letter-spacing:.03em;">MOST POPULAR</span>
       </div>
+      <div style="font-size:.75rem;font-weight:600;color:#16a34a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Pro</div>
+      <div style="font-size:3rem;font-weight:800;color:#0f172a;letter-spacing:-.03em;line-height:1;margin-bottom:.375rem;">
+        $29<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span>
+      </div>
+      <p style="font-size:.875rem;color:#64748b;margin:.625rem 0 1.5rem;line-height:1.5;">For growing teams and serious products.</p>
+      <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Unlimited team members
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          All features
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Priority support
+        </li>
+      </ul>
+      {% if current_org.subscription and current_org.subscription.plan == "pro" %}
+      <a href="{% url 'billing:portal' %}" class="app-btn app-btn-primary app-btn-block">Manage subscription</a>
+      {% else %}
+      <form method="post" action="{% url 'billing:checkout' %}">
+        {% csrf_token %}
+        <!-- CUSTOMIZE: set this to your Stripe Pro price ID or LS variant URL -->
+        <input type="hidden" name="price_id" value="{{ settings.STRIPE_PRO_PRICE_ID }}">
+        <button type="submit" class="app-btn app-btn-primary app-btn-block">Upgrade to Pro</button>
+      </form>
+      {% endif %}
     </div>
 
     <!-- Team -->
-    <div class="card bg-base-200 w-72 shadow-sm">
-      <div class="card-body">
-        <h2 class="font-bold text-lg">Team</h2>
-        <div class="text-4xl font-extrabold mt-1">$79<span class="text-base font-normal text-base-content/60">/mo</span></div>
-        <ul class="text-sm mt-4 space-y-2">
-          <li>✓ Everything in Pro</li>
-          <li>✓ SSO (coming soon)</li>
-          <li>✓ Dedicated support</li>
-        </ul>
-        <div class="card-actions mt-6">
-          <form method="post" action="{% url 'billing:checkout' %}">
-            {% csrf_token %}
-            <input type="hidden" name="price_id" value="{{ settings.STRIPE_TEAM_PRICE_ID }}">
-            <button type="submit" class="btn btn-ghost btn-block">Upgrade to Team</button>
-          </form>
-        </div>
+    <div class="app-card" style="width:20rem;padding:2rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Team</div>
+      <div style="font-size:3rem;font-weight:800;color:#0f172a;letter-spacing:-.03em;line-height:1;margin-bottom:.375rem;">
+        $79<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span>
       </div>
+      <p style="font-size:.875rem;color:#64748b;margin:.625rem 0 1.5rem;line-height:1.5;">For organisations that need more.</p>
+      <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Everything in Pro
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          SSO (coming soon)
+        </li>
+        <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Dedicated support
+        </li>
+      </ul>
+      {% if current_org.subscription and current_org.subscription.plan == "team" %}
+      <a href="{% url 'billing:portal' %}" class="app-btn app-btn-outline app-btn-block">Manage subscription</a>
+      {% else %}
+      <form method="post" action="{% url 'billing:checkout' %}">
+        {% csrf_token %}
+        <input type="hidden" name="price_id" value="{{ settings.STRIPE_TEAM_PRICE_ID }}">
+        <button type="submit" class="app-btn app-btn-outline app-btn-block">Upgrade to Team</button>
+      </form>
+      {% endif %}
     </div>
+
   </div>
 
-  <p class="text-center text-sm text-base-content/50 mt-10">
-    Payments via Stripe (US/EU) or
-    <a href="/billing/lemonsqueezy/checkout/" class="link">Lemon Squeezy</a> (global, including India).
-    Cancel anytime.
-  </p>
+  <!-- ── Footer note ─────────────────────────────── -->
+  <div style="text-align:center;padding:1.5rem;border-radius:.75rem;background:#f8fafc;border:1px solid #e2e8f0;max-width:36rem;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.5rem;">
+      <svg style="width:1rem;height:1rem;color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <span style="font-size:.8125rem;font-weight:500;color:#374151;">Secure payments</span>
+    </div>
+    <p style="font-size:.8125rem;color:#64748b;line-height:1.6;">
+      Payments via Stripe (US/EU) or
+      <a href="/billing/lemonsqueezy/checkout/" style="color:#16a34a;font-weight:500;text-decoration:none;">Lemon Squeezy</a>
+      (global, including India). Cancel anytime — no hidden fees.
+    </p>
+  </div>
+
 </div>
 {% endblock %}

@@ -1,128 +1,271 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}SaaS App — Build faster{% endblock %}
-{% block description %}<!-- CUSTOMIZE: your landing page description -->{% endblock %}
+{% block title %}SaaS App — Build your SaaS in days, not months{% endblock %}
+{% block description %}<!-- CUSTOMIZE: your landing page meta description -->A production-ready Django SaaS platform with auth, teams, billing, and background tasks pre-wired. Ship faster.{% endblock %}
 
 {% block navbar %}
-<div class="navbar bg-base-100 border-b border-base-200 px-4 max-w-6xl mx-auto">
-  <div class="navbar-start">
-    <a href="/" class="btn btn-ghost text-lg font-bold">⚡ SaaS App</a>
+<nav class="app-nav">
+  <a href="/" class="app-nav-logo">⚡ SaaS App</a>
+  <div class="app-nav-links">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#pricing">Pricing</a>
   </div>
-  <div class="navbar-end gap-2">
-    <a href="{% url 'account_login' %}" class="btn btn-ghost btn-sm">Sign in</a>
-    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm">Get started free</a>
+  <div class="app-nav-actions">
+    <a href="{% url 'account_login' %}" class="app-btn app-btn-ghost app-btn-sm">Sign in</a>
+    <a href="{% url 'account_signup' %}" class="app-btn app-btn-primary app-btn-sm">Get started free</a>
   </div>
-</div>
+</nav>
 {% endblock %}
 
 {% block content %}
-<!-- ── Hero ── -->
-<section class="min-h-[80vh] flex items-center justify-center px-4 py-24 bg-base-100">
-  <div class="max-w-3xl mx-auto text-center">
-    <!-- CUSTOMIZE: hero headline and sub -->
-    <div class="badge badge-primary badge-outline mb-6 text-sm">Now in beta</div>
-    <h1 class="text-5xl font-extrabold leading-tight mb-6">
-      Build your SaaS<br>in days, not months.
+
+<!-- ── Hero ──────────────────────────────────────────────────────────── -->
+<section style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);min-height:88vh;display:flex;align-items:center;justify-content:center;padding:6rem 1rem;">
+  <div style="max-width:48rem;margin:0 auto;text-align:center;">
+    <!-- CUSTOMIZE: hero badge text -->
+    <div class="app-badge" style="margin-bottom:1.5rem;font-size:.75rem;">
+      Now in beta — production ready
+    </div>
+    <h1 style="font-size:clamp(2.25rem,5vw,3.5rem);font-weight:800;color:#ffffff;line-height:1.15;letter-spacing:-.025em;margin-bottom:1.5rem;">
+      Build your SaaS<br>
+      <span style="color:#4ade80;">in days, not months.</span>
     </h1>
-    <p class="text-xl text-base-content/70 mb-10 max-w-xl mx-auto leading-relaxed">
+    <!-- CUSTOMIZE: hero sub-headline -->
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:2.5rem;max-width:36rem;margin-left:auto;margin-right:auto;">
       A production-ready platform with auth, teams, and billing pre-wired.
       Focus on your product — not the plumbing.
     </p>
-    <div class="flex gap-3 justify-center flex-wrap">
-      <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">Get started free</a>
-      <a href="#features" class="btn btn-ghost btn-lg">See features ↓</a>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'account_signup' %}" class="app-btn app-btn-primary app-btn-lg">Get started free</a>
+      <a href="#features" style="display:inline-flex;align-items:center;gap:.375rem;font-size:1rem;font-weight:500;padding:.75rem 1.75rem;border-radius:.625rem;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2);text-decoration:none;transition:background .15s,color .15s;">
+        See features
+        <svg style="width:1rem;height:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ── Features ── -->
-<section id="features" class="py-24 px-4 bg-base-200">
-  <div class="max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-4">Everything included</h2>
-    <p class="text-center text-base-content/60 mb-12 max-w-xl mx-auto">
-      <!-- CUSTOMIZE: feature section subtitle -->
-      Stop building auth and billing for the fifth time.
-    </p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- ── Features ─────────────────────────────────────────────────────── -->
+<section id="features" style="background:#ffffff;padding:5rem 1rem;">
+  <div style="max-width:72rem;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <h2 style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.75rem;">Everything included</h2>
+      <!-- CUSTOMIZE: features section subtitle -->
+      <p style="font-size:1rem;color:#64748b;max-width:32rem;margin:0 auto;">Stop rebuilding auth and billing for the fifth time. Ship the features that matter.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+
+      <!-- Auth -->
       {% for feature in features %}
-      <div class="card bg-base-100 shadow-sm">
-        <div class="card-body">
-          <div class="text-3xl mb-2">{{ feature.icon }}</div>
-          <h3 class="card-title text-base">{{ feature.title }}</h3>
-          <p class="text-sm text-base-content/70">{{ feature.description }}</p>
-        </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">{{ feature.icon }}</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">{{ feature.title }}</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">{{ feature.description }}</p>
       </div>
       {% empty %}
-      <!-- CUSTOMIZE: replace with your actual features -->
-      <div class="card bg-base-100 shadow-sm">
-        <div class="card-body">
-          <div class="text-3xl mb-2">🔐</div>
-          <h3 class="card-title text-base">Auth + Social Login</h3>
-          <p class="text-sm text-base-content/70">Email + Google OAuth via django-allauth. Verification, reset, and custom User model included.</p>
-        </div>
+      <!-- CUSTOMIZE: replace hardcoded features below with your own -->
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">🔐</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Auth &amp; Social Login</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Email + Google OAuth via django-allauth. Verification, password reset, and a custom User model.</p>
       </div>
-      <div class="card bg-base-100 shadow-sm">
-        <div class="card-body">
-          <div class="text-3xl mb-2">👥</div>
-          <h3 class="card-title text-base">Teams</h3>
-          <p class="text-sm text-base-content/70">Organizations with roles, email invites, and per-org context on every request.</p>
-        </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">👥</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Teams &amp; Organizations</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Multi-org with roles and email invites. Per-org context injected on every request.</p>
       </div>
-      <div class="card bg-base-100 shadow-sm">
-        <div class="card-body">
-          <div class="text-3xl mb-2">💳</div>
-          <h3 class="card-title text-base">Billing</h3>
-          <p class="text-sm text-base-content/70">Stripe + Lemon Squeezy. Subscription gating with a single decorator.</p>
-        </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">💳</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Billing</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Stripe + Lemon Squeezy. Subscription gating with a single decorator.</p>
+      </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">REST API</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">DRF with JWT auth out of the box. API keys for programmatic access.</p>
+      </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">🔄</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Celery Tasks</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Background jobs with Celery + Redis. Email sending, webhooks, and scheduled work.</p>
+      </div>
+      <div class="app-card" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:.875rem;">🐳</div>
+        <h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Docker Ready</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Production Dockerfile + docker-compose with Postgres, Redis, and Nginx.</p>
       </div>
       {% endfor %}
+
     </div>
   </div>
 </section>
 
-<!-- ── Pricing ── -->
-<section id="pricing" class="py-24 px-4 bg-base-100">
-  <div class="max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-4">Simple pricing</h2>
-    <p class="text-center text-base-content/60 mb-12"><!-- CUSTOMIZE: pricing subtitle --></p>
-    <div class="flex flex-wrap gap-6 justify-center">
-      <!-- CUSTOMIZE: update plan names, prices, and features -->
-      <div class="card bg-base-200 w-72 shadow-sm">
-        <div class="card-body">
-          <h3 class="font-bold text-lg">Free</h3>
-          <div class="text-4xl font-extrabold">$0<span class="text-base font-normal text-base-content/60">/mo</span></div>
-          <ul class="text-sm mt-4 space-y-1">
-            <li>✓ Up to 3 team members</li>
-            <li>✓ Core features</li>
-          </ul>
-          <div class="card-actions mt-6">
-            <a href="{% url 'account_signup' %}" class="btn btn-ghost btn-block">Get started</a>
-          </div>
-        </div>
+<!-- ── How it works ──────────────────────────────────────────────────── -->
+<section id="how-it-works" style="background:#f8fafc;padding:5rem 1rem;">
+  <div style="max-width:48rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.75rem;">Ship in three steps</h2>
+    <p style="font-size:1rem;color:#64748b;margin-bottom:3.5rem;">From zero to production in an afternoon.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;text-align:left;">
+
+      <div>
+        <div style="width:2.5rem;height:2.5rem;border-radius:50%;background:#0f172a;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;margin-bottom:1rem;">1</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Clone &amp; configure</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Fork the repo. Copy <code style="font-size:.8125rem;background:#e2e8f0;padding:.1rem .35rem;border-radius:.25rem;">.env.example</code>, fill in your Stripe and email credentials.</p>
       </div>
-      <div class="card bg-primary text-primary-content w-72 shadow-sm">
-        <div class="card-body">
-          <div class="badge badge-primary-content badge-outline text-xs mb-2">Most popular</div>
-          <h3 class="font-bold text-lg">Pro</h3>
-          <div class="text-4xl font-extrabold">$29<span class="text-base font-normal opacity-70">/mo</span></div>
-          <ul class="text-sm mt-4 space-y-1 opacity-90">
-            <li>✓ Unlimited team members</li>
-            <li>✓ All features</li>
-            <li>✓ Priority support</li>
-          </ul>
-          <div class="card-actions mt-6">
-            <a href="{% url 'billing:upgrade' %}" class="btn btn-primary-content btn-block">Upgrade</a>
-          </div>
-        </div>
+
+      <div>
+        <div style="width:2.5rem;height:2.5rem;border-radius:50%;background:#16a34a;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;margin-bottom:1rem;">2</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Customise your idea</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Add your models, views, and templates. Auth, billing, and teams are already done.</p>
       </div>
+
+      <div>
+        <div style="width:2.5rem;height:2.5rem;border-radius:50%;background:#0f172a;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;margin-bottom:1rem;">3</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Ship</h3>
+        <p style="font-size:.875rem;color:#64748b;line-height:1.65;">Run <code style="font-size:.8125rem;background:#e2e8f0;padding:.1rem .35rem;border-radius:.25rem;">docker compose up</code> or deploy to any VPS. Production-grade from day one.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── CTA ── -->
-<section class="py-20 px-4 bg-primary text-primary-content text-center">
-  <h2 class="text-3xl font-bold mb-4">Ready to ship?</h2>
-  <p class="mb-8 opacity-80">Start for free. Upgrade when you grow.</p>
-  <a href="{% url 'account_signup' %}" class="btn btn-primary-content btn-lg">Get started free</a>
+<!-- ── Pricing ───────────────────────────────────────────────────────── -->
+<section id="pricing" style="background:#ffffff;padding:5rem 1rem;">
+  <div style="max-width:72rem;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <h2 style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.75rem;">Simple, honest pricing</h2>
+      <!-- CUSTOMIZE: pricing section subtitle -->
+      <p style="font-size:1rem;color:#64748b;">Start free. Upgrade when your team grows.</p>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;align-items:flex-start;">
+
+      <!-- Free -->
+      <div class="app-card" style="width:19rem;padding:2rem;">
+        <div style="font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Free</div>
+        <div style="font-size:2.5rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;line-height:1;">$0<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span></div>
+        <p style="font-size:.875rem;color:#64748b;margin:.75rem 0 1.5rem;">Everything you need to get started.</p>
+        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Up to 3 team members
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Core features
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            API access
+          </li>
+        </ul>
+        <a href="{% url 'account_signup' %}" class="app-btn app-btn-outline app-btn-block">Get started</a>
+      </div>
+
+      <!-- Pro — highlighted -->
+      <div class="app-card" style="width:19rem;padding:2rem;border-color:#16a34a;box-shadow:0 0 0 2px #16a34a,0 4px 24px rgba(22,163,74,.15);position:relative;">
+        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);">
+          <span style="background:#16a34a;color:#fff;font-size:.6875rem;font-weight:600;padding:.25rem .875rem;border-radius:0 0 .5rem .5rem;white-space:nowrap;letter-spacing:.03em;">MOST POPULAR</span>
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:#16a34a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Pro</div>
+        <div style="font-size:2.5rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;line-height:1;">$29<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span></div>
+        <p style="font-size:.875rem;color:#64748b;margin:.75rem 0 1.5rem;">For growing teams and serious products.</p>
+        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Unlimited team members
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            All features
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Priority support
+          </li>
+        </ul>
+        <a href="{% url 'billing:upgrade' %}" class="app-btn app-btn-primary app-btn-block">Upgrade to Pro</a>
+      </div>
+
+      <!-- Team -->
+      <div class="app-card" style="width:19rem;padding:2rem;">
+        <div style="font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Team</div>
+        <div style="font-size:2.5rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;line-height:1;">$79<span style="font-size:1rem;font-weight:400;color:#64748b;">/mo</span></div>
+        <p style="font-size:.875rem;color:#64748b;margin:.75rem 0 1.5rem;">For organisations that need more.</p>
+        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:.625rem;">
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Everything in Pro
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            SSO (coming soon)
+          </li>
+          <li style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+            <svg style="width:.875rem;height:.875rem;color:#16a34a;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Dedicated support
+          </li>
+        </ul>
+        <a href="{% url 'billing:upgrade' %}" class="app-btn app-btn-outline app-btn-block">Upgrade to Team</a>
+      </div>
+
+    </div>
+  </div>
 </section>
+
+<!-- ── CTA Banner ────────────────────────────────────────────────────── -->
+<section style="background:#16a34a;padding:5rem 1rem;text-align:center;">
+  <div style="max-width:36rem;margin:0 auto;">
+    <h2 style="font-size:2rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;margin-bottom:.875rem;">Ready to ship?</h2>
+    <p style="font-size:1rem;color:rgba(255,255,255,.8);margin-bottom:2.5rem;">Start for free. Upgrade when you grow. Cancel anytime.</p>
+    <a href="{% url 'account_signup' %}" style="display:inline-flex;align-items:center;justify-content:center;gap:.375rem;font-size:1rem;font-weight:600;padding:.875rem 2rem;border-radius:.625rem;background:#ffffff;color:#16a34a;text-decoration:none;transition:opacity .15s;">
+      Get started free
+    </a>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block footer %}
+<footer class="app-footer">
+  <div class="app-footer-inner">
+    <div class="app-footer-col">
+      <div style="font-size:1rem;font-weight:700;color:#ffffff;margin-bottom:.5rem;letter-spacing:-.01em;">⚡ SaaS App</div>
+      <!-- CUSTOMIZE: footer tagline -->
+      <p class="app-footer-brand-desc">Build your SaaS in days, not months.</p>
+      <p class="app-footer-brand-desc" style="margin-top:.75rem;">Powered by <span style="color:rgba(255,255,255,.6);">Django</span></p>
+    </div>
+    <div class="app-footer-col">
+      <div class="app-footer-col-heading">Product</div>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="/api/v1/">API</a></li>
+      </ul>
+    </div>
+    <div class="app-footer-col">
+      <div class="app-footer-col-heading">Account</div>
+      <ul>
+        <li><a href="{% url 'account_login' %}">Sign in</a></li>
+        <li><a href="{% url 'account_signup' %}">Get started</a></li>
+      </ul>
+    </div>
+    <div class="app-footer-col">
+      <div class="app-footer-col-heading">Legal</div>
+      <ul>
+        <li><a href="/privacy/">Privacy Policy</a></li>
+        <li><a href="/terms/">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="app-footer-legal">
+    <span>&copy; {% now "Y" %} SaaS App. All rights reserved.</span>
+    <div class="app-footer-legal-links">
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+    </div>
+  </div>
+</footer>
 {% endblock %}

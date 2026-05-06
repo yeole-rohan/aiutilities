@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign out</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body style="font-family:'Inter',system-ui,sans-serif;background:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;">
+
+  <div style="width:100%;max-width:22rem;">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:2rem;">
+      <a href="/" style="font-size:1.125rem;font-weight:700;color:#0f172a;text-decoration:none;letter-spacing:-.01em;">⚡ SaaS App</a>
+    </div>
+
+    <div class="app-card" style="padding:2rem;text-align:center;">
+
+      <div style="width:3rem;height:3rem;border-radius:.75rem;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+        <svg style="width:1.25rem;height:1.25rem;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      </div>
+
+      <h1 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Sign out?</h1>
+      <p style="font-size:.875rem;color:#64748b;margin-bottom:1.75rem;">You will be signed out of your account.</p>
+
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {{ redirect_field }}
+        <button type="submit" class="app-btn app-btn-block" style="background:#dc2626;color:#fff;border:none;margin-bottom:.75rem;">
+          Sign out
+        </button>
+      </form>
+
+      <a href="{% url 'orgs:dashboard' %}" style="display:block;text-align:center;font-size:.875rem;color:#64748b;text-decoration:none;">
+        ← Stay signed in
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>
