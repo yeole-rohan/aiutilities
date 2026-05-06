@@ -21,19 +21,90 @@ pip install -r requirements/dev.txt
 cp .env.example .env
 ```
 
-Only one thing is required before you can run the server:
+Set `SECRET_KEY` — generate one:
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
 
-- `SECRET_KEY` — generate one:
-  ```bash
-  python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-  ```
+Then choose **one** of the two paths below.
 
-`DATABASE_URL` defaults to SQLite so you can run immediately without installing postgres or Docker.
-`REDIS_URL` is commented out — Celery tasks run synchronously in dev, so Redis is not needed locally.
+---
 
-Leave all billing and OAuth keys blank for now.
+### Path A — Local (no Docker)
 
-## 3. Rename the project (optional but recommended)
+**Option A1: SQLite** (fastest start, no installs)
+
+`.env` default is already set to SQLite — nothing else to change:
+```
+DATABASE_URL=sqlite:///db.sqlite3
+```
+Skip to step 4.
+
+**Option A2: Local PostgreSQL**
+
+Install postgres if you haven't already:
+```bash
+# Ubuntu / Debian / WSL
+sudo apt update && sudo apt install -y postgresql postgresql-contrib
+sudo systemctl start postgresql
+
+# macOS (Homebrew)
+brew install postgresql@16
+brew services start postgresql@16
+```
+
+Create the user and database:
+```bash
+# Ubuntu / Debian / WSL
+sudo -u postgres psql <<SQL
+CREATE USER saas WITH PASSWORD 'saas';
+CREATE DATABASE saas OWNER saas;
+GRANT ALL PRIVILEGES ON DATABASE saas TO saas;
+SQL
+
+# macOS
+psql postgres -c "CREATE USER saas WITH PASSWORD 'saas';"
+psql postgres -c "CREATE DATABASE saas OWNER saas;"
+```
+
+Update `.env`:
+```
+DATABASE_URL=postgres://saas:saas@localhost:5432/saas
+```
+
+Skip to step 4.
+
+---
+
+### Path B — Docker Compose
+
+`docker-compose.yml` sets `DATABASE_URL` and `REDIS_URL` automatically for all services — you do **not** need to set them in `.env`. The `db` hostname only resolves inside Docker's internal network; using it outside Docker causes:
+
+```
+django.db.utils.OperationalError: could not translate host name "db"
+```
+
+Keep `.env` as-is (SQLite default is fine — it is ignored when Docker runs). Skip to step 3 (Docker).
+
+## 3. Start with Docker (Path B only)
+
+```bash
+docker compose up --build
+```
+
+This starts `web`, `db` (postgres 16), `redis`, `celery`, and `celery-beat`.
+Migrations run automatically on first boot. Open http://localhost:8000.
+
+```bash
+# Create a superuser
+docker compose exec web python manage.py createsuperuser
+```
+
+Skip to step 5 (tests).
+
+---
+
+## 4. Run migrations (Path A only)
 
 The project directory is `saas_starter/`. To rename to `myapp/`:
 
@@ -43,8 +114,6 @@ mv saas_starter myapp
 # manage.py, myapp/wsgi.py, myapp/celery.py, myapp/__init__.py, setup.cfg
 grep -r "saas_starter" . --include="*.py" --include="*.cfg" -l
 ```
-
-## 4. Run migrations
 
 ```bash
 python manage.py migrate
