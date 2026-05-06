@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}SaaS App — Build faster{% endblock %}
+{% block description %}<!-- CUSTOMIZE: your landing page description -->{% endblock %}
+
+{% block navbar %}
+<div class="navbar bg-base-100 border-b border-base-200 px-4 max-w-6xl mx-auto">
+  <div class="navbar-start">
+    <a href="/" class="btn btn-ghost text-lg font-bold">⚡ SaaS App</a>
+  </div>
+  <div class="navbar-end gap-2">
+    <a href="{% url 'account_login' %}" class="btn btn-ghost btn-sm">Sign in</a>
+    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm">Get started free</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- ── Hero ── -->
+<section class="min-h-[80vh] flex items-center justify-center px-4 py-24 bg-base-100">
+  <div class="max-w-3xl mx-auto text-center">
+    <!-- CUSTOMIZE: hero headline and sub -->
+    <div class="badge badge-primary badge-outline mb-6 text-sm">Now in beta</div>
+    <h1 class="text-5xl font-extrabold leading-tight mb-6">
+      Build your SaaS<br>in days, not months.
+    </h1>
+    <p class="text-xl text-base-content/70 mb-10 max-w-xl mx-auto leading-relaxed">
+      A production-ready platform with auth, teams, and billing pre-wired.
+      Focus on your product — not the plumbing.
+    </p>
+    <div class="flex gap-3 justify-center flex-wrap">
+      <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">Get started free</a>
+      <a href="#features" class="btn btn-ghost btn-lg">See features ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section id="features" class="py-24 px-4 bg-base-200">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-4">Everything included</h2>
+    <p class="text-center text-base-content/60 mb-12 max-w-xl mx-auto">
+      <!-- CUSTOMIZE: feature section subtitle -->
+      Stop building auth and billing for the fifth time.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {% for feature in features %}
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <div class="text-3xl mb-2">{{ feature.icon }}</div>
+          <h3 class="card-title text-base">{{ feature.title }}</h3>
+          <p class="text-sm text-base-content/70">{{ feature.description }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <!-- CUSTOMIZE: replace with your actual features -->
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <div class="text-3xl mb-2">🔐</div>
+          <h3 class="card-title text-base">Auth + Social Login</h3>
+          <p class="text-sm text-base-content/70">Email + Google OAuth via django-allauth. Verification, reset, and custom User model included.</p>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <div class="text-3xl mb-2">👥</div>
+          <h3 class="card-title text-base">Teams</h3>
+          <p class="text-sm text-base-content/70">Organizations with roles, email invites, and per-org context on every request.</p>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body">
+          <div class="text-3xl mb-2">💳</div>
+          <h3 class="card-title text-base">Billing</h3>
+          <p class="text-sm text-base-content/70">Stripe + Lemon Squeezy. Subscription gating with a single decorator.</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── Pricing ── -->
+<section id="pricing" class="py-24 px-4 bg-base-100">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-4">Simple pricing</h2>
+    <p class="text-center text-base-content/60 mb-12"><!-- CUSTOMIZE: pricing subtitle --></p>
+    <div class="flex flex-wrap gap-6 justify-center">
+      <!-- CUSTOMIZE: update plan names, prices, and features -->
+      <div class="card bg-base-200 w-72 shadow-sm">
+        <div class="card-body">
+          <h3 class="font-bold text-lg">Free</h3>
+          <div class="text-4xl font-extrabold">$0<span class="text-base font-normal text-base-content/60">/mo</span></div>
+          <ul class="text-sm mt-4 space-y-1">
+            <li>✓ Up to 3 team members</li>
+            <li>✓ Core features</li>
+          </ul>
+          <div class="card-actions mt-6">
+            <a href="{% url 'account_signup' %}" class="btn btn-ghost btn-block">Get started</a>
+          </div>
+        </div>
+      </div>
+      <div class="card bg-primary text-primary-content w-72 shadow-sm">
+        <div class="card-body">
+          <div class="badge badge-primary-content badge-outline text-xs mb-2">Most popular</div>
+          <h3 class="font-bold text-lg">Pro</h3>
+          <div class="text-4xl font-extrabold">$29<span class="text-base font-normal opacity-70">/mo</span></div>
+          <ul class="text-sm mt-4 space-y-1 opacity-90">
+            <li>✓ Unlimited team members</li>
+            <li>✓ All features</li>
+            <li>✓ Priority support</li>
+          </ul>
+          <div class="card-actions mt-6">
+            <a href="{% url 'billing:upgrade' %}" class="btn btn-primary-content btn-block">Upgrade</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="py-20 px-4 bg-primary text-primary-content text-center">
+  <h2 class="text-3xl font-bold mb-4">Ready to ship?</h2>
+  <p class="mb-8 opacity-80">Start for free. Upgrade when you grow.</p>
+  <a href="{% url 'account_signup' %}" class="btn btn-primary-content btn-lg">Get started free</a>
+</section>
+{% endblock %}

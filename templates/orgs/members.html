@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Members — {{ current_org.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Members</h1>
+    <span class="badge badge-ghost">{{ current_org.name }}</span>
+  </div>
+
+  <!-- Member list -->
+  <div class="card bg-base-200 mb-6">
+    <div class="card-body p-0">
+      <table class="table">
+        <thead>
+          <tr><th>Member</th><th>Role</th><th>Joined</th></tr>
+        </thead>
+        <tbody>
+          {% for m in org_members %}
+          <tr>
+            <td>
+              <div class="flex items-center gap-2">
+                <div class="avatar placeholder"><div class="bg-neutral text-neutral-content rounded-full w-8"><span class="text-sm">{{ m.user.email|first|upper }}</span></div></div>
+                <span class="text-sm">{{ m.user.email }}</span>
+              </div>
+            </td>
+            <td><span class="badge badge-ghost badge-sm">{{ m.get_role_display }}</span></td>
+            <td class="text-sm text-base-content/60">{{ m.joined_at|date:"d M Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pending invites -->
+  {% if pending_invites %}
+  <h2 class="font-bold mb-3">Pending invites</h2>
+  <div class="card bg-base-200 mb-6">
+    <div class="card-body p-0">
+      <table class="table">
+        <thead><tr><th>Email</th><th>Role</th><th>Sent</th></tr></thead>
+        <tbody>
+          {% for inv in pending_invites %}
+          <tr>
+            <td class="text-sm">{{ inv.email }}</td>
+            <td><span class="badge badge-outline badge-sm">{{ inv.get_role_display }}</span></td>
+            <td class="text-sm text-base-content/60">{{ inv.created_at|date:"d M Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Invite form -->
+  {% if current_membership.is_admin_or_owner %}
+  <div class="card bg-base-200">
+    <div class="card-body">
+      <h2 class="card-title text-base">Invite a member</h2>
+      <form method="post" action="{% url 'orgs:invite' %}" class="flex flex-wrap gap-3 mt-3 items-end">
+        {% csrf_token %}
+        <div class="form-control flex-1 min-w-[200px]">
+          <label class="label"><span class="label-text text-sm">Email</span></label>
+          <input type="email" name="email" class="input input-bordered input-sm" placeholder="colleague@example.com" required>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-sm">Role</span></label>
+          <select name="role" class="select select-bordered select-sm">
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Send invite</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

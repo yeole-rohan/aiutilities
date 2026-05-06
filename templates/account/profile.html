@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Profile — {{ request.user.email }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-10">
+  <h1 class="text-2xl font-bold mb-6">Profile</h1>
+  <div class="card bg-base-200">
+    <div class="card-body space-y-4">
+      <div>
+        <div class="label-text font-medium text-sm">Email</div>
+        <p class="text-sm mt-1">{{ request.user.email }}</p>
+      </div>
+      <div>
+        <div class="label-text font-medium text-sm">Name</div>
+        <p class="text-sm mt-1">{{ request.user.get_full_name|default:"Not set" }}</p>
+      </div>
+      <div>
+        <div class="label-text font-medium text-sm">Member since</div>
+        <p class="text-sm mt-1">{{ request.user.date_joined|date:"d F Y" }}</p>
+      </div>
+      <div class="divider"></div>
+      <div class="flex gap-3">
+        <a href="{% url 'account_change_password' %}" class="btn btn-ghost btn-sm">Change password</a>
+        <a href="{% url 'account_email' %}" class="btn btn-ghost btn-sm">Email settings</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-error btn-sm btn-outline">Sign out</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

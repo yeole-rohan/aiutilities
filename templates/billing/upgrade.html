@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Upgrade — {{ current_org.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16">
+  <h1 class="text-3xl font-bold text-center mb-4">Upgrade your plan</h1>
+  <p class="text-center text-base-content/60 mb-12">Choose the plan that works for your team.</p>
+
+  <div class="flex flex-wrap gap-6 justify-center">
+    <!-- Free -->
+    <div class="card bg-base-200 w-72 shadow-sm">
+      <div class="card-body">
+        <h2 class="font-bold text-lg">Free</h2>
+        <div class="text-4xl font-extrabold mt-1">$0<span class="text-base font-normal text-base-content/60">/mo</span></div>
+        <ul class="text-sm mt-4 space-y-2">
+          <li class="flex gap-2">✓ Up to 3 members</li>
+          <li class="flex gap-2">✓ Core features</li>
+          <li class="flex gap-2">✓ API access</li>
+        </ul>
+        <div class="card-actions mt-6">
+          {% if not current_org.subscription or current_org.subscription.plan == "free" %}
+          <button class="btn btn-ghost btn-block" disabled>Current plan</button>
+          {% else %}
+          <form method="post" action="{% url 'billing:portal' %}">{% csrf_token %}<button class="btn btn-ghost btn-block">Downgrade</button></form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Pro — CUSTOMIZE: update price_id to your Stripe price ID -->
+    <div class="card bg-primary text-primary-content w-72 shadow-sm ring-2 ring-primary ring-offset-2">
+      <div class="card-body">
+        <div class="badge badge-primary-content badge-outline text-xs mb-2">Most popular</div>
+        <h2 class="font-bold text-lg">Pro</h2>
+        <div class="text-4xl font-extrabold mt-1">$29<span class="text-base font-normal opacity-70">/mo</span></div>
+        <ul class="text-sm mt-4 space-y-2 opacity-90">
+          <li>✓ Unlimited members</li>
+          <li>✓ All features</li>
+          <li>✓ Priority support</li>
+        </ul>
+        <div class="card-actions mt-6">
+          {% if current_org.subscription and current_org.subscription.plan == "pro" %}
+          <a href="{% url 'billing:portal' %}" class="btn btn-primary-content btn-block">Manage subscription</a>
+          {% else %}
+          <form method="post" action="{% url 'billing:checkout' %}">
+            {% csrf_token %}
+            <!-- CUSTOMIZE: set this to your Stripe Pro price ID or LS variant URL -->
+            <input type="hidden" name="price_id" value="{{ settings.STRIPE_PRO_PRICE_ID }}">
+            <button type="submit" class="btn btn-primary-content btn-block">Upgrade to Pro</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="card bg-base-200 w-72 shadow-sm">
+      <div class="card-body">
+        <h2 class="font-bold text-lg">Team</h2>
+        <div class="text-4xl font-extrabold mt-1">$79<span class="text-base font-normal text-base-content/60">/mo</span></div>
+        <ul class="text-sm mt-4 space-y-2">
+          <li>✓ Everything in Pro</li>
+          <li>✓ SSO (coming soon)</li>
+          <li>✓ Dedicated support</li>
+        </ul>
+        <div class="card-actions mt-6">
+          <form method="post" action="{% url 'billing:checkout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="price_id" value="{{ settings.STRIPE_TEAM_PRICE_ID }}">
+            <button type="submit" class="btn btn-ghost btn-block">Upgrade to Team</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-sm text-base-content/50 mt-10">
+    Payments via Stripe (US/EU) or
+    <a href="/billing/lemonsqueezy/checkout/" class="link">Lemon Squeezy</a> (global, including India).
+    Cancel anytime.
+  </p>
+</div>
+{% endblock %}

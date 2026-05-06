@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Create Organization{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="card bg-base-200 w-full max-w-md shadow-sm">
+    <div class="card-body">
+      <h1 class="card-title text-xl">Create your organization</h1>
+      <p class="text-sm text-base-content/60 mt-1">
+        Organizations are shared workspaces for your team.
+      </p>
+
+      {% if error %}
+      <div class="alert alert-error mt-2 text-sm">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" class="mt-4 space-y-4">
+        {% csrf_token %}
+        <div class="form-control">
+          <label class="label"><span class="label-text font-medium">Organization name</span></label>
+          <input type="text" name="name" class="input input-bordered" placeholder="Acme Inc." autofocus required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mt-2">Create organization</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
