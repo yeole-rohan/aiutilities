@@ -1,4 +1,4 @@
-from .models import Membership, Organization
+from .models import Membership
 
 
 class CurrentOrgMiddleware:
