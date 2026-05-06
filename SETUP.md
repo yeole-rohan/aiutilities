@@ -21,15 +21,17 @@ pip install -r requirements/dev.txt
 cp .env.example .env
 ```
 
-Open `.env` and fill in at minimum:
+Only one thing is required before you can run the server:
 
-- `SECRET_KEY` — generate with:
+- `SECRET_KEY` — generate one:
   ```bash
   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
   ```
-- `DATABASE_URL` — PostgreSQL connection string, or use the SQLite option in `.env.example` for quick local dev without Docker
 
-Leave billing and OAuth keys blank for now — add them when you're ready for that step.
+`DATABASE_URL` defaults to SQLite so you can run immediately without installing postgres or Docker.
+`REDIS_URL` is commented out — Celery tasks run synchronously in dev, so Redis is not needed locally.
+
+Leave all billing and OAuth keys blank for now.
 
 ## 3. Rename the project (optional but recommended)
 

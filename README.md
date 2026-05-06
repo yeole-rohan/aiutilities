@@ -22,7 +22,7 @@ git clone <this-repo> myapp
 cd myapp
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements/dev.txt
-cp .env.example .env   # set SECRET_KEY; DATABASE_URL defaults to SQLite for quick start
+cp .env.example .env   # only SECRET_KEY is required — SQLite and sync Celery work out of the box
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
