@@ -24,24 +24,24 @@ jobs:
   #     - name: Run tests
   #       run: pytest --cov=. --cov-report=term-missing -q
 
-  deploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
-    steps:
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            set -e
-            cd /home/${{ secrets.VPS_USER }}/aiutilities
-            git pull origin main
-            source .venv/bin/activate
-            pip install -r requirements/prod.txt -q
-            export DJANGO_SETTINGS_MODULE=saas_starter.settings.production
-            python manage.py migrate --noinput
-            python manage.py collectstatic --noinput
-            sudo systemctl restart aiutilities
+  #   steps:
+  #     - name: Deploy to VPS
+  #       uses: appleboy/ssh-action@v1.0.3
+  #       with:
+  #         host: ${{ secrets.VPS_HOST }}
+  #         username: ${{ secrets.VPS_USER }}
+  #         key: ${{ secrets.VPS_SSH_KEY }}
+  #         script: |
+  #           set -e
+  #           cd /home/${{ secrets.VPS_USER }}/aiutilities
+  #           git pull origin main
+  #           source .venv/bin/activate
+  #           pip install -r requirements/prod.txt -q
+  #           export DJANGO_SETTINGS_MODULE=saas_starter.settings.production
+  #           python manage.py migrate --noinput
+  #           python manage.py collectstatic --noinput
+  #           sudo systemctl restart aiutilities
