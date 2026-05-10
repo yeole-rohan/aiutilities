@@ -37,6 +37,15 @@
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9292XG9NC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H9292XG9NC');
+  </script>
+
   {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen bg-white" style="font-family:'Inter',system-ui,sans-serif;">
