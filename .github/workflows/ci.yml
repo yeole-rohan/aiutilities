@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
-            cd /var/www/aiutilities
+            cd /home/${{ secrets.VPS_USER }}/aiutilities
             git pull origin main
             source .venv/bin/activate
             pip install -r requirements/prod.txt -q
