@@ -1,10 +1,18 @@
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from .registry import CATEGORIES, get_all_tools
 
 
-class StaticSitemap(Sitemap):
+class AISitemap(Sitemap):
+    protocol = "https"
+
+    def get_domain(self, site=None):
+        return getattr(settings, "SITE_DOMAIN", "aiutilities.site")
+
+
+class StaticSitemap(AISitemap):
     priority = 1.0
     changefreq = "weekly"
 
@@ -15,7 +23,7 @@ class StaticSitemap(Sitemap):
         return reverse(item)
 
 
-class CategorySitemap(Sitemap):
+class CategorySitemap(AISitemap):
     priority = 0.8
     changefreq = "weekly"
 
@@ -26,7 +34,7 @@ class CategorySitemap(Sitemap):
         return reverse("tools:category", args=[slug])
 
 
-class ToolSitemap(Sitemap):
+class ToolSitemap(AISitemap):
     priority = 0.7
     changefreq = "monthly"
 
