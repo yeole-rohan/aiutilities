@@ -18,7 +18,7 @@
   <div style="width:100%;max-width:24rem;">
 
     <div style="text-align:center;margin-bottom:2rem;">
-      <a href="/" style="font-size:1.125rem;font-weight:700;color:#0f172a;text-decoration:none;letter-spacing:-.01em;">⚡ SaaS App</a>
+      <a href="/" style="font-size:1.125rem;font-weight:700;color:#0f172a;text-decoration:none;letter-spacing:-.01em;">AIUtilities</a>
     </div>
 
     <div class="app-card" style="padding:2rem;text-align:center;">
@@ -32,7 +32,7 @@
         </div>
 
         <h1 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Confirm your email</h1>
-        <p style="font-size:.875rem;color:#64748b;margin-bottom:1.75rem;">
+        <p style="font-size:.875rem;color:#374151;margin-bottom:1.75rem;">
           Please confirm that <strong style="color:#0f172a;">{{ confirmation.email_address.email }}</strong> is your email address for account <strong style="color:#0f172a;">{{ user_display }}</strong>.
         </p>
 
@@ -51,7 +51,7 @@
         </div>
 
         <h1 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Already confirmed</h1>
-        <p style="font-size:.875rem;color:#64748b;margin-bottom:1.75rem;">
+        <p style="font-size:.875rem;color:#374151;margin-bottom:1.75rem;">
           Unable to confirm {{ confirmation.email_address.email }} — it has already been confirmed by a different account.
         </p>
         <a href="{% url 'account_email' %}" class="app-btn app-btn-outline app-btn-block">Manage emails</a>
@@ -65,7 +65,7 @@
       </div>
 
       <h1 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Link expired</h1>
-      <p style="font-size:.875rem;color:#64748b;margin-bottom:1.75rem;">
+      <p style="font-size:.875rem;color:#374151;margin-bottom:1.75rem;">
         This email confirmation link has expired or is invalid.
       </p>
       <a href="{% url 'account_email' %}" class="app-btn app-btn-outline app-btn-block" style="margin-bottom:.75rem;">Request new confirmation</a>

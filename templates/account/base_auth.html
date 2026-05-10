@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}SaaS App{% endblock %}</title>
+  <title>{% block title %}AIUtilities{% endblock %}</title>
   <meta name="description" content="{% block description %}{% endblock %}">
 
   <!-- Inter font -->
@@ -15,8 +15,15 @@
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Brand styles -->
+  <!-- Favicon -->
   {% load static %}
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/icon.svg' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+
+  <!-- Brand styles -->
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 
   {% block extra_head %}{% endblock %}
@@ -28,7 +35,7 @@
 
       <!-- Logo -->
       <div class="app-auth-logo">
-        <a href="/">⚡ SaaS App</a>
+        <a href="/">AIUtilities</a>
       </div>
 
       {% block auth_content %}{% endblock %}

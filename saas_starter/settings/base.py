@@ -24,27 +24,20 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.sitemaps",
     # Third-party
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    "djstripe",
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "corsheaders",
     # Local
     "accounts",
-    "orgs",
-    "billing",
-    "tasks",
-    "api",
+    "tools",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -52,7 +45,6 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "orgs.middleware.CurrentOrgMiddleware",
 ]
 
 ROOT_URLCONF = "saas_starter.urls"
@@ -68,7 +60,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "orgs.context_processors.current_org",
             ],
         },
     },
@@ -114,7 +105,7 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-LOGIN_REDIRECT_URL = "/dashboard/"
+LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -141,40 +132,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = True
 
-# ── Celery ──────────────────────────────────────────────────────────────────
-REDIS_URL = env("REDIS_URL", default="redis://localhost:6379/0")
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_BEAT_SCHEDULE = {}
+# ── Anthropic / AI ──────────────────────────────────────────────────────────
+ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
 
-# ── DRF ─────────────────────────────────────────────────────────────────────
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "api.authentication.APIKeyAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
-}
-
-# ── dj-stripe ───────────────────────────────────────────────────────────────
-STRIPE_LIVE_SECRET_KEY = env("STRIPE_SECRET_KEY", default="")
-STRIPE_TEST_SECRET_KEY = env("STRIPE_SECRET_KEY", default="")
-STRIPE_LIVE_MODE = not DEBUG
-DJSTRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET", default="")
-DJSTRIPE_USE_NATIVE_JSONFIELD = True
-DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-
-# ── Lemon Squeezy ───────────────────────────────────────────────────────────
-LEMON_SQUEEZY_SIGNING_SECRET = env("LEMON_SQUEEZY_SIGNING_SECRET", default="")
-
-# ── Billing plan → price mapping ────────────────────────────────────────────
-STRIPE_PRO_PRICE_ID = env("STRIPE_PRO_PRICE_ID", default="")
-STRIPE_TEAM_PRICE_ID = env("STRIPE_TEAM_PRICE_ID", default="")
-LS_PRO_VARIANT_ID = env("LS_PRO_VARIANT_ID", default="")
-LS_TEAM_VARIANT_ID = env("LS_TEAM_VARIANT_ID", default="")
+# ── Site metadata ────────────────────────────────────────────────────────────
+SITE_NAME = env("SITE_NAME", default="AIUtilities")
+SITE_DOMAIN = env("SITE_DOMAIN", default="aiutilities.site")

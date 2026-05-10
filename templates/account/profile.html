@@ -9,7 +9,7 @@
   <!-- ── Page header ─────────────────────────────── -->
   <div style="margin-bottom:1.75rem;">
     <h1 style="font-size:1.5rem;font-weight:700;color:#0f172a;letter-spacing:-.01em;margin-bottom:.375rem;">Account settings</h1>
-    <p style="font-size:.875rem;color:#64748b;">Manage your profile and authentication preferences.</p>
+    <p style="font-size:.875rem;color:#374151;">Manage your profile and authentication preferences.</p>
   </div>
 
   <!-- ── Info card ────────────────────────────────── -->
@@ -27,25 +27,25 @@
           <p style="font-size:.9375rem;font-weight:600;color:#0f172a;margin:0 0 .2rem;">
             {{ request.user.get_full_name|default:"User" }}
           </p>
-          <p style="font-size:.875rem;color:#64748b;margin:0;">{{ request.user.email }}</p>
+          <p style="font-size:.875rem;color:#374151;margin:0;">{{ request.user.email }}</p>
         </div>
       </div>
 
       <dl style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
         <div>
-          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.3rem;">Email</dt>
+          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#4b5563;margin-bottom:.3rem;">Email</dt>
           <dd style="font-size:.875rem;color:#0f172a;">{{ request.user.email }}</dd>
         </div>
         <div>
-          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.3rem;">Name</dt>
+          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#4b5563;margin-bottom:.3rem;">Name</dt>
           <dd style="font-size:.875rem;color:#0f172a;">{{ request.user.get_full_name|default:"Not set" }}</dd>
         </div>
         <div>
-          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.3rem;">Member since</dt>
+          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#4b5563;margin-bottom:.3rem;">Member since</dt>
           <dd style="font-size:.875rem;color:#0f172a;">{{ request.user.date_joined|date:"d F Y" }}</dd>
         </div>
         <div>
-          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.3rem;">Status</dt>
+          <dt style="font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#4b5563;margin-bottom:.3rem;">Status</dt>
           <dd>
             {% if request.user.is_active %}
             <span class="app-badge" style="font-size:.75rem;">Active</span>
@@ -68,27 +68,27 @@
       <a href="{% url 'account_change_password' %}" style="display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;border-radius:.5rem;border:1px solid #e2e8f0;text-decoration:none;background:#ffffff;transition:background .15s;">
         <div style="display:flex;align-items:center;gap:.75rem;">
           <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;">
-            <svg style="width:1rem;height:1rem;color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <svg style="width:1rem;height:1rem;color:#374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           </div>
           <div>
             <p style="font-size:.875rem;font-weight:500;color:#0f172a;margin:0;">Change password</p>
-            <p style="font-size:.75rem;color:#64748b;margin:0;">Update your account password</p>
+            <p style="font-size:.75rem;color:#374151;margin:0;">Update your account password</p>
           </div>
         </div>
-        <svg style="width:1rem;height:1rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <svg style="width:1rem;height:1rem;color:#4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </a>
 
       <a href="{% url 'account_email' %}" style="display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;border-radius:.5rem;border:1px solid #e2e8f0;text-decoration:none;background:#ffffff;transition:background .15s;">
         <div style="display:flex;align-items:center;gap:.75rem;">
           <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;">
-            <svg style="width:1rem;height:1rem;color:#64748b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <svg style="width:1rem;height:1rem;color:#374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
           </div>
           <div>
             <p style="font-size:.875rem;font-weight:500;color:#0f172a;margin:0;">Email settings</p>
-            <p style="font-size:.75rem;color:#64748b;margin:0;">Add or manage email addresses</p>
+            <p style="font-size:.75rem;color:#374151;margin:0;">Add or manage email addresses</p>
           </div>
         </div>
-        <svg style="width:1rem;height:1rem;color:#94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <svg style="width:1rem;height:1rem;color:#4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </a>
 
       <div class="app-divider"></div>

@@ -1,7 +1,7 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import render
+
+from tools.registry import CATEGORIES
 
 
 def landing(request):
-    if request.user.is_authenticated:
-        return redirect("orgs:dashboard")
-    return render(request, "landing/index.html")
+    return render(request, "landing/index.html", {"categories": CATEGORIES})

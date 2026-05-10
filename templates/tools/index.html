@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}All Tools — AIUtilities{% endblock %}
+{% block description %}Browse 600+ free online tools across 23 categories. Calculators, converters, PDF tools, image editors, developer utilities, and more.{% endblock %}
+
+{% block content %}
+<div style="background:#f8fafc;min-height:100vh;padding:3rem 1rem;">
+  <div style="max-width:72rem;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:3rem;">
+      <h1 style="font-size:2rem;font-weight:800;color:#0f172a;margin-bottom:.5rem;">All Tools</h1>
+      <p style="color:#374151;font-size:1rem;">{{ categories|length }} categories · hundreds of free utilities</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(20rem,1fr));gap:1.25rem;">
+      {% for cat in categories %}
+      <a href="/tools/{{ cat.slug }}/" style="text-decoration:none;">
+        <div class="app-card" style="padding:1.5rem;display:flex;align-items:flex-start;gap:1rem;transition:box-shadow .15s;">
+          <span style="font-size:2rem;flex-shrink:0;">{{ cat.icon }}</span>
+          <div>
+            <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">{{ cat.name }}</h2>
+            <p style="font-size:.875rem;color:#374151;line-height:1.5;margin-bottom:.5rem;">{{ cat.description }}</p>
+            <span style="font-size:.75rem;color:#16a34a;font-weight:600;">{{ cat.tools|length }} tools</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

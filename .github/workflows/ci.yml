@@ -29,3 +29,25 @@ jobs:
 
       - name: Run tests
         run: pytest --cov=. --cov-report=term-missing -q
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            cd /var/www/aiutilities
+            git pull origin main
+            source .venv/bin/activate
+            pip install -r requirements/prod.txt -q
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+            sudo systemctl restart aiutilities

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /profile/
+
+Sitemap: https://aiutilities.site/sitemap.xml
