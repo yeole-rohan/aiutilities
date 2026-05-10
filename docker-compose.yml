@@ -12,11 +12,6 @@ services:
     ports:
       - "5432:5432"
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
   web:
     build: .
     command: >
@@ -25,7 +20,6 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: saas_starter.settings.development
       DATABASE_URL: postgres://saas:saas@db:5432/saas
-      REDIS_URL: redis://redis:6379/0
     env_file:
       - .env
     volumes:
@@ -34,37 +28,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - redis
-
-  celery:
-    build: .
-    command: celery -A saas_starter worker -l info
-    environment:
-      DJANGO_SETTINGS_MODULE: saas_starter.settings.development
-      DATABASE_URL: postgres://saas:saas@db:5432/saas
-      REDIS_URL: redis://redis:6379/0
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - redis
-
-  celery-beat:
-    build: .
-    command: celery -A saas_starter beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    environment:
-      DJANGO_SETTINGS_MODULE: saas_starter.settings.development
-      DATABASE_URL: postgres://saas:saas@db:5432/saas
-      REDIS_URL: redis://redis:6379/0
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - redis
 
 volumes:
   postgres_data:

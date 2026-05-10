@@ -12,9 +12,6 @@ DATABASES = {
 # Skip email sending during tests
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
-# Run Celery tasks synchronously
-CELERY_TASK_ALWAYS_EAGER = True
-
 # Skip email verification so auth tests don't require confirmation flow
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
