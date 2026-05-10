@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=siteadmin
-Group=www-data
+Group=siteadmin
 WorkingDirectory=/home/siteadmin/aiutilities
 EnvironmentFile=/home/siteadmin/aiutilities/.env
 ExecStart=/home/siteadmin/aiutilities/venv/bin/gunicorn \
