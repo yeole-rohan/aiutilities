@@ -7,7 +7,7 @@ User=siteadmin
 Group=www-data
 WorkingDirectory=/home/siteadmin/aiutilities
 EnvironmentFile=/home/siteadmin/aiutilities/.env
-ExecStart=/home/siteadmin/aiutilities/.venv/bin/gunicorn \
+ExecStart=/home/siteadmin/aiutilities/venv/bin/gunicorn \
     saas_starter.wsgi:application \
     --bind 127.0.0.1:8008 \
     --workers 3 \
