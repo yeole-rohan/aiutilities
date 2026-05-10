@@ -3,13 +3,13 @@ Description=AIUtilities — Gunicorn
 After=network.target
 
 [Service]
-User=www-data
+User=siteadmin
 Group=www-data
-WorkingDirectory=/var/www/aiutilities
-EnvironmentFile=/var/www/aiutilities/.env
-ExecStart=/var/www/aiutilities/.venv/bin/gunicorn \
+WorkingDirectory=/home/siteadmin/aiutilities
+EnvironmentFile=/home/siteadmin/aiutilities/.env
+ExecStart=/home/siteadmin/aiutilities/.venv/bin/gunicorn \
     saas_starter.wsgi:application \
-    --bind 127.0.0.1:8000 \
+    --bind 127.0.0.1:8008 \
     --workers 3 \
     --timeout 60 \
     --access-logfile /var/log/aiutilities/access.log \
