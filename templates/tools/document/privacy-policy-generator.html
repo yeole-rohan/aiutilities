@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer | AIUtilities{% endblock %}
-{% block description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter your website name, data collected, and contact email — AI writes a complete policy. Free, no signup.{% endblock %}
+{% block title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer {% endblock %}
+{% block description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter your website name, data
+collected, and contact email — AI writes a complete policy, no signup.{% endblock %}
 {% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'privacy-policy-generator' %}{% endblock %}
-{% block og_title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer | AIUtilities{% endblock %}
-{% block og_description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter your website name, data collected, and contact email — AI writes a complete policy. Free, no signup.{% endblock %}
+{% block og_title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer {% endblock %}
+{% block og_description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter your website name, data
+collected, and contact email — AI writes a complete policy, no signup.{% endblock %}
 {% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'privacy-policy-generator' %}{% endblock %}
-{% block twitter_title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer | AIUtilities{% endblock %}
-{% block twitter_description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter website name, data collected, and contact email — AI writes a complete policy. Free.{% endblock %}
+{% block twitter_title %}Free Privacy Policy Generator — AI GDPR & CCPA Policy Writer {% endblock %}
+{% block twitter_description %}Generate a GDPR and CCPA-compliant privacy policy in seconds. Enter website name, data
+collected, and contact email — AI writes a complete policy.{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Privacy Policy Generator","description":"Generate a GDPR and CCPA-compliant privacy policy in seconds for any website or app.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'privacy-policy-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"Privacy Policy Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'privacy-policy-generator' %}"}]}]}
@@ -24,7 +27,8 @@
       Privacy Policy Generator
     </h1>
     <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
-      Generate a complete, plain-English privacy policy that covers GDPR, CCPA, and general international requirements — in under 60 seconds. Free.
+      Generate a complete, plain-English privacy policy that covers GDPR, CCPA, and general international requirements — in
+      under 60 seconds.
     </p>
     <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
       <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ GDPR + CCPA compliant</span>

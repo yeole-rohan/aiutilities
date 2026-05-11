@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
-{% block description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block title %}AI Content Generator — Free AI Blog Post & Article Writer {% endblock %}
+{% block description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and
+keyword — get SEO-optimized content with headings in seconds.{% endblock %}
 {% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}{% endblock %}
-{% block og_title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
-{% block og_description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block og_title %}AI Content Generator — Free AI Blog Post & Article Writer {% endblock %}
+{% block og_description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and
+keyword — get SEO-optimized content with headings in seconds.{% endblock %}
 {% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}{% endblock %}
-{% block twitter_title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
-{% block twitter_description %}Generate full blog posts, articles, and web copy with AI. Enter topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block twitter_title %}AI Content Generator — Free AI Blog Post & Article Writer {% endblock %}
+{% block twitter_description %}Generate full blog posts, articles, and web copy with AI. Enter topic and keyword — get
+SEO-optimized content with headings in seconds.{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Content Generator","description":"Generate full blog posts, articles, and SEO-optimized web copy with AI in seconds.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Content Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}"}]}]}

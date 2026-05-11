@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Cover Letter Generator — Free AI Cover Letter Writer | AIUtilities{% endblock %}
-{% block description %}Generate a tailored, professional cover letter in seconds. Enter the job title, company, and your skills — AI writes a compelling 3-paragraph cover letter. Free, no signup.{% endblock %}
+{% block title %}Cover Letter Generator — Free AI Cover Letter Writer {% endblock %}
+{% block description %}Generate a tailored, professional cover letter in seconds. Enter the job title, company, and your
+skills — AI writes a compelling 3-paragraph cover letter, no signup.{% endblock %}
 {% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'cover-letter-generator' %}{% endblock %}
-{% block og_title %}Cover Letter Generator — Free AI Cover Letter Writer | AIUtilities{% endblock %}
-{% block og_description %}Generate a tailored, professional cover letter in seconds. Enter the job title, company, and your skills — AI writes a compelling 3-paragraph cover letter. Free, no signup.{% endblock %}
+{% block og_title %}Cover Letter Generator — Free AI Cover Letter Writer {% endblock %}
+{% block og_description %}Generate a tailored, professional cover letter in seconds. Enter the job title, company, and
+your skills — AI writes a compelling 3-paragraph cover letter, no signup.{% endblock %}
 {% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'cover-letter-generator' %}{% endblock %}
-{% block twitter_title %}Cover Letter Generator — Free AI Cover Letter Writer | AIUtilities{% endblock %}
-{% block twitter_description %}Generate a professional cover letter in seconds. Enter job title, company, and skills — AI writes a compelling 3-paragraph cover letter. Free, no signup.{% endblock %}
+{% block twitter_title %}Cover Letter Generator — Free AI Cover Letter Writer {% endblock %}
+{% block twitter_description %}Generate a professional cover letter in seconds. Enter job title, company, and skills —
+AI writes a compelling 3-paragraph cover letter, no signup.{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Cover Letter Generator","description":"Generate a tailored, professional cover letter in seconds — enter job title, company, and skills.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'cover-letter-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"Cover Letter Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'cover-letter-generator' %}"}]}]}

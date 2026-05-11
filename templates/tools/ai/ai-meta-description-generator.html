@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}AI Meta Description Generator — Free SEO Meta Descriptions | AIUtilities{% endblock %}
-{% block description %}Generate 3 click-worthy SEO meta descriptions instantly. Enter your page title and keywords — AI writes compelling descriptions under 160 characters. Free, no signup.{% endblock %}
+{% block title %}AI Meta Description Generator — Free SEO Meta Descriptions {% endblock %}
+{% block description %}Generate 3 click-worthy SEO meta descriptions instantly. Enter your page title and keywords — AI
+writes compelling descriptions under 160 characters, no signup.{% endblock %}
 {% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-meta-description-generator' %}{% endblock %}
-{% block og_title %}AI Meta Description Generator — Free SEO Meta Descriptions | AIUtilities{% endblock %}
-{% block og_description %}Generate 3 click-worthy SEO meta descriptions instantly. Enter your page title and keywords — AI writes compelling descriptions under 160 characters. Free, no signup.{% endblock %}
+{% block og_title %}AI Meta Description Generator — Free SEO Meta Descriptions {% endblock %}
+{% block og_description %}Generate 3 click-worthy SEO meta descriptions instantly. Enter your page title and keywords —
+AI writes compelling descriptions under 160 characters, no signup.{% endblock %}
 {% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-meta-description-generator' %}{% endblock %}
-{% block twitter_title %}AI Meta Description Generator — Free SEO Meta Descriptions | AIUtilities{% endblock %}
-{% block twitter_description %}Generate 3 SEO meta descriptions instantly. Enter page title and keywords — AI writes compelling descriptions under 160 characters. Free, no signup.{% endblock %}
+{% block twitter_title %}AI Meta Description Generator — Free SEO Meta Descriptions {% endblock %}
+{% block twitter_description %}Generate 3 SEO meta descriptions instantly. Enter page title and keywords — AI writes
+compelling descriptions under 160 characters, no signup.{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Meta Description Generator","description":"Generate 3 click-worthy SEO meta descriptions instantly for any web page.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-meta-description-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Meta Description Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-meta-description-generator' %}"}]}]}

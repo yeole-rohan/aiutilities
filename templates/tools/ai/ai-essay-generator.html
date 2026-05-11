@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
-{% block description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block title %}AI Essay Generator — Free AI Essay Writer Online {% endblock %}
+{% block description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level, and
+word count — AI writes a full essay with intro, body, and conclusion.{% endblock %}
 {% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}{% endblock %}
-{% block og_title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
-{% block og_description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block og_title %}AI Essay Generator — Free AI Essay Writer Online {% endblock %}
+{% block og_description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level,
+and word count — AI writes a full essay with intro, body, and conclusion.{% endblock %}
 {% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}{% endblock %}
-{% block twitter_title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
-{% block twitter_description %}Generate well-structured essays in seconds. Choose type, level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block twitter_title %}AI Essay Generator — Free AI Essay Writer Online {% endblock %}
+{% block twitter_description %}Generate well-structured essays in seconds. Choose type, level, and word count — AI
+writes a full essay with intro, body, and conclusion.{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Essay Generator","description":"Generate well-structured essays on any topic — choose type, level, and length, AI writes the full essay.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Essay Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}"}]}]}
