@@ -135,6 +135,15 @@ EMAIL_USE_TLS = True
 # ── Anthropic / AI ──────────────────────────────────────────────────────────
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
 
+# ── Groq AI (key rotation for rate-limit distribution across 5K+ users) ─────
+GROQ_API_KEYS = [
+    env("GROQ_API_KEY_1", default=""),
+    env("GROQ_API_KEY_2", default=""),
+    env("GROQ_API_KEY_3", default=""),
+    env("GROQ_API_KEY_4", default=""),
+]
+GROQ_MODEL = env("GROQ_MODEL", default="llama-3.3-70b-versatile")
+
 # ── Site metadata ────────────────────────────────────────────────────────────
 SITE_NAME = env("SITE_NAME", default="AIUtilities")
 SITE_DOMAIN = env("SITE_DOMAIN", default="aiutilities.site")

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Hashtag Generator — Free AI Hashtags for Instagram, TikTok & Twitter | AIUtilities{% endblock %}
+{% block description %}Generate 30 optimized hashtags for Instagram, TikTok, Twitter, or LinkedIn instantly. Enter your topic and niche — AI groups them by popularity for maximum reach.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Hashtag Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Get 30 platform-optimized hashtags organized by popularity. Maximize your reach on Instagram, TikTok, Twitter, and LinkedIn — free, instantly.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 30 hashtags per generation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Sorted by popularity</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 4 platforms supported</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'hashtag-generator' %}"
+            hx-target="#hashtag-output"
+            hx-swap="innerHTML"
+            hx-indicator="#hashtag-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="platform">Platform</label>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;">
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.75rem .5rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.8125rem;color:#374151;background:#fff;text-align:center;">
+              <input type="radio" name="platform" value="instagram" checked style="accent-color:#e91e8c;"> 📸 Instagram
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.75rem .5rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.8125rem;color:#374151;background:#fff;text-align:center;">
+              <input type="radio" name="platform" value="tiktok" style="accent-color:#000;"> 🎵 TikTok
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.75rem .5rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.8125rem;color:#374151;background:#fff;text-align:center;">
+              <input type="radio" name="platform" value="twitter" style="accent-color:#1da1f2;"> 🐦 Twitter/X
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.75rem .5rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.8125rem;color:#374151;background:#fff;text-align:center;">
+              <input type="radio" name="platform" value="linkedin" style="accent-color:#0077b5;"> 💼 LinkedIn
+            </label>
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Post Topic or Caption</label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="4"
+            placeholder="e.g. Just launched my handmade ceramic coffee mugs in earthy tones. Perfect for the slow morning crowd who loves artisanal homeware."></textarea>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="niche">Your Niche or Industry <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="niche" name="niche" class="ai-tool-input"
+            placeholder="e.g. handmade jewelry, fitness coaching, travel photography, SaaS marketing">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Hashtags →</button>
+        <div id="hashtag-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating hashtags…</span>
+        </div>
+      </form>
+    </div>
+    <div id="hashtag-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">How the 3-Tier System Works</h2>
+    <div class="ai-steps">
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#e91e8c;">🔥</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Popular Tags</h3>
+        <p style="font-size:.875rem;color:#374151;">1M+ posts — high exposure but high competition. Use 5–8 to get in front of large audiences.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#f59e0b;">⚡</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Mid-Range Tags</h3>
+        <p style="font-size:.875rem;color:#374151;">100K–1M posts — balanced reach and visibility. Use 10–12 for the best engagement rate.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#16a34a;">🎯</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Niche Tags</h3>
+        <p style="font-size:.875rem;color:#374151;">Under 100K posts — highly targeted, less competition. Use 8–10 to reach your ideal audience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Hashtag Best Practices by Platform</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.25rem;">
+      <div class="ai-feature-card">
+        <div style="font-size:1.25rem;margin-bottom:.5rem;">📸 Instagram</div>
+        <ul style="font-size:.8125rem;color:#374151;line-height:1.8;padding-left:1rem;">
+          <li>Use 20–30 hashtags per post</li>
+          <li>Mix popular + niche tags</li>
+          <li>Post in caption (not comments)</li>
+          <li>Use relevant, not random tags</li>
+        </ul>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.25rem;margin-bottom:.5rem;">🎵 TikTok</div>
+        <ul style="font-size:.8125rem;color:#374151;line-height:1.8;padding-left:1rem;">
+          <li>Use 3–5 focused hashtags</li>
+          <li>Include #FYP and niche tags</li>
+          <li>Trending tags boost discovery</li>
+          <li>Keep it relevant to content</li>
+        </ul>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.25rem;margin-bottom:.5rem;">🐦 Twitter/X</div>
+        <ul style="font-size:.8125rem;color:#374151;line-height:1.8;padding-left:1rem;">
+          <li>Use 1–2 hashtags maximum</li>
+          <li>Join trending conversations</li>
+          <li>Avoid hashtag stuffing</li>
+          <li>One specific > five generic</li>
+        </ul>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.25rem;margin-bottom:.5rem;">💼 LinkedIn</div>
+        <ul style="font-size:.8125rem;color:#374151;line-height:1.8;padding-left:1rem;">
+          <li>Use 3–5 professional hashtags</li>
+          <li>Industry + skill + topic tags</li>
+          <li>Put at end of post</li>
+          <li>Follow relevant hashtags too</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many hashtags should I use on Instagram?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Instagram allows up to 30. A 2023 study found 20–25 relevant hashtags produce the highest reach for most accounts. Focus on relevance over quantity — irrelevant hashtags hurt your reach.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Are the hashtags always relevant to my content?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The more specific your topic description, the more relevant the hashtags. Include your niche for best results. Always review the list and remove any that don't fit your specific post.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use the same hashtags every post?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No. Instagram may suppress reach for accounts that use the exact same hashtag set repeatedly. Generate fresh hashtags for each post or rotate between several sets. Vary 10–15 tags each time.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I copy all 30 hashtags at once?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — click the Copy button in the result box to copy all hashtags to your clipboard at once. Then paste them into your post.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/instagram-bio-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Instagram Bio Generator</a>
+      <a href="/tools/social-media/social-media-post-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Social Media Post Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Content Generator</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Meta Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

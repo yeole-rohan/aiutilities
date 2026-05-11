@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Code Generator — Generate Code from Description Free | AIUtilities{% endblock %}
+{% block description %}Describe what you need and get clean, working code instantly. Supports Python, JavaScript, TypeScript, Java, Go, SQL, and more — free AI code generator, no signup.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Code Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Describe what you want to build in plain English and get clean, production-quality code instantly. Supports 15+ programming languages.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 15+ languages</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ With explanation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no signup</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-code-generator' %}"
+            hx-target="#code-output"
+            hx-swap="innerHTML"
+            hx-indicator="#code-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="language">Programming Language</label>
+            <select id="language" name="language" class="ai-tool-select">
+              <option value="python">Python</option>
+              <option value="javascript">JavaScript</option>
+              <option value="typescript">TypeScript</option>
+              <option value="java">Java</option>
+              <option value="c++">C++</option>
+              <option value="c#">C#</option>
+              <option value="go">Go</option>
+              <option value="rust">Rust</option>
+              <option value="php">PHP</option>
+              <option value="ruby">Ruby</option>
+              <option value="swift">Swift</option>
+              <option value="kotlin">Kotlin</option>
+              <option value="sql">SQL</option>
+              <option value="bash">Bash / Shell</option>
+              <option value="html/css">HTML / CSS</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="include_comments">Code Comments</label>
+            <select id="include_comments" name="include_comments" class="ai-tool-select">
+              <option value="yes">Include comments (recommended)</option>
+              <option value="no">Clean code only</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="description">What do you want the code to do?</label>
+          <textarea id="description" name="description" class="ai-tool-input" rows="6"
+            placeholder="e.g. A Python function that takes a list of dictionaries, removes duplicates based on a key, and returns the cleaned list sorted by that key in ascending order."></textarea>
+          <div style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;">Be specific about inputs, outputs, and any constraints.</div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Code →</button>
+        <div id="code-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating code…</span>
+        </div>
+      </form>
+    </div>
+    <div id="code-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<!-- Example prompts -->
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Example Prompts</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1rem;font-size:.875rem;color:#374151;cursor:pointer;" onclick="document.getElementById('description').value=this.querySelector('span').textContent">
+        💡 <span>A Python class that connects to PostgreSQL, executes parameterized queries, and handles connection pooling with context managers.</span>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1rem;font-size:.875rem;color:#374151;cursor:pointer;" onclick="document.getElementById('description').value=this.querySelector('span').textContent">
+        💡 <span>A JavaScript function to debounce API calls with a configurable delay, returning a promise that resolves with the latest result.</span>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1rem;font-size:.875rem;color:#374151;cursor:pointer;" onclick="document.getElementById('description').value=this.querySelector('span').textContent">
+        💡 <span>A SQL query that finds the top 10 customers by revenue in the last 90 days, joining orders and customers tables, grouped by customer.</span>
+      </div>
+    </div>
+    <p style="font-size:.8125rem;color:#9ca3af;margin-top:.75rem;text-align:center;">Click any example to load it into the form</p>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">What You Can Build</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🔧</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Functions & Classes</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Utility functions, data models, helper classes, and OOP patterns.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🌐</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">API Integrations</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">REST API clients, webhook handlers, auth flows.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🗄️</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Database Queries</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">SQL queries, ORM models, migrations, indexes.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🔄</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Algorithms</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Sorting, searching, graph traversal, dynamic programming.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🎨</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">UI Components</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">React/Vue components, CSS layouts, HTML forms.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">⚙️</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Scripts & Automation</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Shell scripts, cron jobs, file processing, data pipelines.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is the generated code production-ready?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The code is clean and follows best practices, but always review and test it before deploying to production. For complex systems, treat it as a solid starting point that you refine and test thoroughly.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How specific should my description be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The more specific, the better. Include: what it should accept as input, what it should return, edge cases to handle, libraries/frameworks to use, and any constraints. Vague prompts produce generic code.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can it generate a full project or just snippets?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Best for functions, classes, components, and modules (under ~200 lines). For full projects, generate one component at a time and assemble them yourself.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What if the code has a bug?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Rephrase your description with more detail, include the error you're seeing, or specify the exact behavior expected. Adding constraints like "handle null input" or "no recursion" helps produce more robust code.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Grammar Checker</a>
+      <a href="/tools/developer/json-formatter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">JSON Formatter</a>
+      <a href="/tools/developer/regex-tester/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Regex Tester</a>
+      <a href="/tools/developer/diff-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Diff Checker</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

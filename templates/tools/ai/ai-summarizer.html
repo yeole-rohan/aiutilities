@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Summarizer — Summarize Articles & Documents Free | AIUtilities{% endblock %}
+{% block description %}Paste any article, PDF text, or long document and get an AI-generated summary in bullet points, paragraph, or TLDR format in seconds — free, no signup required.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Text Summarizer
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Summarize any article, research paper, or long document in seconds. Choose bullet points, paragraph, or TLDR — powered by AI for accurate, concise results.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no account</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 12,000 character limit</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 output formats</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-summarizer' %}"
+            hx-target="#summary-output"
+            hx-swap="innerHTML"
+            hx-indicator="#summary-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="text">Article or Text to Summarize</label>
+          <textarea id="text" name="text" class="ai-tool-input" rows="12"
+            placeholder="Paste your article, research paper, news story, or any long text here…"
+            style="resize:vertical;"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="format">Output Format</label>
+            <select id="format" name="format" class="ai-tool-select">
+              <option value="bullet">Bullet Points</option>
+              <option value="paragraph">Paragraph</option>
+              <option value="tldr">TLDR + Key Takeaways</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="length">Summary Length</label>
+            <select id="length" name="length" class="ai-tool-select">
+              <option value="short">Short (2–3 points)</option>
+              <option value="medium" selected>Medium (5–7 points)</option>
+              <option value="detailed">Detailed (10–12 points)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Summarize →</button>
+        <div id="summary-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div>
+          <span>Summarizing…</span>
+        </div>
+      </form>
+    </div>
+    <div id="summary-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">How It Works</h2>
+    <div class="ai-steps">
+      <div class="ai-step">
+        <div class="ai-step-num">1</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Paste Your Content</h3>
+        <p style="font-size:.875rem;color:#374151;">Copy any text — article, blog post, research paper, report, or news story.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num">2</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Choose Your Format</h3>
+        <p style="font-size:.875rem;color:#374151;">Select bullet points for skimmability, paragraph for comprehension, or TLDR for a quick overview.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num">3</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Get Your Summary</h3>
+        <p style="font-size:.875rem;color:#374151;">AI extracts only the most important information — accurate and concise in seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">What Can You Summarize?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📰</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">News Articles</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Get the key facts from long news stories in 30 seconds.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🔬</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Research Papers</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Understand academic papers without reading every word.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📚</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Blog Posts</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Extract the main points from lengthy blog articles.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Business Reports</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Quickly grasp the key findings and recommendations.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📄</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Legal Documents</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Summarize contracts and legal text into plain English.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">✉️</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Long Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Get the key action items from lengthy email threads.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How accurate is the AI summarizer?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Very accurate for factual text. The AI (Llama 3.3 70B) is trained to extract only information present in the original text. It does not add or fabricate information. Always verify important facts from the original source.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I summarize a PDF?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — copy the text from your PDF and paste it here. For PDFs with selectable text, use Ctrl+A in your PDF viewer to select all. For scanned PDFs, use our OCR PDF tool first to extract the text.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What is the text limit?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Up to 12,000 characters (~1,800–2,000 words) per summary. For longer documents, split them into sections and summarize each separately, then combine.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Which output format should I choose?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Use Bullet Points for quick scanning and presentations. Use Paragraph for sharing the summary in emails or reports. Use TLDR + Key Takeaways when you need a quick one-liner plus main points.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Grammar Checker</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Paraphrasing Tool</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Content Generator</a>
+      <a href="/tools/text/word-counter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Word Counter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

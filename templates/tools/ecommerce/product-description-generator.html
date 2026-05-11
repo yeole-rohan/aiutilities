@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Product Description Generator — Free AI Product Copy Writer | AIUtilities{% endblock %}
+{% block description %}Generate compelling product descriptions that sell. Enter your product name and features — AI writes a short description, long copy, and 5 benefit bullet points. Free.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Product Description Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write product descriptions that convert. Get a short listing, long-form copy, and 5 benefit bullet points — in one click. Perfect for Amazon, Shopify, Etsy, and more.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 outputs in 1 click</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Works on any product</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no limits</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ecommerce' 'product-description-generator' %}"
+            hx-target="#product-desc-output"
+            hx-swap="innerHTML"
+            hx-indicator="#pd-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="product_name">Product Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="product_name" name="product_name" class="ai-tool-input"
+            placeholder="e.g. Handcrafted Ceramic Coffee Mug — Earth Tones Collection">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="features">Key Features <span style="color:#9ca3af;font-weight:400;">(optional — one per line or comma-separated)</span></label>
+          <textarea id="features" name="features" class="ai-tool-input" rows="5"
+            placeholder="e.g.&#10;- 12oz capacity&#10;- Dishwasher safe&#10;- Lead-free glaze&#10;- Hand-thrown on wheel&#10;- Earthy terracotta and sage green tones"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input"
+              placeholder="e.g. home decor lovers, coffee enthusiasts">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Writing Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="professional">Professional</option>
+              <option value="casual">Casual & Friendly</option>
+              <option value="luxury">Luxury / Premium</option>
+              <option value="fun">Fun & Playful</option>
+              <option value="minimalist">Minimalist & Clean</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Product Description →</button>
+        <div id="pd-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your product copy…</span>
+        </div>
+      </form>
+    </div>
+    <div id="product-desc-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<!-- What you get -->
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">3 Outputs in One Generation</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="width:2.5rem;height:2.5rem;background:#16a34a;color:#fff;border-radius:.375rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.875rem;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Short Description (2–3 sentences)</h3><p style="font-size:.8125rem;color:#374151;">Perfect for product listing cards, marketplace previews, and social media captions. Punchy and benefit-led.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="width:2.5rem;height:2.5rem;background:#16a34a;color:#fff;border-radius:.375rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.875rem;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Long Description (full paragraph)</h3><p style="font-size:.8125rem;color:#374151;">For product detail pages on Shopify, Amazon, and Etsy. Tells the story, builds desire, and handles objections.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="width:2.5rem;height:2.5rem;background:#16a34a;color:#fff;border-radius:.375rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.875rem;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">5 Bullet Points (benefit-focused)</h3><p style="font-size:.8125rem;color:#374151;">Scannable features written as customer benefits, not specs. Increases add-to-cart rates on product pages.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Works for Every Marketplace</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🛒</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Amazon</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Bullet-point friendly format that fits Amazon's listing structure. Keyword-natural for A9 algorithm.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🏪</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Shopify</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">SEO-friendly long descriptions that rank and convert on your own store.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🌸</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Etsy</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Story-driven copy that resonates with Etsy's handmade and artisan-focused buyers.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📦</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">eBay</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Clear, trust-building descriptions that reduce questions and increase bids.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📲</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Social Commerce</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Short descriptions work perfectly for Instagram Shopping and TikTok Shop listings.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🌐</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Any Website</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Adapts to any product page format — WooCommerce, BigCommerce, Wix, Squarespace.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this for physical and digital products?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. It works equally well for physical products (clothing, electronics, food, handmade goods) and digital products (courses, templates, software, ebooks). Specify the product type in your features for best results.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will the description include my keywords for SEO?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the AI naturally incorporates your product name and features as keywords throughout the copy. For additional SEO keywords, include them in your features or audience field.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many products can I generate descriptions for?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Unlimited. This tool is completely free with no daily cap. Generate descriptions for your entire product catalog.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What tone should I choose?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Match it to your brand and audience. Luxury works for premium goods, fun for children's products or gifts, minimalist for tech and modern design products, casual for everyday consumer goods.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ecommerce/amazon-fee-calculator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Amazon Fee Calculator</a>
+      <a href="/tools/ecommerce/profit-margin-calculator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Profit Margin Calculator</a>
+      <a href="/tools/social-media/hashtag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Hashtag Generator</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Meta Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

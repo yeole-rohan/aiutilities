@@ -109,6 +109,7 @@ CATEGORIES = [
             {"slug": "text-to-speech", "name": "Text to Speech", "description": "Convert text to audio using browser TTS."},
             {"slug": "slug-generator", "name": "Slug Generator", "description": "Generate URL-friendly slugs from any text."},
             {"slug": "word-frequency-analyzer", "name": "Word Frequency Analyzer", "description": "Analyse how often each word appears in text."},
+            {"slug": "paraphrasing-tool", "name": "Paraphrasing Tool", "description": "Rewrite any text in a different style while keeping the original meaning.", "ai": True},
         ],
     },
     {
@@ -290,13 +291,12 @@ CATEGORIES = [
         "description": "AI-powered generators, writers, and assistants.",
         "icon": "🤖",
         "tools": [
+            {"slug": "ai-grammar-checker", "name": "AI Grammar Checker", "description": "Check and correct grammar, spelling, and style with AI.", "ai": True},
+            {"slug": "ai-summarizer", "name": "AI Summarizer", "description": "Summarize long articles and documents with AI in seconds.", "ai": True},
+            {"slug": "ai-email-generator", "name": "AI Email Generator", "description": "Write professional emails instantly with AI.", "ai": True},
+            {"slug": "ai-code-generator", "name": "AI Code Generator", "description": "Generate clean code from natural language descriptions.", "ai": True},
+            {"slug": "ai-meta-description-generator", "name": "AI Meta Description Generator", "description": "Generate click-worthy SEO meta descriptions with AI.", "ai": True},
             {"slug": "ai-content-generator", "name": "AI Content Generator", "description": "Generate blog posts, articles, and web copy with AI."},
-            {"slug": "ai-image-generator", "name": "AI Image Generator", "description": "Generate images from text prompts using AI."},
-            {"slug": "ai-summarizer", "name": "AI Summarizer", "description": "Summarize long articles and documents with AI."},
-            {"slug": "ai-grammar-checker", "name": "AI Grammar Checker", "description": "Check and correct grammar with AI."},
-            {"slug": "ai-code-generator", "name": "AI Code Generator", "description": "Generate code snippets from natural language descriptions."},
-            {"slug": "ai-email-generator", "name": "AI Email Generator", "description": "Write professional emails with AI."},
-            {"slug": "ai-meta-description-generator", "name": "AI Meta Description Generator", "description": "Generate SEO meta descriptions with AI."},
         ],
     },
 ]

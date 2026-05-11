@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Meta Description Generator — Free SEO Meta Descriptions | AIUtilities{% endblock %}
+{% block description %}Generate 3 click-worthy SEO meta descriptions instantly. Enter your page title and keywords — AI writes compelling descriptions under 160 characters. Free, no signup.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Meta Description Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Get 3 click-worthy SEO meta descriptions in seconds. Each under 160 characters, with your target keyword and a clear call to action.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 options every time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 160 characters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Keyword-optimized</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-meta-description-generator' %}"
+            hx-target="#meta-output"
+            hx-swap="innerHTML"
+            hx-indicator="#meta-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="page_title">Page Title <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="page_title" name="page_title" class="ai-tool-input"
+            placeholder="e.g. Best Free Online Grammar Checker — AIUtilities">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="keywords">Target Keywords <span style="color:#9ca3af;font-weight:400;">(optional, comma-separated)</span></label>
+          <input type="text" id="keywords" name="keywords" class="ai-tool-input"
+            placeholder="e.g. grammar checker, free grammar tool, check grammar online">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="page_summary">Page Content Summary <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <textarea id="page_summary" name="page_summary" class="ai-tool-input" rows="4"
+            placeholder="Briefly describe what the page is about and what value it offers to visitors…"></textarea>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Meta Descriptions →</button>
+        <div id="meta-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating…</span>
+        </div>
+      </form>
+    </div>
+    <div id="meta-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Why Meta Descriptions Matter</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📈</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Higher Click-Through Rate</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A compelling meta description can increase CTR by 5–10%, sending more traffic to your page from the same rank.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">SERP First Impression</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">It's the only text searchers see before deciding to click. Make those 160 characters count.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🏷️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Keyword Highlighting</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Google bolds matching keywords in search results, making your listing stand out even more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tips section -->
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Meta Description Best Practices</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="width:2rem;height:2rem;background:#f0fdf4;border-radius:.375rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">📏</div>
+        <div><h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">Keep it 140–160 characters</h3><p style="font-size:.8125rem;color:#374151;">Too short wastes space; too long gets cut off. Aim for 150 characters — our AI always stays within limit.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="width:2rem;height:2rem;background:#f0fdf4;border-radius:.375rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">🎯</div>
+        <div><h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">Include your primary keyword naturally</h3><p style="font-size:.8125rem;color:#374151;">Google bolds the keyword in results, improving visibility. Don't keyword-stuff — one natural use is enough.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="width:2rem;height:2rem;background:#f0fdf4;border-radius:.375rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">⚡</div>
+        <div><h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">Use action verbs and a clear CTA</h3><p style="font-size:.8125rem;color:#374151;">"Learn how to…", "Get your free…", "Try it now" — active language increases clicks versus passive descriptions.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="width:2rem;height:2rem;background:#f0fdf4;border-radius:.375rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">✅</div>
+        <div><h3 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">Make it unique for every page</h3><p style="font-size:.8125rem;color:#374151;">Duplicate meta descriptions across pages confuse Google and reduce your CTR. Every page deserves its own.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do meta descriptions affect SEO rankings?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Meta descriptions are not a direct ranking factor in Google's algorithm. However, a compelling meta description improves your CTR, which is a behavioral signal that indirectly influences rankings over time.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will Google always use my meta description?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Not always. Google may replace your meta description with a snippet from your page if it thinks that better matches the search query. To maximize use of your description, make it highly relevant to your page's main topic.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use all 3 generated options?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Only one goes on your page at a time. Use all 3 as A/B test variants if you have a testing setup. Otherwise, pick the one that best matches your page's tone and most important value proposition.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I add the meta description to my site?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Add it to your page's &lt;head&gt; as: &lt;meta name="description" content="Your description here"&gt;. In WordPress use Yoast SEO or RankMath. In Shopify edit the SEO section. In Webflow use the Page Settings panel.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related SEO Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/seo/meta-tag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Meta Tag Generator</a>
+      <a href="/tools/seo/serp-preview/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">SERP Preview Tool</a>
+      <a href="/tools/seo/schema-markup-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Schema Markup Generator</a>
+      <a href="/tools/seo/robots-txt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Robots.txt Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

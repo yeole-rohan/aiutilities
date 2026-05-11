@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Grammar Checker — Fix Grammar, Spelling & Style Free | AIUtilities{% endblock %}
+{% block description %}Check and correct grammar, spelling, and punctuation instantly with AI. Paste your text and get a corrected version with a list of changes — free, no signup.{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Grammar Checker
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:36rem;margin:0 auto 1.5rem;">
+      Instantly fix grammar, spelling, punctuation, and style errors. Get a corrected version with a clear explanation of every change — free forever.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no signup</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 8,000 character limit</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Explains every fix</span>
+    </div>
+  </div>
+</section>
+
+<!-- Tool -->
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-grammar-checker' %}"
+            hx-target="#grammar-output"
+            hx-swap="innerHTML"
+            hx-indicator="#grammar-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="text">Your Text</label>
+          <textarea id="text" name="text" class="ai-tool-input" rows="10"
+            placeholder="Paste your essay, email, article, or any text here…"
+            style="resize:vertical;"></textarea>
+          <div style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;">Up to 8,000 characters</div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Check Grammar →</button>
+        <div id="grammar-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div>
+          <span>Checking your text…</span>
+        </div>
+      </form>
+    </div>
+
+    <div id="grammar-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">How It Works</h2>
+    <div class="ai-steps">
+      <div class="ai-step">
+        <div class="ai-step-num">1</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Paste Your Text</h3>
+        <p style="font-size:.875rem;color:#374151;">Copy-paste any text — emails, essays, articles, reports, or social posts.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num">2</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">AI Analyzes It</h3>
+        <p style="font-size:.875rem;color:#374151;">Llama 3.3 70B checks grammar, spelling, punctuation, and clarity in seconds.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num">3</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Get Corrected Text</h3>
+        <p style="font-size:.875rem;color:#374151;">Receive the corrected version with a list of every change explained clearly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Why Use Our AI Grammar Checker?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">✍️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Preserves Your Voice</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Unlike basic spell checkers, our AI understands context and keeps your writing style intact.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Explains Every Fix</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">See exactly what changed and why — learn as you go and write better over time.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Lightning Fast</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Powered by Groq's ultra-fast inference — results in under 3 seconds for most texts.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔒</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Private & Secure</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Your text is not stored. We process it and discard it immediately after generating results.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌐</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Works on Any Content</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Emails, essays, reports, blog posts, academic papers, social media — all supported.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🆓</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Completely Free</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">No account required, no watermarks, no daily limit. Just paste and fix.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Use Cases -->
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Who Uses This Tool?</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;">
+      <div style="padding:1.25rem;border-left:3px solid #16a34a;background:#f0fdf4;border-radius:0 .5rem .5rem 0;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Students</h3>
+        <p style="font-size:.8125rem;color:#374151;">Polish essays and assignments before submission.</p>
+      </div>
+      <div style="padding:1.25rem;border-left:3px solid #16a34a;background:#f0fdf4;border-radius:0 .5rem .5rem 0;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Professionals</h3>
+        <p style="font-size:.8125rem;color:#374151;">Write error-free emails, reports, and proposals.</p>
+      </div>
+      <div style="padding:1.25rem;border-left:3px solid #16a34a;background:#f0fdf4;border-radius:0 .5rem .5rem 0;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Non-native Speakers</h3>
+        <p style="font-size:.8125rem;color:#374151;">Write confident English and learn from corrections.</p>
+      </div>
+      <div style="padding:1.25rem;border-left:3px solid #16a34a;background:#f0fdf4;border-radius:0 .5rem .5rem 0;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Content Creators</h3>
+        <p style="font-size:.8125rem;color:#374151;">Publish clean, professional blog posts and articles.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div itemscope itemtype="https://schema.org/FAQPage">
+      {% for qa in faq %}
+      <div class="ai-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q" itemprop="name">{{ qa.q }}<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><span itemprop="text">{{ qa.a }}</span></div>
+      </div>
+      {% empty %}
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is this grammar checker really free?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, completely free. No account, no credit card, no daily limit. Just paste your text and get results instantly.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How is this different from Grammarly?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Our tool uses a large language model (Llama 3.3 70B) which understands context deeply. It's free and doesn't require an account or browser extension. Grammarly requires a subscription for advanced features.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is my text stored or saved?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No. Your text is sent to the AI, processed, and the result is returned. We do not store your text in any database or log. It is discarded immediately after generation.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What types of errors does it fix?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Grammar (subject-verb agreement, tense, sentence structure), spelling mistakes, punctuation errors, word choice, clarity, and style issues. It also flags awkward phrasing and suggests improvements.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long can my text be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Up to 8,000 characters (~1,200–1,500 words) per check. For longer documents, check in sections. This covers most emails, essays, and articles in one go.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Related Tools -->
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+      <a href="/tools/text/word-counter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="/tools/text/case-converter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

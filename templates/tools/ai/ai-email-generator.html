@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Email Generator — Write Professional Emails Instantly | AIUtilities{% endblock %}
+{% block description %}Generate professional emails in seconds with AI. Choose your email type, describe the purpose, and get a complete email with subject line — free, no signup.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Email Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write polished, professional emails in seconds. Just describe your purpose and choose a tone — the AI handles the rest, including the subject line.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Subject line included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 8 email types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple tones</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-email-generator' %}"
+            hx-target="#email-output"
+            hx-swap="innerHTML"
+            hx-indicator="#email-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="email_type">Email Type</label>
+            <select id="email_type" name="email_type" class="ai-tool-select">
+              <option value="professional">Professional / Work</option>
+              <option value="follow-up">Follow-up</option>
+              <option value="cold outreach">Cold Outreach</option>
+              <option value="thank you">Thank You</option>
+              <option value="apology">Apology</option>
+              <option value="introduction">Introduction</option>
+              <option value="request">Request / Ask</option>
+              <option value="complaint">Complaint</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="professional">Professional</option>
+              <option value="formal">Formal</option>
+              <option value="friendly">Friendly</option>
+              <option value="casual">Casual</option>
+              <option value="assertive">Assertive</option>
+              <option value="empathetic">Empathetic</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="recipient">Recipient's Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="recipient" name="recipient" class="ai-tool-input" placeholder="e.g. Sarah, Mr. Johnson, Hiring Manager">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="context">What's the email about?</label>
+          <textarea id="context" name="context" class="ai-tool-input" rows="5"
+            placeholder="e.g. Following up on my job application for the Marketing Manager role at Acme Corp that I applied for last week. I'd like to express continued interest and ask about the timeline."></textarea>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Email →</button>
+        <div id="email-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your email…</span>
+        </div>
+      </form>
+    </div>
+    <div id="email-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">How It Works</h2>
+    <div class="ai-steps">
+      <div class="ai-step"><div class="ai-step-num">1</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Select Type & Tone</h3><p style="font-size:.875rem;color:#374151;">Choose what kind of email you need and the right tone for your audience.</p></div>
+      <div class="ai-step"><div class="ai-step-num">2</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Describe the Purpose</h3><p style="font-size:.875rem;color:#374151;">Briefly describe the context — who it's to, what you want, and any key details.</p></div>
+      <div class="ai-step"><div class="ai-step-num">3</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Copy & Send</h3><p style="font-size:.875rem;color:#374151;">Get a complete email with subject line ready to paste into Gmail, Outlook, or any app.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Email Types You Can Generate</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">💼</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Professional Work Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Project updates, meeting requests, status reports, team communications.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📬</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Follow-up Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Post-interview follow-ups, proposal follow-ups, meeting follow-ups.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🚀</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Cold Outreach</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Sales prospecting, networking, partnership opportunities, media pitches.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🙏</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Thank You Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Post-interview, after a meeting, customer appreciation, volunteer thanks.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">😟</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Apology Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Delayed delivery, missed deadline, service issues, mistakes at work.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📢</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Complaint Emails</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Professional, assertive complaint emails that get results.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I edit the generated email?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. Copy the email and paste it into your email client. Personalize it with specific names, dates, or details before sending. The AI gives you a solid first draft that you refine.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it include a subject line?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, always. Every generated email includes a Subject: line at the top, followed by the greeting, body paragraphs, and a professional sign-off.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How specific should my description be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The more detail you provide, the more relevant the email. Include: who it's for, what you're asking or communicating, any deadlines or context. A 2–3 sentence description produces the best results.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is it safe to use for confidential business emails?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Your input is sent to Groq's API for processing and is not stored by us. For highly sensitive business information, avoid including confidential data in the context field.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Cover Letter Generator</a>
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Grammar Checker</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Content Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

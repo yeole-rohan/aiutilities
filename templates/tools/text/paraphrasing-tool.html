@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Paraphrasing Tool — Free AI Text Rewriter Online | AIUtilities{% endblock %}
+{% block description %}Rewrite any text in seconds with our free AI paraphrasing tool. Choose from standard, formal, simple, creative, or fluent styles. No signup, no word limit cap.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Free AI Paraphrasing Tool
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Rewrite any text instantly while keeping the original meaning. Choose your style — standard, formal, simple, creative, or fluent. Powered by AI.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 writing styles</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no account</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Up to 5,000 characters</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'text' 'paraphrasing-tool' %}"
+            hx-target="#paraphrase-output"
+            hx-swap="innerHTML"
+            hx-indicator="#paraphrase-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="style">Paraphrasing Style</label>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:.5rem;">
+            <label style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.875rem;color:#374151;background:#fff;transition:border-color .15s;">
+              <input type="radio" name="style" value="standard" checked style="accent-color:#16a34a;"> Standard
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.875rem;color:#374151;background:#fff;transition:border-color .15s;">
+              <input type="radio" name="style" value="formal" style="accent-color:#16a34a;"> Formal
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.875rem;color:#374151;background:#fff;transition:border-color .15s;">
+              <input type="radio" name="style" value="simple" style="accent-color:#16a34a;"> Simple
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.875rem;color:#374151;background:#fff;transition:border-color .15s;">
+              <input type="radio" name="style" value="creative" style="accent-color:#16a34a;"> Creative
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.875rem;color:#374151;background:#fff;transition:border-color .15s;">
+              <input type="radio" name="style" value="fluent" style="accent-color:#16a34a;"> Fluent
+            </label>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="text">Your Text</label>
+          <textarea id="text" name="text" class="ai-tool-input" rows="10"
+            placeholder="Paste or type the text you want to paraphrase…"
+            style="resize:vertical;"></textarea>
+          <div style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;">Up to 5,000 characters</div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Paraphrase Now →</button>
+        <div id="paraphrase-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Rewriting…</span>
+        </div>
+      </form>
+    </div>
+    <div id="paraphrase-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">5 Paraphrasing Styles Explained</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div style="width:2.5rem;height:2.5rem;background:#16a34a;color:#fff;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">S</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Standard</h3><p style="font-size:.8125rem;color:#374151;">Clear, natural rewrite that preserves the original tone. Best for everyday use.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div style="width:2.5rem;height:2.5rem;background:#1d4ed8;color:#fff;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">F</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Formal</h3><p style="font-size:.8125rem;color:#374151;">Academic and professional language. Best for reports, research, and business documents.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div style="width:2.5rem;height:2.5rem;background:#d97706;color:#fff;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">Si</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Simple</h3><p style="font-size:.8125rem;color:#374151;">Easy-to-understand language. Best for making complex content accessible to a broad audience.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div style="width:2.5rem;height:2.5rem;background:#7c3aed;color:#fff;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">C</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Creative</h3><p style="font-size:.8125rem;color:#374151;">Vivid and engaging rewrite. Best for marketing copy, storytelling, and social media.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div style="width:2.5rem;height:2.5rem;background:#0d9488;color:#fff;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">Fl</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Fluent</h3><p style="font-size:.8125rem;color:#374151;">Sounds like native English. Best for non-native speakers who want natural-sounding text.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is this paraphrasing tool free?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, completely free. No account required, no word limit per day, no watermarks. Just paste and paraphrase.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will paraphrasing remove plagiarism?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Paraphrasing changes the wording but keeps the same ideas. For academic work, you still need to cite sources even when paraphrasing. It is not a substitute for proper citation. Use it to express ideas in your own words alongside correct attribution.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it change the meaning of my text?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No — our AI is instructed to preserve the original meaning exactly. It only changes the words, sentence structure, and phrasing. Always read the result to confirm it says what you intended.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How is this different from Quillbot?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Our tool is powered by Llama 3.3 70B, a state-of-the-art large language model. It's completely free with no word limits or premium modes. Quillbot limits free users to 125 words and requires a subscription for full features.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Grammar Checker</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/text/word-counter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="/tools/text/case-converter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

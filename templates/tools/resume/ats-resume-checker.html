@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ATS Resume Checker — Free AI ATS Score & Resume Optimizer | AIUtilities{% endblock %}
+{% block description %}Check if your resume passes ATS filters. Paste your resume and get an ATS score, keyword gaps, format issues, and 5 specific improvements — free AI resume checker.{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI ATS Resume Checker
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Find out if your resume passes ATS filters. Get an ATS score, keyword gaps, formatting issues, and 5 actionable improvements — all free, in seconds.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ ATS score out of 100</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Keyword gap analysis</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Optional JD matching</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <!-- ATS warning banner -->
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:.5rem;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:flex-start;">
+      <span style="font-size:1.25rem;flex-shrink:0;">⚠️</span>
+      <div style="font-size:.875rem;color:#92400e;line-height:1.6;">
+        <strong>75% of resumes are rejected by ATS before a human sees them.</strong> Most rejections happen due to missing keywords, wrong formatting, or non-parseable layouts — not lack of experience.
+      </div>
+    </div>
+
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'resume' 'ats-resume-checker' %}"
+            hx-target="#ats-output"
+            hx-swap="innerHTML"
+            hx-indicator="#ats-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="resume">Your Resume Text <span style="color:#ef4444;">*</span></label>
+          <textarea id="resume" name="resume" class="ai-tool-input" rows="14"
+            placeholder="Paste your resume text here. Copy from your Word doc or PDF (use Ctrl+A to select all text in your PDF viewer)…"
+            style="resize:vertical;font-family:monospace;font-size:.875rem;"></textarea>
+          <div style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;">Up to 10,000 characters (~1,500–2,000 words)</div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="job_description">Job Description <span style="color:#9ca3af;font-weight:400;">(optional — paste for targeted keyword matching)</span></label>
+          <textarea id="job_description" name="job_description" class="ai-tool-input" rows="6"
+            placeholder="Paste the job description here to get specific keyword matches and gaps for this role…"
+            style="resize:vertical;"></textarea>
+          <div style="font-size:.75rem;color:#16a34a;margin-top:.25rem;">💡 Adding a job description makes the analysis 3× more specific and actionable.</div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Check My Resume →</button>
+        <div id="ats-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Analyzing your resume…</span>
+        </div>
+      </form>
+    </div>
+    <div id="ats-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<!-- What ATS is -->
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">What Is an ATS?</h2>
+    <p style="font-size:.9375rem;color:#374151;line-height:1.75;text-align:center;max-width:40rem;margin:0 auto 2rem;">
+      An Applicant Tracking System (ATS) is software used by 99% of Fortune 500 companies and 75% of all employers to filter resumes before they reach a human recruiter. It scans for keywords, structure, and format.
+    </p>
+    <div class="ai-steps">
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#ef4444;">75%</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Rejected Automatically</h3>
+        <p style="font-size:.875rem;color:#374151;">3 out of 4 resumes are filtered out before a human ever reads them — usually for fixable reasons.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#f59e0b;">6 sec</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Human Review Time</h3>
+        <p style="font-size:.875rem;color:#374151;">If it does reach a recruiter, they spend an average of 6 seconds on the first scan. Format matters.</p>
+      </div>
+      <div class="ai-step">
+        <div class="ai-step-num" style="background:#16a34a;">+40%</div>
+        <h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Interview Rate Boost</h3>
+        <p style="font-size:.875rem;color:#374151;">ATS-optimized resumes with the right keywords are 40% more likely to get an interview callback.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- What we check -->
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">What the AI Analyzes</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🔑</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Keyword Matching</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Identifies missing industry keywords and skills that ATS systems scan for.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📐</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Formatting Issues</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Flags tables, graphics, headers/footers, and unusual fonts that confuse ATS parsers.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Section Structure</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Checks for standard sections (Work Experience, Education, Skills) that ATS expects.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📊</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Quantified Achievements</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Identifies if you're using measurable results (%, $, numbers) which improve relevance scoring.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Job Title Alignment</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Checks if your job titles and summary match the target role's keywords.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">✅</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Strong Points</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Highlights what's already working well so you know what to keep.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I copy text from my PDF resume?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Open your PDF in Chrome, Adobe Reader, or any PDF viewer. Press Ctrl+A (or Cmd+A on Mac) to select all text, then Ctrl+C to copy. Paste it into the text area above. If the text is garbled, your PDF is a scanned image — use our OCR PDF tool first.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What ATS score is considered good?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Aim for 75+/100 as a general benchmark. Most ATS systems pass resumes that score above their threshold (usually 60–70% keyword match). Scoring 85+ means your resume is very well optimized for ATS parsing.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I include the job description?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — strongly recommended. When you include the job description, the AI gives you specific missing keywords from that JD, making the recommendations directly actionable for that application. Without it, you get general ATS advice.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is my resume data private?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. Your resume text is sent to the AI for analysis and is not stored in our database. We do not retain your resume content after generating results. Remove personal details like phone numbers before pasting if you prefer extra privacy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Cover Letter Generator</a>
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Email Generator</a>
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Grammar Checker</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Paraphrasing Tool</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
