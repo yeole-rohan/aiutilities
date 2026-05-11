@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Resignation Letter Generator — Free AI Resignation Letter Writer | AIUtilities{% endblock %}
+{% block description %}Write a professional resignation letter in seconds with AI. Enter your manager's name, last day, and company — get a gracious, bridge-burning-free resignation letter. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'resignation-letter-generator' %}{% endblock %}
+{% block og_title %}Resignation Letter Generator — Free AI Resignation Letter Writer | AIUtilities{% endblock %}
+{% block og_description %}Write a professional resignation letter in seconds with AI. Enter your manager's name, last day, and company — get a gracious, bridge-burning-free resignation letter. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'resignation-letter-generator' %}{% endblock %}
+{% block twitter_title %}Resignation Letter Generator — Free AI Resignation Letter Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Write a professional resignation letter in seconds with AI. Enter manager name, last day, and company — get a gracious, professional letter. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Resignation Letter Generator","description":"Generate a professional, gracious resignation letter in seconds — protects your reputation and future references.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'resignation-letter-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"Resignation Letter Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'resignation-letter-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Resignation Letter Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Leave gracefully. Generate a professional resignation letter in seconds — one that protects your reputation, maintains relationships, and sets you up for a great reference.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Bridge-preserving</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple tones</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'document' 'resignation-letter-generator' %}"
+            hx-target="#resignation-output"
+            hx-swap="innerHTML"
+            hx-indicator="#resignation-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="your_name">Your Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="your_name" name="your_name" class="ai-tool-input"
+              placeholder="e.g. Alex Johnson">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="manager_name">Manager's Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="manager_name" name="manager_name" class="ai-tool-input"
+              placeholder="e.g. Sarah Williams, Mr. Patel">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="company">Company Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="company" name="company" class="ai-tool-input"
+              placeholder="e.g. Acme Technologies">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="last_day">Last Working Day <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="last_day" name="last_day" class="ai-tool-input"
+              placeholder="e.g. 30 May 2025, two weeks from today">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="professional and warm">Professional & Warm</option>
+              <option value="formal">Formal</option>
+              <option value="brief and direct">Brief & Direct</option>
+              <option value="heartfelt and grateful">Heartfelt & Grateful</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="reason">Reason for Leaving <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="reason" name="reason" class="ai-tool-input"
+              placeholder="e.g. new opportunity, career change, relocation (leave blank to omit)">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Resignation Letter →</button>
+        <div id="resignation-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your resignation letter…</span>
+        </div>
+      </form>
+    </div>
+    <div id="resignation-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">The 5 Rules of a Great Resignation Letter</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Be Clear About Your Last Day</h3><p style="font-size:.8125rem;color:#374151;">State your exact last working day. Ambiguity causes awkward situations. Standard notice is 2 weeks, but check your contract.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Keep it Short</h3><p style="font-size:.8125rem;color:#374151;">A resignation letter should be 3 short paragraphs. This is not the place for long explanations or complaints.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Express Gratitude</h3><p style="font-size:.8125rem;color:#374151;">Thank your employer for the opportunity. Even if your experience was mixed, gratitude protects your professional reputation and future references.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">4</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Offer to Help with Transition</h3><p style="font-size:.8125rem;color:#374151;">Offer to train a replacement or document your work. You don't have to go above and beyond — the gesture is what matters.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">5</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Never Burn Bridges in Writing</h3><p style="font-size:.8125rem;color:#374151;">Your resignation letter may be kept in HR files indefinitely. Keep it positive — vent privately if needed, but never in the letter.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I have to give a reason for resigning?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No. You are not legally required to state a reason. If you'd prefer not to, leave the reason field blank and the letter will omit it gracefully. If you do give a reason, keep it positive ("pursuing a new opportunity" rather than complaints).</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I send the letter by email or in person?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Best practice is to tell your manager in person or by video call first, then send the formal letter by email (or hand it in person). Never quit by text or without a formal letter — it reflects poorly on you professionally.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How much notice should I give?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Check your employment contract first — it specifies minimum notice. Standard is 2 weeks in the US. In the UK, India, and many EU countries it may be 1–3 months. Giving more notice than required is always appreciated.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cover Letter Generator</a>
+      <a href="/tools/resume/ats-resume-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">ATS Resume Checker</a>
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+      <a href="/tools/social-media/linkedin-headline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Headline Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

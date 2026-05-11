@@ -3,6 +3,17 @@
 
 {% block title %}AI Code Generator — Generate Code from Description Free | AIUtilities{% endblock %}
 {% block description %}Describe what you need and get clean, working code instantly. Supports Python, JavaScript, TypeScript, Java, Go, SQL, and more — free AI code generator, no signup.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-code-generator' %}{% endblock %}
+{% block og_title %}AI Code Generator — Generate Code from Description Free | AIUtilities{% endblock %}
+{% block og_description %}Describe what you need and get clean, working code instantly. Supports Python, JavaScript, TypeScript, Java, Go, SQL, and more — free AI code generator, no signup.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-code-generator' %}{% endblock %}
+{% block twitter_title %}AI Code Generator — Generate Code from Description Free | AIUtilities{% endblock %}
+{% block twitter_description %}Describe what you need and get clean, working code instantly. Python, JavaScript, TypeScript, Go, SQL, and more. Free, no signup.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Code Generator","description":"Describe what you need and get clean, working code instantly for any language.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-code-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Code Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-code-generator' %}"}]}]}
+</script>
+{% endblock %}
 
 {% block content %}
 

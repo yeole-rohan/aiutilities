@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
+{% block description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}{% endblock %}
+{% block og_title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
+{% block og_description %}Generate well-structured essays on any topic in seconds. Choose essay type, academic level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}{% endblock %}
+{% block twitter_title %}AI Essay Generator — Free AI Essay Writer Online | AIUtilities{% endblock %}
+{% block twitter_description %}Generate well-structured essays in seconds. Choose type, level, and word count — AI writes a full essay with intro, body, and conclusion. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Essay Generator","description":"Generate well-structured essays on any topic — choose type, level, and length, AI writes the full essay.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Essay Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-essay-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Essay Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate structured, academic-quality essays instantly. Enter your topic and key points — AI writes a complete essay with introduction, body paragraphs, and conclusion.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 4 essay types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 academic levels</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no signup</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-essay-generator' %}"
+            hx-target="#essay-output"
+            hx-swap="innerHTML"
+            hx-indicator="#essay-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Essay Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input"
+            placeholder="e.g. The impact of social media on mental health in teenagers">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="essay_type">Essay Type</label>
+            <select id="essay_type" name="essay_type" class="ai-tool-select">
+              <option value="argumentative">Argumentative</option>
+              <option value="expository">Expository</option>
+              <option value="descriptive">Descriptive</option>
+              <option value="narrative">Narrative</option>
+              <option value="compare and contrast">Compare & Contrast</option>
+              <option value="cause and effect">Cause & Effect</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="level">Academic Level</label>
+            <select id="level" name="level" class="ai-tool-select">
+              <option value="high school">High School</option>
+              <option value="university" selected>University</option>
+              <option value="postgraduate">Postgraduate</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="word_count">Length</label>
+            <select id="word_count" name="word_count" class="ai-tool-select">
+              <option value="300">~300 words</option>
+              <option value="500" selected>~500 words</option>
+              <option value="800">~800 words</option>
+              <option value="1000">~1,000 words</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="key_points">Key Arguments / Points to Include <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <textarea id="key_points" name="key_points" class="ai-tool-input" rows="4"
+            placeholder="e.g. Studies show 30% increase in anxiety, comparison of Facebook vs TikTok effects, role of parental supervision, positive uses of social media for connection…"></textarea>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Essay →</button>
+        <div id="essay-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your essay…</span>
+        </div>
+      </form>
+    </div>
+    <div id="essay-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">Essay Structure Generated</h2>
+    <div class="ai-steps">
+      <div class="ai-step"><div class="ai-step-num">¶1</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Introduction</h3><p style="font-size:.875rem;color:#374151;">Hook, background context, and a clear thesis statement that sets up the argument.</p></div>
+      <div class="ai-step"><div class="ai-step-num">¶¶</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Body Paragraphs</h3><p style="font-size:.875rem;color:#374151;">Each paragraph: topic sentence, evidence/reasoning, analysis, and transition to the next point.</p></div>
+      <div class="ai-step"><div class="ai-step-num">¶n</div><h3 style="font-size:1rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">Conclusion</h3><p style="font-size:.875rem;color:#374151;">Restatement of thesis, synthesis of key arguments, and a broader closing thought.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Essay Types Explained</h2>
+    <div style="display:grid;gap:.875rem;">
+      <div style="background:#fff;border-radius:.5rem;padding:1.125rem;border:1px solid #e2e8f0;display:flex;gap:1rem;">
+        <span style="font-weight:700;color:#16a34a;min-width:6rem;font-size:.875rem;">Argumentative</span>
+        <span style="font-size:.875rem;color:#374151;">Takes a clear stance and uses evidence to persuade the reader. Best for debates and opinion essays.</span>
+      </div>
+      <div style="background:#fff;border-radius:.5rem;padding:1.125rem;border:1px solid #e2e8f0;display:flex;gap:1rem;">
+        <span style="font-weight:700;color:#16a34a;min-width:6rem;font-size:.875rem;">Expository</span>
+        <span style="font-size:.875rem;color:#374151;">Explains a topic objectively with facts. No personal opinion — best for informational essays.</span>
+      </div>
+      <div style="background:#fff;border-radius:.5rem;padding:1.125rem;border:1px solid #e2e8f0;display:flex;gap:1rem;">
+        <span style="font-weight:700;color:#16a34a;min-width:6rem;font-size:.875rem;">Descriptive</span>
+        <span style="font-size:.875rem;color:#374151;">Paints a vivid picture using sensory details. Best for describing people, places, or events.</span>
+      </div>
+      <div style="background:#fff;border-radius:.5rem;padding:1.125rem;border:1px solid #e2e8f0;display:flex;gap:1rem;">
+        <span style="font-weight:700;color:#16a34a;min-width:6rem;font-size:.875rem;">Narrative</span>
+        <span style="font-size:.875rem;color:#374151;">Tells a story with a beginning, middle, and end. Often uses first person. Best for personal essays.</span>
+      </div>
+      <div style="background:#fff;border-radius:.5rem;padding:1.125rem;border:1px solid #e2e8f0;display:flex;gap:1rem;">
+        <span style="font-weight:700;color:#16a34a;min-width:6rem;font-size:.875rem;">Compare</span>
+        <span style="font-size:.875rem;color:#374151;">Examines similarities and differences between two subjects. Best for analytical writing.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I submit this essay as my own work?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">We recommend using generated essays as a starting point, study reference, or structural guide — not submitting them directly as academic work. Most educational institutions have policies against submitting AI-generated content without disclosure. Always check your institution's policy.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How accurate is the content?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI generates well-reasoned arguments but may not have the latest statistics or research. Always verify specific facts, dates, and citations before using them in academic work. Add real sources and citations yourself.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I get a longer essay?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Generate up to ~1,000 words per run. For longer essays, generate the introduction, each main body argument, and conclusion separately using specific prompts, then combine them. This gives you better quality than one very long generation.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it add citations and references?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI may reference studies or statistics in general terms but does not produce verified citations. Add real, verifiable references yourself using academic databases like Google Scholar, JSTOR, or PubMed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Grammar Checker</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Paraphrasing Tool</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Summarizer</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">AI Content Generator</a>
+      <a href="/tools/text/word-counter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Word Counter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

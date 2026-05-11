@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}LinkedIn Headline Generator — Free AI LinkedIn Headline Writer | AIUtilities{% endblock %}
+{% block description %}Generate 5 magnetic LinkedIn headlines that attract recruiters and opportunities. Enter your role, skills, and goal — AI writes compelling headlines under 220 characters. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-headline-generator' %}{% endblock %}
+{% block og_title %}LinkedIn Headline Generator — Free AI LinkedIn Headline Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 5 magnetic LinkedIn headlines that attract recruiters and opportunities. Enter your role, skills, and goal — AI writes compelling headlines under 220 characters. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-headline-generator' %}{% endblock %}
+{% block twitter_title %}LinkedIn Headline Generator — Free AI LinkedIn Headline Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 5 magnetic LinkedIn headlines that attract recruiters. Enter role, skills, and goal — AI writes compelling headlines under 220 characters. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"LinkedIn Headline Generator","description":"Generate 5 magnetic LinkedIn headlines that attract recruiters and opportunities.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-headline-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"LinkedIn Headline Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-headline-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      LinkedIn Headline Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Stop using just your job title as your headline. Get 5 keyword-rich, value-driven LinkedIn headlines that make recruiters click on your profile.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 unique options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 220 characters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Keyword-optimized</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'linkedin-headline-generator' %}"
+            hx-target="#linkedin-headline-output"
+            hx-swap="innerHTML"
+            hx-indicator="#linkedin-headline-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="role">Current Role / Job Title <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="role" name="role" class="ai-tool-input"
+              placeholder="e.g. Senior Product Manager, Freelance Web Developer">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="industry">Industry <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="industry" name="industry" class="ai-tool-input"
+              placeholder="e.g. FinTech, SaaS, Healthcare, Marketing">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="skills">Top Skills or Specialisations <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="skills" name="skills" class="ai-tool-input"
+            placeholder="e.g. product roadmap, Agile, data-driven decisions, B2B SaaS, 0→1 products">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="goal">What Are You Trying to Attract? <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="goal" name="goal" class="ai-tool-input"
+            placeholder="e.g. senior PM roles at Series B startups, freelance clients, speaking opportunities">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Headlines →</button>
+        <div id="linkedin-headline-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Crafting your headlines…</span>
+        </div>
+      </form>
+    </div>
+    <div id="linkedin-headline-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Your Headline Matters More Than Your Title</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">🔍</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Appears in LinkedIn Search Results</h3><p style="font-size:.8125rem;color:#374151;">Your headline is one of the first things recruiters see in search. A keyword-rich headline puts you in more searches.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">👤</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Shows on Every Comment and Like</h3><p style="font-size:.8125rem;color:#374151;">Every time you engage on LinkedIn, your name + headline appears. Make it work as a micro pitch.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">📧</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Appears in InMail and Connection Requests</h3><p style="font-size:.8125rem;color:#374151;">When you send a message or invite, your headline appears next to your name. First impressions matter.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">🤖</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">LinkedIn Algorithm Uses It</h3><p style="font-size:.8125rem;color:#374151;">LinkedIn's algorithm factors your headline into "People Also Viewed" and "People You May Know" recommendations.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.25rem;">Good vs. Great Headlines</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.5rem;">❌ BORING (just a job title)</div>
+        <div style="font-size:.9375rem;color:#374151;">"Product Manager at Acme Corp"</div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;border:1px solid #bbf7d0;">
+        <div style="font-size:.75rem;font-weight:600;color:#16a34a;margin-bottom:.5rem;">✅ MAGNETIC (value + keywords + outcome)</div>
+        <div style="font-size:.9375rem;color:#0f172a;">"Product Manager | Building 0→1 B2B SaaS Products | Shipped $10M+ in Revenue | Open to Senior PM Roles"</div>
+      </div>
+      <div style="background:#fff;border-radius:.5rem;padding:1.25rem;border:1px solid #e2e8f0;">
+        <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.5rem;">❌ BORING (vague)</div>
+        <div style="font-size:.9375rem;color:#374151;">"Marketing Professional | Passionate about brands"</div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;border:1px solid #bbf7d0;">
+        <div style="font-size:.75rem;font-weight:600;color:#16a34a;margin-bottom:.5rem;">✅ MAGNETIC (specific + credible + clear)</div>
+        <div style="font-size:.9375rem;color:#0f172a;">"Growth Marketing Manager | Scaled DTC brand to $5M ARR | SEO, Paid Social, Email | Speaker & Consultant"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What is LinkedIn's headline character limit?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">LinkedIn allows up to 220 characters for your headline. All generated headlines stay within this limit. LinkedIn will truncate your headline in search results after ~120 characters, so our AI leads with the most important information first.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use the | separator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The | (pipe) separator is the most common LinkedIn headline formatting convention. It visually separates your role, skills, and value prop. It's widely used and makes headlines scannable at a glance.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How often should I update my headline?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Update it when your role, goals, or target audience changes. Also test different versions — LinkedIn's SSI (Social Selling Index) improves with active profiles. You can generate fresh options here anytime for free.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/instagram-bio-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Instagram Bio Generator</a>
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Cover Letter Generator</a>
+      <a href="/tools/resume/ats-resume-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">ATS Resume Checker</a>
+      <a href="/tools/resume/job-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#fff;">Job Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

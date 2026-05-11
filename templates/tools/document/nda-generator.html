@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}NDA Generator — Free AI Non-Disclosure Agreement Writer | AIUtilities{% endblock %}
+{% block description %}Generate a complete Non-Disclosure Agreement in seconds. Enter both parties' names, purpose, and duration — AI writes a full NDA with all standard clauses. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'nda-generator' %}{% endblock %}
+{% block og_title %}NDA Generator — Free AI Non-Disclosure Agreement Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a complete Non-Disclosure Agreement in seconds. Enter both parties' names, purpose, and duration — AI writes a full NDA with all standard clauses. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'nda-generator' %}{% endblock %}
+{% block twitter_title %}NDA Generator — Free AI Non-Disclosure Agreement Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a complete NDA in seconds. Enter both parties' names, purpose, and duration — AI writes a full Non-Disclosure Agreement with all standard clauses. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"NDA Generator","description":"Generate a complete Non-Disclosure Agreement in seconds — covers one-way and mutual NDAs with all standard clauses.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'nda-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"NDA Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'nda-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      NDA Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate a complete Non-Disclosure Agreement in seconds. Covers one-way and mutual NDAs with all standard clauses — ready to review, sign, and use.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-way & mutual NDAs</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All standard clauses</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<div style="background:#fef3c7;border-bottom:1px solid #fde68a;padding:.75rem 1rem;text-align:center;font-size:.8125rem;color:#92400e;">
+  ⚠️ <strong>Not legal advice.</strong> This NDA is a general template. For high-stakes agreements, have a qualified lawyer review and customise it for your specific situation.
+</div>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'document' 'nda-generator' %}"
+            hx-target="#nda-output"
+            hx-swap="innerHTML"
+            hx-indicator="#nda-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label">NDA Type</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <label style="display:flex;align-items:flex-start;gap:.75rem;padding:1rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;transition:border-color .15s;background:#fff;">
+              <input type="radio" name="nda_type" value="one-way" checked style="accent-color:#16a34a;margin-top:.125rem;flex-shrink:0;">
+              <div><div style="font-weight:600;font-size:.9375rem;color:#0f172a;margin-bottom:.25rem;">One-Way (Unilateral)</div><div style="font-size:.8125rem;color:#374151;">One party discloses; the other party is bound to keep it secret. Most common.</div></div>
+            </label>
+            <label style="display:flex;align-items:flex-start;gap:.75rem;padding:1rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;transition:border-color .15s;background:#fff;">
+              <input type="radio" name="nda_type" value="mutual" style="accent-color:#16a34a;margin-top:.125rem;flex-shrink:0;">
+              <div><div style="font-weight:600;font-size:.9375rem;color:#0f172a;margin-bottom:.25rem;">Mutual (Bilateral)</div><div style="font-size:.8125rem;color:#374151;">Both parties share confidential information and are both bound. Used for partnerships.</div></div>
+            </label>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="disclosing_party">Disclosing Party <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="disclosing_party" name="disclosing_party" class="ai-tool-input"
+              placeholder="e.g. Acme Corp, John Smith">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="receiving_party">Receiving Party <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="receiving_party" name="receiving_party" class="ai-tool-input"
+              placeholder="e.g. XYZ Solutions Ltd, Jane Doe">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="purpose">Purpose of Disclosure <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="purpose" name="purpose" class="ai-tool-input"
+            placeholder="e.g. evaluating a potential business partnership, software development project, merger discussions">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="duration">Confidentiality Duration</label>
+            <select id="duration" name="duration" class="ai-tool-select">
+              <option value="1 year">1 Year</option>
+              <option value="2 years" selected>2 Years</option>
+              <option value="3 years">3 Years</option>
+              <option value="5 years">5 Years</option>
+              <option value="indefinitely">Indefinitely</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="jurisdiction">Governing Law <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="jurisdiction" name="jurisdiction" class="ai-tool-input"
+              placeholder="e.g. State of Delaware, England and Wales, India">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate NDA →</button>
+        <div id="nda-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating NDA…</span>
+        </div>
+      </form>
+    </div>
+    <div id="nda-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What's in This NDA</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.875rem;">
+      {% for clause in "Parties & Recitals,Definition of Confidential Information,Confidentiality Obligations,Exclusions from Confidentiality,Permitted Disclosures,Term & Duration,Remedies & Injunctive Relief,Return or Destruction of Info,Governing Law,Entire Agreement,Signature Blocks".split(",") %}
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;">
+        <span style="color:#16a34a;font-weight:700;">✓</span> {{ clause }}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">When do I need an NDA?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Use an NDA when: sharing a business idea with a potential investor or partner, hiring contractors or freelancers who will see confidential information, discussing a merger or acquisition, or sharing trade secrets, source code, or proprietary processes.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">One-way vs mutual — which do I choose?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">One-way: you share confidential info with someone (e.g., freelancer, investor pitch). Mutual: both sides share confidential info (e.g., joint venture, M&A discussions). One-way is more common for early-stage conversations.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is an NDA enforceable?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, when properly drafted, signed, and specific about what constitutes confidential information. Courts enforce NDAs but may not uphold overly broad or unreasonable ones. For high-value situations, have a lawyer review the agreement.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I sign an NDA before discussing my startup idea?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Most VCs and accelerators won't sign NDAs for early conversations — it's impractical at their scale. NDAs are more useful when sharing detailed technical information, source code, or financial data with potential partners, employees, or contractors.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/privacy-policy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Privacy Policy Generator</a>
+      <a href="/tools/document/terms-and-conditions-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Terms & Conditions</a>
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cover Letter Generator</a>
+      <a href="/tools/document/resignation-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Resignation Letter</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

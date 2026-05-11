@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Social Media Post Generator — Free AI Post Writer | AIUtilities{% endblock %}
+{% block description %}Generate engaging social media posts for Instagram, Twitter, LinkedIn, Facebook, and TikTok instantly. Enter your topic, choose a tone, and get a ready-to-post caption. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'social-media-post-generator' %}{% endblock %}
+{% block og_title %}Social Media Post Generator — Free AI Post Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate engaging social media posts for Instagram, Twitter, LinkedIn, Facebook, and TikTok instantly. Enter your topic, choose a tone, and get a ready-to-post caption. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'social-media-post-generator' %}{% endblock %}
+{% block twitter_title %}Social Media Post Generator — Free AI Post Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate engaging posts for Instagram, Twitter, LinkedIn, Facebook, and TikTok instantly. Choose topic and tone — get a ready-to-post caption. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Social Media Post Generator","description":"Generate engaging social media posts for Instagram, Twitter, LinkedIn, Facebook, and TikTok instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'social-media-post-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"Social Media Post Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'social-media-post-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Social Media Post Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write platform-perfect posts for Instagram, Twitter, LinkedIn, Facebook, and TikTok in seconds. Hook, body, CTA, and hashtags — all included.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 platforms</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hook + CTA included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hashtags suggested</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'social-media-post-generator' %}"
+            hx-target="#social-post-output"
+            hx-swap="innerHTML"
+            hx-indicator="#social-post-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label">Platform</label>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;">
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.625rem .25rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.75rem;color:#374151;background:#fff;text-align:center;transition:border-color .15s;">
+              <input type="radio" name="platform" value="instagram" checked style="accent-color:#e91e8c;"> 📸<br>Instagram
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.625rem .25rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.75rem;color:#374151;background:#fff;text-align:center;transition:border-color .15s;">
+              <input type="radio" name="platform" value="twitter" style="accent-color:#1da1f2;"> 🐦<br>Twitter/X
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.625rem .25rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.75rem;color:#374151;background:#fff;text-align:center;transition:border-color .15s;">
+              <input type="radio" name="platform" value="linkedin" style="accent-color:#0077b5;"> 💼<br>LinkedIn
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.625rem .25rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.75rem;color:#374151;background:#fff;text-align:center;transition:border-color .15s;">
+              <input type="radio" name="platform" value="facebook" style="accent-color:#1877f2;"> 👥<br>Facebook
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:.375rem;padding:.625rem .25rem;border:2px solid #d1d5db;border-radius:.5rem;cursor:pointer;font-size:.75rem;color:#374151;background:#fff;text-align:center;transition:border-color .15s;">
+              <input type="radio" name="platform" value="tiktok" style="accent-color:#000;"> 🎵<br>TikTok
+            </label>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="casual">Casual & Relatable</option>
+              <option value="professional">Professional</option>
+              <option value="inspiring">Inspiring</option>
+              <option value="funny">Funny & Witty</option>
+              <option value="educational">Educational</option>
+              <option value="promotional">Promotional</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="goal">Post Goal</label>
+            <select id="goal" name="goal" class="ai-tool-select">
+              <option value="engagement">Drive Engagement</option>
+              <option value="brand awareness">Brand Awareness</option>
+              <option value="website traffic">Drive Traffic</option>
+              <option value="sales">Drive Sales</option>
+              <option value="community building">Build Community</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="topic">What is the post about? <span style="color:#ef4444;">*</span></label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="5"
+            placeholder="e.g. Launching my new online course on personal finance for millennials. It covers budgeting, investing basics, and building an emergency fund. Early bird discount available this week."></textarea>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Post →</button>
+        <div id="social-post-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your post…</span>
+        </div>
+      </form>
+    </div>
+    <div id="social-post-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:2rem;">Platform-Specific Formatting</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.25rem;">
+      <div class="ai-feature-card"><div style="font-size:1.25rem;margin-bottom:.75rem;">📸 Instagram</div><ul style="font-size:.8125rem;color:#374151;line-height:1.9;padding-left:1rem;"><li>Up to 2,200 characters</li><li>Hook in first line (before "more")</li><li>Emojis for visual breaks</li><li>5 hashtags suggested</li></ul></div>
+      <div class="ai-feature-card"><div style="font-size:1.25rem;margin-bottom:.75rem;">🐦 Twitter/X</div><ul style="font-size:.8125rem;color:#374151;line-height:1.9;padding-left:1rem;"><li>Under 280 characters</li><li>Punchy, direct, shareable</li><li>1–2 hashtags max</li><li>Thread-ready format</li></ul></div>
+      <div class="ai-feature-card"><div style="font-size:1.25rem;margin-bottom:.75rem;">💼 LinkedIn</div><ul style="font-size:.8125rem;color:#374151;line-height:1.9;padding-left:1rem;"><li>~1,300 characters ideal</li><li>Value-first, professional</li><li>Line breaks for readability</li><li>Strong CTA at end</li></ul></div>
+      <div class="ai-feature-card"><div style="font-size:1.25rem;margin-bottom:.75rem;">👥 Facebook</div><ul style="font-size:.8125rem;color:#374151;line-height:1.9;padding-left:1rem;"><li>Conversational, community feel</li><li>Question to drive comments</li><li>500 characters ideal</li><li>Shareable format</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I generate multiple versions of the same post?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — submit the form multiple times for different variations. Change the tone or goal for variety. Use different versions for A/B testing or scheduling across a week.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it include emojis?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes for Instagram, Facebook, and TikTok — emojis are used strategically. LinkedIn and Twitter get fewer emojis to match the more professional/concise format of those platforms.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How specific should I be about the topic?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The more detail you give, the better the post. Include: what you're announcing or discussing, who it's for, what makes it special, and any offer or CTA. Vague inputs produce generic posts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/hashtag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hashtag Generator</a>
+      <a href="/tools/social-media/instagram-bio-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Instagram Bio Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ecommerce/product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

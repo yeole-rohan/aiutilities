@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms & Conditions Generator — Free AI T&C Writer | AIUtilities{% endblock %}
+{% block description %}Generate complete Terms and Conditions for any website or app in seconds. Enter your site name and business type — AI writes a full T&C document in plain English. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'terms-and-conditions-generator' %}{% endblock %}
+{% block og_title %}Terms & Conditions Generator — Free AI T&C Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate complete Terms and Conditions for any website or app in seconds. Enter your site name and business type — AI writes a full T&C document in plain English. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'terms-and-conditions-generator' %}{% endblock %}
+{% block twitter_title %}Terms & Conditions Generator — Free AI T&C Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate complete Terms and Conditions for any website or app in seconds. Enter site name and business type — AI writes a full T&C document. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Terms & Conditions Generator","description":"Generate complete Terms and Conditions for any website or app in seconds, in plain English.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'terms-and-conditions-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"Terms & Conditions Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'terms-and-conditions-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Terms & Conditions Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate complete, enforceable Terms and Conditions for your website or app in plain English — in under 60 seconds. Covers all standard legal sections.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All standard clauses</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Plain English</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<div style="background:#fef3c7;border-bottom:1px solid #fde68a;padding:.75rem 1rem;text-align:center;font-size:.8125rem;color:#92400e;">
+  ⚠️ <strong>Not legal advice.</strong> This tool generates a general template. Consult a qualified lawyer for advice specific to your business situation.
+</div>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'document' 'terms-and-conditions-generator' %}"
+            hx-target="#terms-output"
+            hx-swap="innerHTML"
+            hx-indicator="#tc-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="site_name">Website / App Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="site_name" name="site_name" class="ai-tool-input"
+              placeholder="e.g. MyStore, TaskFlow App">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="site_url">Website URL <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="site_url" name="site_url" class="ai-tool-input"
+              placeholder="e.g. https://mystore.com">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="business_type">Business / Site Type</label>
+            <select id="business_type" name="business_type" class="ai-tool-select">
+              <option value="SaaS / web application">SaaS / Web Application</option>
+              <option value="eCommerce store">eCommerce Store</option>
+              <option value="blog or content site">Blog / Content Site</option>
+              <option value="marketplace">Marketplace</option>
+              <option value="mobile app">Mobile App</option>
+              <option value="service business">Service Business</option>
+              <option value="community / forum">Community / Forum</option>
+              <option value="educational platform">Educational Platform</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="contact_email">Contact Email <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="contact_email" name="contact_email" class="ai-tool-input"
+              placeholder="e.g. legal@mysite.com">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="jurisdiction">Governing Law / Jurisdiction <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="jurisdiction" name="jurisdiction" class="ai-tool-input"
+            placeholder="e.g. State of California, United States · England and Wales · India">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Terms & Conditions →</button>
+        <div id="tc-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating Terms & Conditions…</span>
+        </div>
+      </form>
+    </div>
+    <div id="terms-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Sections in Every T&C</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.875rem;">
+      {% for section in "Acceptance of Terms,Use License / Permitted Use,Prohibited Activities,User Accounts,Intellectual Property,Disclaimer of Warranties,Limitation of Liability,Indemnification,Governing Law,Termination,Changes to Terms,Contact Information".split(",") %}
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;">
+        <span style="color:#16a34a;font-weight:700;">✓</span> {{ section }}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I need Terms and Conditions?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Unlike a privacy policy, T&Cs are not legally required in most jurisdictions. However, they're strongly recommended because they: protect your IP, limit your liability, set usage rules, define dispute resolution, and are required by payment processors like Stripe and PayPal.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between T&Cs and a Privacy Policy?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">A Privacy Policy explains how you handle personal data (required by law in most countries). Terms & Conditions govern how users may use your service, your liability, and legal relationship with users (optional but recommended). Most websites need both.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I make users agree to the T&Cs?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Link to them during account registration with a checkbox ("I agree to the Terms & Conditions"). Also link in the footer of every page. For apps, show them on first launch. This creates a "clickwrap" agreement which is enforceable in most courts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/privacy-policy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Privacy Policy Generator</a>
+      <a href="/tools/document/cookie-policy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cookie Policy Generator</a>
+      <a href="/tools/document/nda-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">NDA Generator</a>
+      <a href="/tools/document/disclaimer-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Disclaimer Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

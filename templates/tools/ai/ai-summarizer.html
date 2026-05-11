@@ -3,6 +3,17 @@
 
 {% block title %}AI Summarizer — Summarize Articles & Documents Free | AIUtilities{% endblock %}
 {% block description %}Paste any article, PDF text, or long document and get an AI-generated summary in bullet points, paragraph, or TLDR format in seconds — free, no signup required.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-summarizer' %}{% endblock %}
+{% block og_title %}AI Summarizer — Summarize Articles & Documents Free | AIUtilities{% endblock %}
+{% block og_description %}Paste any article, PDF text, or long document and get an AI-generated summary in bullet points, paragraph, or TLDR format in seconds — free, no signup required.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-summarizer' %}{% endblock %}
+{% block twitter_title %}AI Summarizer — Summarize Articles & Documents Free | AIUtilities{% endblock %}
+{% block twitter_description %}Paste any article or document and get an AI summary in bullet points, paragraph, or TLDR format in seconds. Free, no signup.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Summarizer","description":"Paste any article, PDF text, or long document and get an AI-generated summary instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-summarizer' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Summarizer","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-summarizer' %}"}]}]}
+</script>
+{% endblock %}
 
 {% block content %}
 

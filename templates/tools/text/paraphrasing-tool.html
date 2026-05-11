@@ -3,6 +3,17 @@
 
 {% block title %}Paraphrasing Tool — Free AI Text Rewriter Online | AIUtilities{% endblock %}
 {% block description %}Rewrite any text in seconds with our free AI paraphrasing tool. Choose from standard, formal, simple, creative, or fluent styles. No signup, no word limit cap.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'paraphrasing-tool' %}{% endblock %}
+{% block og_title %}Paraphrasing Tool — Free AI Text Rewriter Online | AIUtilities{% endblock %}
+{% block og_description %}Rewrite any text in seconds with our free AI paraphrasing tool. Choose from standard, formal, simple, creative, or fluent styles. No signup, no word limit cap.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'paraphrasing-tool' %}{% endblock %}
+{% block twitter_title %}Paraphrasing Tool — Free AI Text Rewriter Online | AIUtilities{% endblock %}
+{% block twitter_description %}Rewrite any text in seconds with AI. Choose from standard, formal, simple, creative, or fluent styles. No signup, no word limit cap.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Paraphrasing Tool","description":"Rewrite any text in seconds with AI — choose from standard, formal, simple, creative, or fluent styles.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'paraphrasing-tool' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Paraphrasing Tool","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'paraphrasing-tool' %}"}]}]}
+</script>
+{% endblock %}
 
 {% block content %}
 

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Instagram Bio Generator — Free AI Instagram Bio Writer | AIUtilities{% endblock %}
+{% block description %}Generate 3 compelling Instagram bio options in seconds. Enter your niche, personality, and CTA — AI writes bios under 150 characters that attract followers. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'instagram-bio-generator' %}{% endblock %}
+{% block og_title %}Instagram Bio Generator — Free AI Instagram Bio Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 3 compelling Instagram bio options in seconds. Enter your niche, personality, and CTA — AI writes bios under 150 characters that attract followers. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'instagram-bio-generator' %}{% endblock %}
+{% block twitter_title %}Instagram Bio Generator — Free AI Instagram Bio Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 3 compelling Instagram bios in seconds. Enter niche, personality, and CTA — AI writes bios under 150 characters that attract followers. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Instagram Bio Generator","description":"Generate 3 compelling Instagram bio options under 150 characters that attract followers.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'instagram-bio-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"Instagram Bio Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'instagram-bio-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Instagram Bio Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Get 3 scroll-stopping Instagram bio options in seconds. Crafted under 150 characters with emojis, your value prop, and a CTA that converts profile visitors to followers.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 options every run</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 150 characters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ With emojis + CTA</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'instagram-bio-generator' %}"
+            hx-target="#insta-bio-output"
+            hx-swap="innerHTML"
+            hx-indicator="#insta-bio-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="name">Name or Brand <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="name" name="name" class="ai-tool-input"
+              placeholder="e.g. Sarah | FitLife Coach">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="vibe">Profile Vibe</label>
+            <select id="vibe" name="vibe" class="ai-tool-select">
+              <option value="professional">Professional</option>
+              <option value="fun and playful">Fun & Playful</option>
+              <option value="motivational">Motivational</option>
+              <option value="aesthetic">Aesthetic / Lifestyle</option>
+              <option value="authentic">Authentic & Raw</option>
+              <option value="minimalist">Minimalist</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="niche">What You Do / Your Niche <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="niche" name="niche" class="ai-tool-input"
+            placeholder="e.g. fitness coach helping busy moms lose weight without giving up pizza">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="values">Personality / Values <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="values" name="values" class="ai-tool-input"
+            placeholder="e.g. honest, no BS, loves travel, dog mom, coffee addict">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="cta">Link-in-Bio CTA <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="cta" name="cta" class="ai-tool-input"
+            placeholder="e.g. Free 7-day workout plan 👇, Book a call, Shop my presets">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Bios →</button>
+        <div id="insta-bio-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your bios…</span>
+        </div>
+      </form>
+    </div>
+    <div id="insta-bio-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Great Instagram Bio?</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">🎯</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Clear Value Proposition</h3><p style="font-size:.8125rem;color:#374151;">A visitor should know within 2 seconds exactly who you are, who you help, and why they should follow you.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">✨</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Strategic Emojis</h3><p style="font-size:.8125rem;color:#374151;">Emojis break up text visually and convey personality fast. Our AI places them naturally, not randomly.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">👇</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Call to Action</h3><p style="font-size:.8125rem;color:#374151;">Direct people to your link-in-bio. A clear CTA ("Download free guide 👇" or "Book now") drives clicks.</p></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="font-size:1.5rem;flex-shrink:0;">📏</span>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Under 150 Characters</h3><p style="font-size:.8125rem;color:#374151;">Instagram limits bios to 150 characters. Every generated option stays within this limit.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will the bio fit Instagram's character limit?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. Instagram allows 150 characters for the bio. Our AI is specifically instructed to keep every option under this limit. Emojis count as characters, which is accounted for.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use line breaks in my bio?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — line breaks make bios more scannable. In Instagram, you can add line breaks by pressing Enter in the bio editor on mobile. Some bios are generated as one-liners; you can manually format them with line breaks for better readability.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I generate bios for business accounts?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. Choose "Professional" as the vibe and describe your brand. Works for personal brands, small businesses, e-commerce stores, coaches, creators, and more.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/hashtag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hashtag Generator</a>
+      <a href="/tools/social-media/social-media-post-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Social Media Post Generator</a>
+      <a href="/tools/social-media/linkedin-headline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Headline Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

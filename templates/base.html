@@ -6,13 +6,23 @@
   <title>{% block title %}AIUtilities — Free Online Tools{% endblock %}</title>
   <meta name="description" content="{% block description %}Free online tools for developers, designers, and everyday tasks. 600+ utilities including calculators, converters, PDF tools, image editors, and more.{% endblock %}">
   <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
-  <link rel="canonical" href="{% block canonical %}{% endblock %}">
+  <link rel="canonical" href="{% block canonical %}{{ SITE_URL }}{{ request.path }}{% endblock %}">
 
   <!-- Open Graph -->
   <meta property="og:title" content="{% block og_title %}AIUtilities — Free Online Tools{% endblock %}">
   <meta property="og:description" content="{% block og_description %}Free online tools for developers, designers, and everyday tasks.{% endblock %}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="{% block og_url %}{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}{{ SITE_URL }}{{ request.path }}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ SITE_URL }}/static/img/og-default.png{% endblock %}">
+  <meta property="og:site_name" content="AIUtilities">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}AIUtilities — Free Online Tools{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Free online tools for developers, designers, and everyday tasks.{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{{ SITE_URL }}/static/img/og-default.png{% endblock %}">
+
+  {% block extra_head %}{% endblock %}
 
   <!-- Favicon -->
   {% load static %}
@@ -45,8 +55,6 @@
     gtag('js', new Date());
     gtag('config', 'G-H9292XG9NC');
   </script>
-
-  {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen bg-white" style="font-family:'Inter',system-ui,sans-serif;">
 
@@ -182,6 +190,31 @@
   </script>
 
   {% block extra_scripts %}{% endblock %}
+
+  <!-- Auto-generate FAQPage JSON-LD from .ai-faq-item elements -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var items = document.querySelectorAll('.ai-faq-item');
+      if (!items.length) return;
+      var entities = [];
+      items.forEach(function(item) {
+        var qEl = item.querySelector('.ai-faq-q');
+        var aEl = item.querySelector('.ai-faq-a');
+        if (!qEl || !aEl) return;
+        var qClone = qEl.cloneNode(true);
+        var svg = qClone.querySelector('svg');
+        if (svg) svg.remove();
+        var q = qClone.textContent.trim();
+        var a = aEl.textContent.trim();
+        if (q && a) entities.push({"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}});
+      });
+      if (!entities.length) return;
+      var s = document.createElement('script');
+      s.type = 'application/ld+json';
+      s.textContent = JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":entities});
+      document.head.appendChild(s);
+    });
+  </script>
 
   <script>
     /* HTMX CSRF injection */

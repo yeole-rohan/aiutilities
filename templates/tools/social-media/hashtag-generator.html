@@ -3,6 +3,17 @@
 
 {% block title %}Hashtag Generator — Free AI Hashtags for Instagram, TikTok & Twitter | AIUtilities{% endblock %}
 {% block description %}Generate 30 optimized hashtags for Instagram, TikTok, Twitter, or LinkedIn instantly. Enter your topic and niche — AI groups them by popularity for maximum reach.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'hashtag-generator' %}{% endblock %}
+{% block og_title %}Hashtag Generator — Free AI Hashtags for Instagram, TikTok & Twitter | AIUtilities{% endblock %}
+{% block og_description %}Generate 30 optimized hashtags for Instagram, TikTok, Twitter, or LinkedIn instantly. Enter your topic and niche — AI groups them by popularity for maximum reach.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'hashtag-generator' %}{% endblock %}
+{% block twitter_title %}Hashtag Generator — Free AI Hashtags for Instagram, TikTok & Twitter | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 30 optimized hashtags for Instagram, TikTok, Twitter, or LinkedIn instantly. AI groups them by popularity for maximum reach.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Hashtag Generator","description":"Generate 30 optimized hashtags for Instagram, TikTok, Twitter, or LinkedIn — grouped by popularity.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'hashtag-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"Hashtag Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'hashtag-generator' %}"}]}]}
+</script>
+{% endblock %}
 
 {% block content %}
 

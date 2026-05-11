@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Job Description Generator — Free AI JD Writer | AIUtilities{% endblock %}
+{% block description %}Generate clear, inclusive, bias-free job descriptions with AI. Enter job title, level, and requirements — get a complete JD with responsibilities, must-haves, and perks. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'job-description-generator' %}{% endblock %}
+{% block og_title %}Job Description Generator — Free AI JD Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate clear, inclusive, bias-free job descriptions with AI. Enter job title, level, and requirements — get a complete JD with responsibilities, must-haves, and perks. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'job-description-generator' %}{% endblock %}
+{% block twitter_title %}Job Description Generator — Free AI JD Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate inclusive, bias-free job descriptions with AI. Enter job title, level, and requirements — get a complete JD in seconds. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Job Description Generator","description":"Generate clear, inclusive, bias-free job descriptions with AI — responsibilities, must-haves, and perks included.","url":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'job-description-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Resume Tools","item":"{{ SITE_URL }}/tools/resume/"},{"@type":"ListItem","position":3,"name":"Job Description Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'job-description-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Job Description Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write clear, bias-free job descriptions that attract top candidates. Get a complete JD with role overview, responsibilities, requirements, and benefits — in seconds.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Inclusive language</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Complete structure</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any industry</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'resume' 'job-description-generator' %}"
+            hx-target="#job-desc-output"
+            hx-swap="innerHTML"
+            hx-indicator="#jd-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="job_title">Job Title <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="job_title" name="job_title" class="ai-tool-input"
+              placeholder="e.g. Senior Frontend Engineer">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="company">Company Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="company" name="company" class="ai-tool-input"
+              placeholder="e.g. Acme Technologies">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="level">Seniority Level</label>
+            <select id="level" name="level" class="ai-tool-select">
+              <option value="intern">Intern</option>
+              <option value="junior / entry-level">Junior / Entry-Level</option>
+              <option value="mid-level" selected>Mid-Level</option>
+              <option value="senior">Senior</option>
+              <option value="lead / principal">Lead / Principal</option>
+              <option value="manager">Manager</option>
+              <option value="director">Director</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="location">Location / Work Type <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="location" name="location" class="ai-tool-input"
+              placeholder="e.g. Remote, New York (Hybrid), London (On-site)">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="responsibilities">Key Responsibilities <span style="color:#9ca3af;font-weight:400;">(optional — one per line)</span></label>
+          <textarea id="responsibilities" name="responsibilities" class="ai-tool-input" rows="4"
+            placeholder="e.g.&#10;- Build and maintain React web applications&#10;- Collaborate with design and backend teams&#10;- Mentor junior developers&#10;- Participate in code reviews"></textarea>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="skills">Required Skills <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <textarea id="skills" name="skills" class="ai-tool-input" rows="3"
+            placeholder="e.g. React, TypeScript, 4+ years experience, REST APIs, performance optimization"></textarea>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Job Description →</button>
+        <div id="jd-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing job description…</span>
+        </div>
+      </form>
+    </div>
+    <div id="job-desc-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">JD Structure Generated</h2>
+    <div style="display:grid;gap:.875rem;">
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.125rem;border:1px solid #bbf7d0;display:flex;gap:1rem;"><span style="font-weight:700;color:#16a34a;min-width:7rem;font-size:.875rem;">Role Overview</span><span style="font-size:.875rem;color:#374151;">2–3 sentence summary of the role and what success looks like.</span></div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.125rem;border:1px solid #bbf7d0;display:flex;gap:1rem;"><span style="font-weight:700;color:#16a34a;min-width:7rem;font-size:.875rem;">Responsibilities</span><span style="font-size:.875rem;color:#374151;">6–8 clear bullet points describing what the person will actually do.</span></div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.125rem;border:1px solid #bbf7d0;display:flex;gap:1rem;"><span style="font-weight:700;color:#16a34a;min-width:7rem;font-size:.875rem;">Requirements</span><span style="font-size:.875rem;color:#374151;">Must-have skills and experience listed without unnecessary degree requirements.</span></div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.125rem;border:1px solid #bbf7d0;display:flex;gap:1rem;"><span style="font-weight:700;color:#16a34a;min-width:7rem;font-size:.875rem;">Nice to Have</span><span style="font-size:.875rem;color:#374151;">Bonus skills that are preferred but not dealbreakers — keeps the pool inclusive.</span></div>
+      <div style="background:#f0fdf4;border-radius:.5rem;padding:1.125rem;border:1px solid #bbf7d0;display:flex;gap:1rem;"><span style="font-weight:700;color:#16a34a;min-width:7rem;font-size:.875rem;">What We Offer</span><span style="font-size:.875rem;color:#374151;">Benefits, culture, growth opportunities — what makes the role attractive.</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Why is inclusive language in JDs important?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Studies show that masculine-coded words in job descriptions (e.g., "dominant," "competitive," "ninja") deter women from applying, even when equally qualified. Inclusive language broadens your candidate pool and improves team diversity.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I list a degree requirement?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Only if the job genuinely requires a specific degree (e.g., medical, legal, engineering). For most tech and business roles, listing "degree required" excludes talented candidates with equivalent experience. Our AI avoids unnecessary degree requirements by default.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this for any industry?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — tech, marketing, finance, healthcare, education, retail, hospitality, manufacturing, and more. The more details you provide about responsibilities and skills, the more industry-specific the output.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/resume/ats-resume-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">ATS Resume Checker</a>
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cover Letter Generator</a>
+      <a href="/tools/social-media/linkedin-headline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Headline Generator</a>
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

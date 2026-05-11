@@ -364,9 +364,365 @@ def ats_resume_checker(request):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# 11. AI Content Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def ai_content_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    content_type = request.POST.get("content_type", "blog post")
+    audience = request.POST.get("audience", "").strip()
+    tone = request.POST.get("tone", "informative")
+    keyword = request.POST.get("keyword", "").strip()
+    word_count = request.POST.get("word_count", "600")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic."))
+
+    keyword_line = f"Primary SEO keyword to include naturally: {keyword}." if keyword else ""
+    audience_line = f"Target audience: {audience}." if audience else ""
+    system = (
+        "You are an expert content writer and SEO specialist. "
+        "Write engaging, well-structured content that ranks and converts. "
+        "Use clear H2 subheadings (##), short paragraphs, and a conversational yet authoritative tone. "
+        "Include an introduction, 3–4 main sections, and a conclusion."
+    )
+    user = (
+        f"Write a {tone} {content_type} about: {topic}. "
+        f"{audience_line} {keyword_line} "
+        f"Aim for approximately {word_count} words."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "content-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 12. AI Essay Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def ai_essay_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    essay_type = request.POST.get("essay_type", "argumentative")
+    level = request.POST.get("level", "university")
+    word_count = request.POST.get("word_count", "500")
+    key_points = request.POST.get("key_points", "").strip()
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter an essay topic."))
+
+    points_line = f"Key arguments/points to include: {key_points}." if key_points else ""
+    system = (
+        "You are an expert academic writer. Write well-structured, original essays. "
+        "Format: clear introduction with thesis, body paragraphs each with a topic sentence and supporting evidence, "
+        "and a conclusion that restates the thesis and synthesises findings. "
+        "Use formal academic language appropriate for the level."
+    )
+    user = (
+        f"Write a {level}-level {essay_type} essay on: {topic}. "
+        f"{points_line} "
+        f"Target length: approximately {word_count} words."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "essay-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 13. Instagram Bio Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def instagram_bio_generator(request):
+    name = request.POST.get("name", "").strip()
+    niche = request.POST.get("niche", "").strip()
+    values = request.POST.get("values", "").strip()
+    cta = request.POST.get("cta", "").strip()
+    vibe = request.POST.get("vibe", "professional")
+
+    if not niche:
+        return HttpResponse(_error_html("Please enter your niche or what you do."))
+
+    name_line = f"Name/brand: {name}." if name else ""
+    cta_line = f"Link-in-bio CTA: {cta}." if cta else ""
+    system = (
+        "You are a social media growth expert specialising in Instagram profiles. "
+        "Write compelling Instagram bios that instantly communicate who you are, what you do, and what followers gain. "
+        "Each bio MUST be under 150 characters. Use emojis strategically. "
+        "Output exactly 3 numbered bio options, each on its own line."
+    )
+    user = (
+        f"{name_line} Niche: {niche}. "
+        f"Values/personality: {values or 'not specified'}. "
+        f"Vibe: {vibe}. {cta_line}\n\n"
+        "Write 3 Instagram bio options, each under 150 characters."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=400, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "insta-bio-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 14. Social Media Post Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def social_media_post_generator(request):
+    platform = request.POST.get("platform", "instagram")
+    topic = request.POST.get("topic", "").strip()
+    goal = request.POST.get("goal", "engagement")
+    tone = request.POST.get("tone", "casual")
+
+    if not topic:
+        return HttpResponse(_error_html("Please describe what the post is about."))
+
+    char_limits = {
+        "instagram": "2,200 characters max, use emojis and line breaks",
+        "twitter": "280 characters max, punchy and direct",
+        "linkedin": "1,300 characters, professional tone, value-driven",
+        "facebook": "500 characters, conversational and community-focused",
+        "tiktok": "150 characters caption, casual and trendy",
+    }
+    limit_note = char_limits.get(platform, "appropriate length for the platform")
+    system = (
+        "You are a social media strategist who writes viral, high-engagement posts. "
+        f"Write for {platform}. Respect: {limit_note}. "
+        "Include relevant emojis, a hook in the first line, and a clear call to action. "
+        "Output the full post, then suggest 5 hashtags on a separate line."
+    )
+    user = f"Write a {tone} {platform} post to drive {goal} about: {topic}"
+    try:
+        result = groq_chat(system, user, max_tokens=600, temperature=0.85)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "social-post-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 15. LinkedIn Headline Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def linkedin_headline_generator(request):
+    role = request.POST.get("role", "").strip()
+    industry = request.POST.get("industry", "").strip()
+    skills = request.POST.get("skills", "").strip()
+    goal = request.POST.get("goal", "").strip()
+
+    if not role:
+        return HttpResponse(_error_html("Please enter your current role or job title."))
+
+    system = (
+        "You are a LinkedIn optimization expert and personal branding coach. "
+        "Write magnetic LinkedIn headlines that attract recruiters and opportunities. "
+        "Headlines must be under 220 characters. Lead with value, not just a job title. "
+        "Use the | separator between sections. Output exactly 5 numbered headline options."
+    )
+    user = (
+        f"Current role: {role}.\n"
+        f"Industry: {industry or 'not specified'}.\n"
+        f"Key skills: {skills or 'not specified'}.\n"
+        f"Career goal: {goal or 'not specified'}.\n\n"
+        "Write 5 LinkedIn headline options, each under 220 characters."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.85)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "linkedin-headline-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 16. Job Description Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def job_description_generator(request):
+    job_title = request.POST.get("job_title", "").strip()
+    company = request.POST.get("company", "").strip()
+    level = request.POST.get("level", "mid-level")
+    responsibilities = request.POST.get("responsibilities", "").strip()
+    skills = request.POST.get("skills", "").strip()
+    location = request.POST.get("location", "").strip()
+
+    if not job_title:
+        return HttpResponse(_error_html("Please enter a job title."))
+
+    system = (
+        "You are an expert HR professional and inclusive hiring specialist. "
+        "Write clear, compelling, bias-free job descriptions that attract top talent. "
+        "Structure: Role Overview (2–3 sentences), Key Responsibilities (6–8 bullet points), "
+        "Requirements (must-haves), Nice to Have, What We Offer. "
+        "Use inclusive language. Avoid gendered words and unnecessary degree requirements."
+    )
+    user = (
+        f"Job title: {job_title}\n"
+        f"Company: {company or 'our company'}\n"
+        f"Level: {level}\n"
+        f"Key responsibilities: {responsibilities or 'standard for this role'}\n"
+        f"Required skills: {skills or 'standard for this role'}\n"
+        f"Location/work type: {location or 'not specified'}\n\n"
+        "Write a complete, inclusive job description."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "job-desc-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 17. Privacy Policy Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def privacy_policy_generator(request):
+    site_name = request.POST.get("site_name", "").strip()
+    site_url = request.POST.get("site_url", "").strip()
+    data_collected = request.POST.get("data_collected", "").strip()
+    contact_email = request.POST.get("contact_email", "").strip()
+    jurisdiction = request.POST.get("jurisdiction", "GDPR + CCPA")
+
+    if not site_name:
+        return HttpResponse(_error_html("Please enter your website or app name."))
+
+    system = (
+        "You are a legal document specialist. Write clear, comprehensive privacy policies "
+        "that comply with GDPR, CCPA, and general international standards. "
+        "Include all standard sections: Introduction, Data Collected, How We Use Data, "
+        "Data Sharing, Cookies, User Rights, Data Retention, Security, Children's Privacy, "
+        "Changes to Policy, Contact Information. Write in plain English, not legalese."
+    )
+    user = (
+        f"Website/App name: {site_name}\n"
+        f"Website URL: {site_url or 'not provided'}\n"
+        f"Data collected: {data_collected or 'name, email, usage data'}\n"
+        f"Contact email: {contact_email or '[your contact email]'}\n"
+        f"Jurisdiction compliance: {jurisdiction}\n\n"
+        "Generate a complete privacy policy."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "privacy-policy-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 18. Terms & Conditions Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def terms_conditions_generator(request):
+    site_name = request.POST.get("site_name", "").strip()
+    site_url = request.POST.get("site_url", "").strip()
+    business_type = request.POST.get("business_type", "SaaS / web application")
+    contact_email = request.POST.get("contact_email", "").strip()
+    jurisdiction = request.POST.get("jurisdiction", "")
+
+    if not site_name:
+        return HttpResponse(_error_html("Please enter your website or app name."))
+
+    system = (
+        "You are a legal document specialist. Write clear, enforceable Terms and Conditions "
+        "in plain English. Include all standard sections: Acceptance of Terms, Use License, "
+        "Prohibited Activities, Disclaimer of Warranties, Limitation of Liability, "
+        "User Accounts, Intellectual Property, Termination, Governing Law, Changes to Terms, Contact. "
+        "Write accessibly — avoid unnecessary legalese."
+    )
+    user = (
+        f"Website/App name: {site_name}\n"
+        f"URL: {site_url or 'not provided'}\n"
+        f"Business type: {business_type}\n"
+        f"Contact email: {contact_email or '[your contact email]'}\n"
+        f"Governing law/jurisdiction: {jurisdiction or 'not specified'}\n\n"
+        "Generate complete Terms and Conditions."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "terms-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 19. Resignation Letter Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def resignation_letter_generator(request):
+    your_name = request.POST.get("your_name", "").strip()
+    manager_name = request.POST.get("manager_name", "").strip()
+    company = request.POST.get("company", "").strip()
+    last_day = request.POST.get("last_day", "").strip()
+    reason = request.POST.get("reason", "").strip()
+    tone = request.POST.get("tone", "professional")
+
+    if not company:
+        return HttpResponse(_error_html("Please enter the company name."))
+
+    name_line = f"Employee name: {your_name}." if your_name else ""
+    manager_line = f"Manager's name: {manager_name}." if manager_name else ""
+    reason_line = f"Reason for leaving: {reason}." if reason else ""
+    system = (
+        "You are an expert HR professional. Write professional, gracious resignation letters "
+        "that maintain good relationships and leave a positive impression. "
+        "Include: date, recipient, formal opening, statement of resignation with last day, "
+        "brief gratitude for the opportunity, offer to help with transition, warm closing."
+    )
+    user = (
+        f"{name_line} {manager_line} Company: {company}. "
+        f"Last working day: {last_day or 'two weeks from today'}. "
+        f"{reason_line} Tone: {tone}.\n\nWrite the resignation letter."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "resignation-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 20. NDA Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def nda_generator(request):
+    disclosing_party = request.POST.get("disclosing_party", "").strip()
+    receiving_party = request.POST.get("receiving_party", "").strip()
+    purpose = request.POST.get("purpose", "").strip()
+    duration = request.POST.get("duration", "2 years")
+    nda_type = request.POST.get("nda_type", "one-way")
+    jurisdiction = request.POST.get("jurisdiction", "").strip()
+
+    if not disclosing_party or not receiving_party:
+        return HttpResponse(_error_html("Please enter both party names."))
+
+    system = (
+        "You are a legal document specialist. Write clear, enforceable Non-Disclosure Agreements. "
+        "Include: parties, recitals/purpose, definition of confidential information, obligations, "
+        "exclusions from confidentiality, permitted disclosures, term and termination, "
+        "remedies, governing law, entire agreement clause, signature blocks. "
+        "Write in plain, professional English."
+    )
+    user = (
+        f"NDA type: {nda_type} (one-way = only receiving party bound; mutual = both parties bound)\n"
+        f"Disclosing party: {disclosing_party}\n"
+        f"Receiving party: {receiving_party}\n"
+        f"Purpose of disclosure: {purpose or 'business discussions and potential partnership'}\n"
+        f"Confidentiality duration: {duration}\n"
+        f"Governing law: {jurisdiction or '[Jurisdiction to be filled in]'}\n\n"
+        "Generate a complete NDA."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "nda-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Dispatcher map (tool_slug → handler)
 # ─────────────────────────────────────────────────────────────────────────────
 AI_HANDLERS = {
+    # Batch 1
     "ai-grammar-checker": ai_grammar_checker,
     "ai-summarizer": ai_summarizer,
     "ai-email-generator": ai_email_generator,
@@ -377,4 +733,15 @@ AI_HANDLERS = {
     "hashtag-generator": hashtag_generator,
     "product-description-generator": product_description_generator,
     "ats-resume-checker": ats_resume_checker,
+    # Batch 2
+    "ai-content-generator": ai_content_generator,
+    "ai-essay-generator": ai_essay_generator,
+    "instagram-bio-generator": instagram_bio_generator,
+    "social-media-post-generator": social_media_post_generator,
+    "linkedin-headline-generator": linkedin_headline_generator,
+    "job-description-generator": job_description_generator,
+    "privacy-policy-generator": privacy_policy_generator,
+    "terms-and-conditions-generator": terms_conditions_generator,
+    "resignation-letter-generator": resignation_letter_generator,
+    "nda-generator": nda_generator,
 }

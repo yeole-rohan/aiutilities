@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
+{% block description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}{% endblock %}
+{% block og_title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate full blog posts, articles, how-to guides, and web copy with AI. Enter your topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}{% endblock %}
+{% block twitter_title %}AI Content Generator — Free AI Blog Post & Article Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate full blog posts, articles, and web copy with AI. Enter topic and keyword — get SEO-optimized content with headings in seconds. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Content Generator","description":"Generate full blog posts, articles, and SEO-optimized web copy with AI in seconds.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Content Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-content-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Content Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate full blog posts, articles, how-to guides, and marketing copy in seconds. Structured with headings, keyword-optimized, and ready to publish.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ SEO-structured with headings</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 300–1,200 words</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, no signup</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-content-generator' %}"
+            hx-target="#content-output"
+            hx-swap="innerHTML"
+            hx-indicator="#content-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input"
+            placeholder="e.g. How to start a profitable dropshipping business in 2025">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="content_type">Content Type</label>
+            <select id="content_type" name="content_type" class="ai-tool-select">
+              <option value="blog post">Blog Post</option>
+              <option value="how-to guide">How-To Guide</option>
+              <option value="listicle">Listicle (Top 10 style)</option>
+              <option value="product review">Product Review</option>
+              <option value="news article">News / Informational Article</option>
+              <option value="opinion piece">Opinion / Thought Leadership</option>
+              <option value="landing page copy">Landing Page Copy</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="informative">Informative</option>
+              <option value="conversational">Conversational</option>
+              <option value="professional">Professional</option>
+              <option value="persuasive">Persuasive</option>
+              <option value="friendly">Friendly</option>
+              <option value="authoritative">Authoritative / Expert</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="word_count">Target Word Count</label>
+            <select id="word_count" name="word_count" class="ai-tool-select">
+              <option value="300">~300 words (short)</option>
+              <option value="600" selected>~600 words (medium)</option>
+              <option value="900">~900 words (long)</option>
+              <option value="1200">~1,200 words (in-depth)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input"
+              placeholder="e.g. small business owners, beginners">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="keyword">Primary SEO Keyword <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="keyword" name="keyword" class="ai-tool-input"
+            placeholder="e.g. dropshipping for beginners">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Content →</button>
+        <div id="content-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your content…</span>
+        </div>
+      </form>
+    </div>
+    <div id="content-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;text-align:center;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;margin-bottom:2rem;">What You Get</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">📝</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Full Articles</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Complete blog posts with intro, structured body sections, and conclusion — not just outlines.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🏗️</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">SEO Structure</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">H2 subheadings, short paragraphs, and natural keyword placement for search engines.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">7 Content Types</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Blog posts, how-to guides, listicles, reviews, news articles, opinion pieces, landing page copy.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Under 5 Seconds</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Groq's ultra-fast inference delivers 1,000-word articles faster than you can type a paragraph.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🌍</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Any Niche</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">Finance, health, tech, travel, food, lifestyle, business — the AI adapts to any topic.</p></div>
+      <div class="ai-feature-card"><div style="font-size:1.5rem;margin-bottom:.5rem;">🆓</div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Free, Always</h3><p style="font-size:.8125rem;color:#374151;line-height:1.6;">No credits, no subscription, no daily limit. Generate as many articles as you need.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I publish the generated content directly?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, but we recommend reviewing and personalizing it first. Add specific examples, statistics, personal insights, and brand voice. Google values original, helpful content — AI-generated drafts that you edit and enrich perform well.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will this content rank on Google?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">AI-generated content can rank if it is helpful, accurate, and provides genuine value. Add unique insights, internal links, and external references. Avoid publishing thin, generic AI content without editing — Google penalizes low-value pages.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How specific should my topic be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Specific topics produce better content. "How to reduce customer churn in SaaS using onboarding emails" beats "customer retention". The more focused your topic, the more focused and useful the output.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the maximum content length?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Up to ~1,200 words per generation. For longer pieces, generate sections separately (introduction, each main section, conclusion) and assemble them. This also gives you more control over the structure.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Grammar Checker</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Description Generator</a>
+      <a href="/tools/social-media/social-media-post-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Social Media Post Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
