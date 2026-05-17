@@ -46,6 +46,8 @@
 
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
+  <!-- Marked.js (markdown → HTML) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9292XG9NC"></script>
@@ -222,11 +224,10 @@
       evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
     });
     /* Copy to clipboard for AI results */
-    function copyResult(id) {
+    function copyResult(id, btn) {
       const el = document.getElementById(id);
       if (!el) return;
       navigator.clipboard.writeText(el.innerText).then(function() {
-        const btn = event.target;
         const orig = btn.textContent;
         btn.textContent = 'Copied!';
         btn.style.background = '#dcfce7';
@@ -262,6 +263,17 @@
     .ai-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(13rem,1fr)); gap:1.5rem; }
     .ai-step { text-align:center; padding:1.5rem; }
     .ai-step-num { width:2.5rem; height:2.5rem; background:#16a34a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; margin:0 auto .75rem; }
+    .ai-markdown-output h1,.ai-markdown-output h2,.ai-markdown-output h3 { font-weight:700; color:#0f172a; margin:1.25rem 0 .5rem; line-height:1.3; }
+    .ai-markdown-output h1 { font-size:1.375rem; }
+    .ai-markdown-output h2 { font-size:1.125rem; }
+    .ai-markdown-output h3 { font-size:1rem; }
+    .ai-markdown-output p { margin:.625rem 0; }
+    .ai-markdown-output ul,.ai-markdown-output ol { padding-left:1.5rem; margin:.625rem 0; }
+    .ai-markdown-output li { margin:.25rem 0; }
+    .ai-markdown-output strong { font-weight:700; color:#0f172a; }
+    .ai-markdown-output em { font-style:italic; }
+    .ai-markdown-output code { background:#e2e8f0; border-radius:.25rem; padding:.1rem .35rem; font-size:.875em; font-family:monospace; }
+    .ai-markdown-output hr { border:none; border-top:1px solid #e2e8f0; margin:1rem 0; }
   </style>
 </body>
 </html>

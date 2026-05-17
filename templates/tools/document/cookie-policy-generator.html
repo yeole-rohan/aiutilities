@@ -61,12 +61,11 @@
         <div style="margin-bottom:1.25rem;">
           <label class="ai-tool-label">Cookie Types Used</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;margin-top:.375rem;">
-            {% for ct in "Essential / Strictly Necessary,Analytics (Google Analytics, Hotjar),Marketing / Advertising,Social Media Embed Cookies,Preference / Functional Cookies".split(",") %}
-            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
-              <input type="checkbox" name="cookie_types" value="{{ ct }}" {% if "Essential" in ct %}checked{% endif %} style="accent-color:#16a34a;">
-              {{ ct }}
-            </label>
-            {% endfor %}
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" name="cookie_types" value="Essential / Strictly Necessary" checked style="accent-color:#16a34a;"> Essential / Strictly Necessary</label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" name="cookie_types" value="Analytics (Google Analytics, Hotjar)" style="accent-color:#16a34a;"> Analytics (Google Analytics, Hotjar)</label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" name="cookie_types" value="Marketing / Advertising" style="accent-color:#16a34a;"> Marketing / Advertising</label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" name="cookie_types" value="Social Media Embed Cookies" style="accent-color:#16a34a;"> Social Media Embed Cookies</label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" name="cookie_types" value="Preference / Functional Cookies" style="accent-color:#16a34a;"> Preference / Functional Cookies</label>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
@@ -99,11 +98,16 @@
   <div style="max-width:52rem;margin:0 auto;">
     <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Sections Included in Every Cookie Policy</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.875rem;">
-      {% for section in "What Are Cookies,Types of Cookies We Use,First-Party vs Third-Party,Analytics Cookies,Marketing Cookies,How to Manage Cookies,Browser Cookie Settings,Cookie Consent,Updates to This Policy,Contact Information".split(",") %}
-      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;">
-        <span style="color:#16a34a;font-weight:700;">✓</span> {{ section }}
-      </div>
-      {% endfor %}
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> What Are Cookies</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Types of Cookies We Use</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> First-Party vs Third-Party</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Analytics Cookies</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Marketing Cookies</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> How to Manage Cookies</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Browser Cookie Settings</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Cookie Consent</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Updates to This Policy</div>
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;"><span style="color:#16a34a;font-weight:700;">✓</span> Contact Information</div>
     </div>
   </div>
 </section>

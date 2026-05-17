@@ -19,7 +19,7 @@ def _result_html(content: str, copy_id: str = "ai-result") -> str:
 <div style="animation:fadeIn .3s ease;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
     <span style="font-size:.875rem;font-weight:600;color:#16a34a;">✓ Generated</span>
-    <button onclick="copyResult('{copy_id}')"
+    <button onclick="copyResult('{copy_id}', this)"
       style="font-size:.75rem;padding:.25rem .75rem;border:1px solid #d1fae5;background:#f0fdf4;color:#16a34a;border-radius:.375rem;cursor:pointer;font-weight:500;">
       Copy
     </button>
@@ -27,6 +27,30 @@ def _result_html(content: str, copy_id: str = "ai-result") -> str:
   <div id="{copy_id}" style="white-space:pre-wrap;font-size:.9375rem;line-height:1.75;color:#0f172a;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1.25rem;">
 {escaped}
   </div>
+</div>
+"""
+
+
+def _markdown_result_html(content: str, copy_id: str = "ai-result") -> str:
+    """Like _result_html but renders markdown via marked.js on the client side."""
+    escaped = _escape(content)
+    return f"""
+<div style="animation:fadeIn .3s ease;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+    <span style="font-size:.875rem;font-weight:600;color:#16a34a;">✓ Generated</span>
+    <button onclick="copyResult('{copy_id}', this)"
+      style="font-size:.75rem;padding:.25rem .75rem;border:1px solid #d1fae5;background:#f0fdf4;color:#16a34a;border-radius:.375rem;cursor:pointer;font-weight:500;">
+      Copy
+    </button>
+  </div>
+  <div id="{copy_id}-raw" style="display:none;">{escaped}</div>
+  <div id="{copy_id}" class="ai-markdown-output" style="font-size:.9375rem;line-height:1.75;color:#0f172a;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1.25rem;"></div>
+  <script>
+    (function(){{
+      var raw = document.getElementById('{copy_id}-raw').textContent;
+      document.getElementById('{copy_id}').innerHTML = marked.parse(raw);
+    }})();
+  </script>
 </div>
 """
 
@@ -395,7 +419,7 @@ def ai_content_generator(request):
         result = groq_chat(system, user, max_tokens=2000)
     except Exception:
         return HttpResponse(_error_html())
-    return HttpResponse(_result_html(result, "content-result"))
+    return HttpResponse(_markdown_result_html(result, "content-result"))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -428,7 +452,7 @@ def ai_essay_generator(request):
         result = groq_chat(system, user, max_tokens=2000)
     except Exception:
         return HttpResponse(_error_html())
-    return HttpResponse(_result_html(result, "essay-result"))
+    return HttpResponse(_markdown_result_html(result, "essay-result"))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -816,7 +840,7 @@ def article_rewriter(request):
         result = groq_chat(system, user, max_tokens=2000, temperature=0.75)
     except Exception:
         return HttpResponse(_error_html())
-    return HttpResponse(_result_html(result, "article-rewriter-result"))
+    return HttpResponse(_markdown_result_html(result, "article-rewriter-result"))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
