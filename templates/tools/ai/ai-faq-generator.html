@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI FAQ Generator — Free SEO FAQ Questions & Answers Generator | AIUtilities{% endblock %}
+{% block description %}Generate SEO-optimized FAQ questions and answers for any topic, product, or service. AI targets Google's People Also Ask — boost your search visibility. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-faq-generator' %}{% endblock %}
+{% block og_title %}AI FAQ Generator — Free SEO FAQ Questions & Answers Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate SEO-optimized FAQ questions and answers for any topic, product, or service. AI targets Google's People Also Ask — boost your search visibility. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-faq-generator' %}{% endblock %}
+{% block twitter_title %}AI FAQ Generator — Free SEO FAQ Questions & Answers | AIUtilities{% endblock %}
+{% block twitter_description %}Generate SEO-optimized FAQs for any topic with AI. Targets Google's People Also Ask to boost search visibility. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI FAQ Generator","description":"Generate SEO-optimized FAQ questions and answers targeting Google's People Also Ask for any topic.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-faq-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI FAQ Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-faq-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI FAQ Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate SEO-optimized FAQs for any topic. AI targets the real questions people search for — structured for Google's People Also Ask featured snippets. Free.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ PAA-targeted questions</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Featured snippet ready</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-faq-generator' %}"
+            hx-target="#faq-output"
+            hx-swap="innerHTML"
+            hx-indicator="#faq-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic / Product / Service <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input"
+            placeholder="e.g. email marketing, solar panels, GDPR compliance, resume writing">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input"
+              placeholder="e.g. small business owners, beginners, HR managers">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="num_faqs">Number of FAQs</label>
+            <select id="num_faqs" name="num_faqs" class="ai-tool-select">
+              <option value="5">5 FAQs</option>
+              <option value="8" selected>8 FAQs</option>
+              <option value="10">10 FAQs</option>
+              <option value="12">12 FAQs</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="context">Additional Context <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="context" name="context" class="ai-tool-input"
+            placeholder="e.g. we sell B2B SaaS, focus on pricing questions, for a blog post introduction">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate FAQs →</button>
+        <div id="faq-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating FAQ questions and answers…</span>
+        </div>
+      </form>
+    </div>
+    <div id="faq-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Add FAQs to Your Content?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Google Featured Snippets</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">FAQs with concise 2–4 sentence answers are prime candidates for Google's "People Also Ask" boxes — free organic visibility above regular results.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📊</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Dwell Time & Engagement</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">FAQs answer visitors' next questions before they bounce. Keeping users on your page longer is a strong positive signal to Google's ranking algorithm.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Voice Search Ranking</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Voice assistants love FAQ-style content. Questions phrased naturally ("How do I…", "What is…") match how people speak to Siri, Alexa, and Google Assistant.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🛒</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Conversion & Trust</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">FAQs reduce objections and build trust on product and service pages. Answering "Is this safe?" or "What's the refund policy?" directly increases conversion rates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I add FAQPage schema to get rich results?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Add JSON-LD structured data to your page: {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [...]}. Each FAQ becomes a Question entity with an acceptedAnswer. Google Search Console shows if your FAQs are eligible for rich results in the Enhancements report.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many FAQs should I include on a page?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">5–10 FAQs is the sweet spot for most pages. Enough to cover real user questions without overwhelming the reader. For pillar content or comparison pages, 12–15 can work. Prioritize quality — each answer should be genuinely helpful, not padded filler.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Where should I place FAQs on my page?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">For SEO, place FAQs near the bottom of the page — after your main content — so they address questions that arise after reading. For product pages, place FAQs directly below the product description to handle purchase objections immediately.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Description Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

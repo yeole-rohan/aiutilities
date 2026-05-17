@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cookie Policy Generator — Free AI Cookie Policy Writer | AIUtilities{% endblock %}
+{% block description %}Generate a GDPR-compliant cookie policy for your website in seconds. Enter your site name and cookie types — AI writes a complete, plain-English cookie policy. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'cookie-policy-generator' %}{% endblock %}
+{% block og_title %}Cookie Policy Generator — Free AI Cookie Policy Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a GDPR-compliant cookie policy for your website in seconds. Enter your site name and cookie types — AI writes a complete cookie policy. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'document' 'cookie-policy-generator' %}{% endblock %}
+{% block twitter_title %}Cookie Policy Generator — Free AI Cookie Policy Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a GDPR-compliant cookie policy in seconds. Enter site name and cookie types — AI writes a complete policy in plain English. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Cookie Policy Generator","description":"Generate a GDPR-compliant cookie policy in seconds for any website.","url":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'cookie-policy-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Document Tools","item":"{{ SITE_URL }}/tools/document/"},{"@type":"ListItem","position":3,"name":"Cookie Policy Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'document' 'cookie-policy-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Cookie Policy Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate a complete, GDPR-compliant cookie policy in plain English — in under 60 seconds. Free for any website or app.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ GDPR compliant</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Plain English</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<div style="background:#fef3c7;border-bottom:1px solid #fde68a;padding:.75rem 1rem;text-align:center;font-size:.8125rem;color:#92400e;">
+  ⚠️ <strong>Not legal advice.</strong> This generates a general template. For complex cookie setups or regulated industries, have a lawyer review it.
+</div>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'document' 'cookie-policy-generator' %}"
+            hx-target="#cookie-output"
+            hx-swap="innerHTML"
+            hx-indicator="#cookie-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="site_name">Website / App Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="site_name" name="site_name" class="ai-tool-input"
+              placeholder="e.g. MyStore, TaskFlow App">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="site_url">Website URL <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="site_url" name="site_url" class="ai-tool-input"
+              placeholder="e.g. https://mystore.com">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label">Cookie Types Used</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;margin-top:.375rem;">
+            {% for ct in "Essential / Strictly Necessary,Analytics (Google Analytics, Hotjar),Marketing / Advertising,Social Media Embed Cookies,Preference / Functional Cookies".split(",") %}
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+              <input type="checkbox" name="cookie_types" value="{{ ct }}" {% if "Essential" in ct %}checked{% endif %} style="accent-color:#16a34a;">
+              {{ ct }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="contact_email">Contact Email <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="contact_email" name="contact_email" class="ai-tool-input"
+              placeholder="e.g. privacy@mysite.com">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="jurisdiction">Jurisdiction</label>
+            <select id="jurisdiction" name="jurisdiction" class="ai-tool-select">
+              <option value="GDPR (EU/UK)">GDPR (EU/UK)</option>
+              <option value="GDPR + CCPA (Global)">GDPR + CCPA (Global)</option>
+              <option value="CCPA (California)">CCPA (California)</option>
+              <option value="General International">General International</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Cookie Policy →</button>
+        <div id="cookie-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating cookie policy…</span>
+        </div>
+      </form>
+    </div>
+    <div id="cookie-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Sections Included in Every Cookie Policy</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.875rem;">
+      {% for section in "What Are Cookies,Types of Cookies We Use,First-Party vs Third-Party,Analytics Cookies,Marketing Cookies,How to Manage Cookies,Browser Cookie Settings,Cookie Consent,Updates to This Policy,Contact Information".split(",") %}
+      <div style="display:flex;align-items:center;gap:.5rem;padding:.75rem;background:#f0fdf4;border-radius:.375rem;font-size:.875rem;color:#374151;">
+        <span style="color:#16a34a;font-weight:700;">✓</span> {{ section }}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I need a cookie policy?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, if your website uses any cookies beyond strictly necessary ones (analytics, ads, social media embeds), GDPR and ePrivacy Directive require you to inform users and obtain consent. Most websites need a cookie policy and a consent banner.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between a cookie policy and a privacy policy?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">A privacy policy covers all personal data collection and processing. A cookie policy specifically explains what cookies your site uses, their purpose, and how users can control them. Some sites combine them; others keep them separate. Both are often required.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I need a cookie consent banner too?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, under GDPR, you must obtain informed consent before setting non-essential cookies (analytics, marketing). A cookie policy alone isn't enough — you need a consent mechanism. Essential cookies don't require consent.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What are "essential" cookies?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Essential cookies are necessary for the website to function — session cookies, CSRF tokens, shopping cart cookies, login state. They cannot be disabled without breaking the site and don't require consent under GDPR. Google Analytics and advertising cookies are NOT essential.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/document/privacy-policy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Privacy Policy Generator</a>
+      <a href="/tools/document/terms-and-conditions-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Terms & Conditions</a>
+      <a href="/tools/document/disclaimer-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Disclaimer Generator</a>
+      <a href="/tools/document/nda-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">NDA Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

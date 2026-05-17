@@ -719,6 +719,346 @@ def nda_generator(request):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# 21. Cookie Policy Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def cookie_policy_generator(request):
+    site_name = request.POST.get("site_name", "").strip()
+    site_url = request.POST.get("site_url", "").strip()
+    cookie_types = request.POST.get("cookie_types", "essential, analytics, marketing")
+    contact_email = request.POST.get("contact_email", "").strip()
+    jurisdiction = request.POST.get("jurisdiction", "GDPR (EU/UK)")
+
+    if not site_name:
+        return HttpResponse(_error_html("Please enter your website name."))
+
+    system = (
+        "You are a legal document specialist. Write clear, GDPR-compliant cookie policies "
+        "in plain English. Include: what cookies are, types used and their purpose, "
+        "third-party cookies, how users can manage/opt-out, updates to the policy, contact info. "
+        "Use clear headings for each section."
+    )
+    user = (
+        f"Website name: {site_name}\n"
+        f"Website URL: {site_url or 'not provided'}\n"
+        f"Cookie types used: {cookie_types}\n"
+        f"Contact email: {contact_email or '[your contact email]'}\n"
+        f"Jurisdiction: {jurisdiction}\n\n"
+        "Generate a complete cookie policy."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1500, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "cookie-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 22. Disclaimer Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def disclaimer_generator(request):
+    site_name = request.POST.get("site_name", "").strip()
+    disclaimer_type = request.POST.get("disclaimer_type", "general")
+    industry = request.POST.get("industry", "").strip()
+    contact_email = request.POST.get("contact_email", "").strip()
+
+    if not site_name:
+        return HttpResponse(_error_html("Please enter your website or business name."))
+
+    system = (
+        "You are a legal document specialist. Write clear, professional disclaimers that "
+        "protect businesses from liability. Use plain language. Tailor content to the "
+        "disclaimer type (medical/financial/general/affiliate/fitness). Include: "
+        "limitation of liability, no professional advice, accuracy disclaimer, "
+        "external links, right to change content, contact info."
+    )
+    user = (
+        f"Website/Business name: {site_name}\n"
+        f"Disclaimer type: {disclaimer_type}\n"
+        f"Industry/niche: {industry or 'general'}\n"
+        f"Contact email: {contact_email or '[your contact email]'}\n\n"
+        "Generate a complete disclaimer."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1000, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "disclaimer-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 23. Article Rewriter
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def article_rewriter(request):
+    article = request.POST.get("article", "").strip()
+    style = request.POST.get("style", "match original tone")
+    goal = request.POST.get("goal", "uniqueness and clarity")
+
+    if not article:
+        return HttpResponse(_error_html("Please paste the article to rewrite."))
+    if len(article) > 10000:
+        article = article[:10000]
+
+    system = (
+        "You are an expert content editor. Rewrite articles to be unique and engaging "
+        "while preserving the original meaning and key facts. Vary sentence structure, "
+        "use active voice, improve flow and readability. Do not add new facts or remove "
+        "important information."
+    )
+    user = (
+        f"Style: {style}. Goal: {goal}.\n\n"
+        f"ORIGINAL ARTICLE:\n{article}\n\n"
+        "Provide the fully rewritten version:"
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=2000, temperature=0.75)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "article-rewriter-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 24. Resume Summary Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def resume_summary_generator(request):
+    job_title = request.POST.get("job_title", "").strip()
+    years_exp = request.POST.get("years_exp", "").strip()
+    skills = request.POST.get("skills", "").strip()
+    achievement = request.POST.get("achievement", "").strip()
+    target_role = request.POST.get("target_role", "").strip()
+
+    if not job_title:
+        return HttpResponse(_error_html("Please enter your job title."))
+
+    system = (
+        "You are an expert resume writer and career coach. Write compelling professional "
+        "summary statements (3–4 sentences, 50–80 words) for resumes. Focus on value "
+        "delivered, key skills, and career goals. Make it specific, achievement-oriented, "
+        "and ATS-friendly. Generate 3 different versions."
+    )
+    user = (
+        f"Current/most recent role: {job_title}\n"
+        f"Years of experience: {years_exp or 'not specified'}\n"
+        f"Key skills: {skills or 'standard for the role'}\n"
+        f"Key achievement: {achievement or 'not specified'}\n"
+        f"Target role: {target_role or 'similar to current'}\n\n"
+        "Write 3 strong resume professional summary options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.75)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "resume-summary-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 25. Resume Bullet Point Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def resume_bullet_generator(request):
+    job_title = request.POST.get("job_title", "").strip()
+    responsibility = request.POST.get("responsibility", "").strip()
+    achievement = request.POST.get("achievement", "").strip()
+    industry = request.POST.get("industry", "").strip()
+
+    if not job_title or not responsibility:
+        return HttpResponse(_error_html("Please enter your job title and a responsibility."))
+
+    system = (
+        "You are an expert resume writer. Transform job duties into powerful, quantifiable "
+        "resume bullet points. Start each with a strong action verb. Include metrics where "
+        "possible. Use CAR (Challenge–Action–Result) or PAR format. "
+        "Write for ATS optimization — be specific and keyword-rich."
+    )
+    user = (
+        f"Job title: {job_title}\n"
+        f"Industry: {industry or 'not specified'}\n"
+        f"Responsibility/task: {responsibility}\n"
+        f"Achievement or result: {achievement or 'improve as appropriate'}\n\n"
+        "Generate 5 strong resume bullet points for this responsibility."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.7)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "resume-bullet-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 26. Interview Question Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def interview_question_generator(request):
+    job_title = request.POST.get("job_title", "").strip()
+    level = request.POST.get("level", "mid-level")
+    skills = request.POST.get("skills", "").strip()
+    question_type = request.POST.get("question_type", "mixed (behavioral + technical + situational)")
+
+    if not job_title:
+        return HttpResponse(_error_html("Please enter a job title."))
+
+    system = (
+        "You are an expert HR professional and hiring manager. Generate insightful interview "
+        "questions that reveal candidates' skills, experience, and problem-solving ability. "
+        "For each question, add a brief 'Look for:' note on what makes a strong answer. "
+        "Format: Q: [question]\nLook for: [key signals]\n"
+    )
+    user = (
+        f"Job title: {job_title}\n"
+        f"Seniority level: {level}\n"
+        f"Key skills/requirements: {skills or 'standard for this role'}\n"
+        f"Question type preference: {question_type}\n\n"
+        "Generate 10 strong interview questions with interviewer notes."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.7)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "interview-questions-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 27. AI Business Name Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def ai_business_name_generator(request):
+    description = request.POST.get("description", "").strip()
+    industry = request.POST.get("industry", "").strip()
+    style = request.POST.get("style", "modern and professional")
+    keywords = request.POST.get("keywords", "").strip()
+
+    if not description:
+        return HttpResponse(_error_html("Please describe your business."))
+
+    keywords_line = f"Keywords to consider: {keywords}." if keywords else ""
+    system = (
+        "You are a branding expert and creative naming specialist. Generate memorable, "
+        "unique business names that are: easy to pronounce and spell, domain-friendly "
+        "(ideally .com available), reflect the brand values, and stand out. "
+        "For each name provide: name, a 1-line rationale, domain tip. "
+        "Generate 10 business name ideas."
+    )
+    user = (
+        f"Business description: {description}\n"
+        f"Industry: {industry or 'not specified'}\n"
+        f"Naming style: {style}\n"
+        f"{keywords_line}\n\n"
+        "Generate 10 unique business name ideas with rationale."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "business-name-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 28. AI FAQ Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def ai_faq_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    audience = request.POST.get("audience", "").strip()
+    num_faqs = request.POST.get("num_faqs", "8")
+    context = request.POST.get("context", "").strip()
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic or product."))
+
+    context_line = f"Additional context: {context}." if context else ""
+    system = (
+        "You are an SEO expert and content strategist. Generate FAQs that target real "
+        "search queries (People Also Ask), are concise and helpful, and are structured "
+        "for Google featured snippets. Each answer should be 2–4 sentences. "
+        "Format: Q: [question]\nA: [answer]\n"
+    )
+    user = (
+        f"Topic/product/service: {topic}\n"
+        f"Target audience: {audience or 'general audience'}\n"
+        f"{context_line}\n\n"
+        f"Generate {num_faqs} SEO-optimized FAQ questions and answers."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1400, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "faq-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 29. Cold Email Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def cold_email_generator(request):
+    offer = request.POST.get("offer", "").strip()
+    recipient_role = request.POST.get("recipient_role", "").strip()
+    your_name = request.POST.get("your_name", "").strip()
+    company = request.POST.get("company", "").strip()
+    goal = request.POST.get("goal", "book a call")
+    tone = request.POST.get("tone", "professional and direct")
+
+    if not offer:
+        return HttpResponse(_error_html("Please describe what you're offering."))
+
+    system = (
+        "You are a sales copywriter expert in cold outreach. Write cold emails that: "
+        "are under 150 words, lead with the recipient's value not self-promotion, "
+        "have a compelling subject line, one clear CTA, and feel human and personalized. "
+        "Avoid spam trigger words. Output: Subject: [line]\n\n[email body]"
+    )
+    user = (
+        f"Sender: {your_name or '[Your Name]'} from {company or '[Your Company]'}\n"
+        f"Recipient role: {recipient_role or 'decision maker'}\n"
+        f"What you're offering: {offer}\n"
+        f"Goal of the email: {goal}\n"
+        f"Tone: {tone}\n\n"
+        "Write a compelling cold email with subject line."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.8)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "cold-email-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 30. YouTube Title Generator
+# ─────────────────────────────────────────────────────────────────────────────
+@require_POST
+def youtube_title_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    video_type = request.POST.get("video_type", "tutorial")
+    keyword = request.POST.get("keyword", "").strip()
+    audience = request.POST.get("audience", "").strip()
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter your video topic."))
+
+    keyword_line = f"Target keyword: {keyword}." if keyword else ""
+    audience_line = f"Target audience: {audience}." if audience else ""
+    system = (
+        "You are a YouTube SEO expert. Generate video titles that are click-worthy, "
+        "under 70 characters, include the target keyword naturally, use proven formulas "
+        "(How to, X Ways, Why, The Truth About, etc.), and rank well in YouTube search. "
+        "Generate 10 title options numbered 1–10."
+    )
+    user = (
+        f"Video topic: {topic}\n"
+        f"Video type: {video_type}\n"
+        f"{keyword_line} {audience_line}\n\n"
+        "Generate 10 compelling YouTube title options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=400, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "youtube-title-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Dispatcher map (tool_slug → handler)
 # ─────────────────────────────────────────────────────────────────────────────
 AI_HANDLERS = {
@@ -744,4 +1084,15 @@ AI_HANDLERS = {
     "terms-and-conditions-generator": terms_conditions_generator,
     "resignation-letter-generator": resignation_letter_generator,
     "nda-generator": nda_generator,
+    # Batch 3
+    "cookie-policy-generator": cookie_policy_generator,
+    "disclaimer-generator": disclaimer_generator,
+    "article-rewriter": article_rewriter,
+    "resume-summary-generator": resume_summary_generator,
+    "resume-bullet-generator": resume_bullet_generator,
+    "interview-question-generator": interview_question_generator,
+    "ai-business-name-generator": ai_business_name_generator,
+    "ai-faq-generator": ai_faq_generator,
+    "cold-email-generator": cold_email_generator,
+    "youtube-title-generator": youtube_title_generator,
 }

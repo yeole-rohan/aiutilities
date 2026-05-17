@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cold Email Generator — Free AI Cold Email Writer | AIUtilities{% endblock %}
+{% block description %}Generate high-converting cold emails with subject line in seconds. Enter your offer and target role — AI writes a concise, personalized cold email under 150 words. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'cold-email-generator' %}{% endblock %}
+{% block og_title %}Cold Email Generator — Free AI Cold Email Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate high-converting cold emails with subject line in seconds. Enter your offer and target role — AI writes a concise, personalized cold email under 150 words. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'cold-email-generator' %}{% endblock %}
+{% block twitter_title %}Cold Email Generator — Free AI Cold Email Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate high-converting cold emails with subject line in seconds. AI writes a concise, personalized cold email under 150 words. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Cold Email Generator","description":"Generate high-converting cold emails with subject line — concise, personalized, under 150 words.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'cold-email-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"Cold Email Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'cold-email-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Cold Email Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write cold emails that actually get replied to. AI generates a compelling subject line and email body — under 150 words, value-first, with one clear CTA. Free.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Subject line included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 150 words</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'cold-email-generator' %}"
+            hx-target="#cold-email-output"
+            hx-swap="innerHTML"
+            hx-indicator="#cold-email-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="offer">What Are You Offering? <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="offer" name="offer" class="ai-tool-input"
+            placeholder="e.g. SEO services that doubled traffic for 3 SaaS companies, a free audit of their email campaigns">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="recipient_role">Recipient Role / Title <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="recipient_role" name="recipient_role" class="ai-tool-input"
+              placeholder="e.g. Marketing Director, Founder, Head of HR">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="goal">Email Goal</label>
+            <select id="goal" name="goal" class="ai-tool-select">
+              <option value="book a 15-minute call">Book a Call</option>
+              <option value="get a reply">Get a Reply</option>
+              <option value="offer a free audit or demo">Offer Free Demo / Audit</option>
+              <option value="share a case study">Share a Case Study</option>
+              <option value="introduce a partnership idea">Partnership Introduction</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="your_name">Your Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="your_name" name="your_name" class="ai-tool-input"
+              placeholder="e.g. Alex Johnson">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="professional and direct">Professional & Direct</option>
+              <option value="friendly and conversational">Friendly & Conversational</option>
+              <option value="bold and confident">Bold & Confident</option>
+              <option value="warm and helpful">Warm & Helpful</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Cold Email →</button>
+        <div id="cold-email-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your cold email…</span>
+        </div>
+      </form>
+    </div>
+    <div id="cold-email-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">The 5 Rules of High-Converting Cold Emails</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Lead With Value, Not Self-Promotion</h3><p style="font-size:.8125rem;color:#374151;">"I can help you [specific result]" beats "I'm a [job title] at [company]" every time. The reader's first question is: what's in it for me?</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Keep It Under 150 Words</h3><p style="font-size:.8125rem;color:#374151;">Decision-makers scan, they don't read. If your email can't be read in 30 seconds, it won't be read at all. Short emails get more replies.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">One CTA Only</h3><p style="font-size:.8125rem;color:#374151;">Give the reader one single action. "Would you be open to a 15-minute call this week?" is better than multiple asks. More options = decision paralysis.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">4</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Personalise the Opening Line</h3><p style="font-size:.8125rem;color:#374151;">Reference something specific about the company or person (a LinkedIn post, recent funding, a product feature). Generic openers get ignored. Specific openers get read.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">5</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Follow Up (Politely)</h3><p style="font-size:.8125rem;color:#374151;">Most replies come from the 2nd or 3rd follow-up. Send 2–3 follow-ups spaced 3–5 days apart. Each should add new value, not just "checking in."</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's a good reply rate for cold emails?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Industry average is 1–5%. A well-crafted, personalised sequence can reach 10–20%. Open rates of 40–50% are achievable with strong subject lines. Track open rate (subject line test), reply rate (email body test), and meeting rate (CTA test) separately.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the best time to send cold emails?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Tuesday–Thursday, 7–9am or 4–6pm in the recipient's local timezone tend to perform best. Avoid Monday mornings (inbox overload) and Friday afternoons (weekend mindset). A/B test send times with your specific audience to find what works for your niche.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use my personal email or a dedicated domain?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Use a dedicated subdomain (e.g., outreach@mail.yourdomain.com) to protect your main domain's email reputation. Warm up the new email address by sending low volumes for 2–4 weeks first. Never send bulk cold email from your primary business address.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/social-media/linkedin-headline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Headline Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

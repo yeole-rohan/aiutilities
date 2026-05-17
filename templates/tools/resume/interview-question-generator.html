@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Interview Question Generator — Free AI Interview Questions by Role | AIUtilities{% endblock %}
+{% block description %}Generate 10 tailored interview questions with interviewer notes for any role. Enter job title, level, and skills — get behavioral, technical, and situational questions. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'interview-question-generator' %}{% endblock %}
+{% block og_title %}Interview Question Generator — Free AI Interview Questions by Role | AIUtilities{% endblock %}
+{% block og_description %}Generate 10 tailored interview questions with interviewer notes for any role. Enter job title, level, and skills — get behavioral, technical, and situational questions. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'interview-question-generator' %}{% endblock %}
+{% block twitter_title %}Interview Question Generator — Free AI Interview Questions | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 10 tailored interview questions with interviewer notes for any role. Behavioral, technical, and situational. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Interview Question Generator","description":"Generate 10 tailored interview questions with interviewer notes for any job role and seniority level.","url":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'interview-question-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Resume Tools","item":"{{ SITE_URL }}/tools/resume/"},{"@type":"ListItem","position":3,"name":"Interview Question Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'interview-question-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Interview Question Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate 10 targeted interview questions for any role — with "Look for" interviewer notes. Useful for both hiring managers preparing interviews and candidates preparing answers.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 10 questions with notes</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Behavioral + technical</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'resume' 'interview-question-generator' %}"
+            hx-target="#interview-output"
+            hx-swap="innerHTML"
+            hx-indicator="#interview-spinner">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="job_title">Job Title <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="job_title" name="job_title" class="ai-tool-input"
+              placeholder="e.g. Product Manager, Data Engineer, Sales Rep">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="level">Seniority Level</label>
+            <select id="level" name="level" class="ai-tool-select">
+              <option value="entry-level / junior">Entry-Level / Junior</option>
+              <option value="mid-level" selected>Mid-Level</option>
+              <option value="senior">Senior</option>
+              <option value="manager / team lead">Manager / Team Lead</option>
+              <option value="director / VP">Director / VP</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="skills">Key Skills / Requirements <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="skills" name="skills" class="ai-tool-input"
+            placeholder="e.g. Python, stakeholder management, SQL, Agile, cold calling">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="question_type">Question Type</label>
+          <select id="question_type" name="question_type" class="ai-tool-select">
+            <option value="mixed (behavioral + technical + situational)">Mixed — Behavioral + Technical + Situational</option>
+            <option value="behavioral (STAR-based)">Behavioral Only (STAR Method)</option>
+            <option value="technical and skills-based">Technical / Skills-Based</option>
+            <option value="culture fit and values">Culture Fit & Values</option>
+            <option value="situational and hypothetical">Situational / Hypothetical</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Interview Questions →</button>
+        <div id="interview-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating interview questions…</span>
+        </div>
+      </form>
+    </div>
+    <div id="interview-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Types of Interview Questions</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:1rem;">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Behavioral</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">"Tell me about a time when…" — Reveals how candidates handled real past situations using the STAR method.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💻</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Technical</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Tests specific skills and knowledge required for the role — coding, tools, domain expertise.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🧩</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Situational</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">"What would you do if…" — Tests judgment and problem-solving in hypothetical scenarios.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🤝</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Culture Fit</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Assesses values, work style, and alignment with the team and company mission.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can candidates use this tool too?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Absolutely. Candidates can generate likely interview questions for a role they're applying to and prepare STAR-method answers in advance. This is one of the most effective interview prep strategies — practice answering the generated questions out loud before your interview.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What is the STAR method?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">STAR stands for Situation, Task, Action, Result. It's the gold standard format for answering behavioral questions: describe the context (Situation), your role (Task), what you did (Action), and what happened (Result, ideally with a number). Keeps answers concise and impactful.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many interview questions should I prepare for an interview panel?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">For a 45–60 minute interview, plan 8–12 questions plus 2–3 follow-up probes per question. Not all questions will be asked — have extras ready. For panel interviews, each interviewer typically covers a different area (technical, behavioral, culture) so coordinate question types in advance.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/resume/job-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Job Description Generator</a>
+      <a href="/tools/resume/resume-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Resume Summary Generator</a>
+      <a href="/tools/resume/ats-resume-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">ATS Resume Checker</a>
+      <a href="/tools/document/cover-letter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cover Letter Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

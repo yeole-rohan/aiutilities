@@ -110,6 +110,7 @@ CATEGORIES = [
             {"slug": "slug-generator", "name": "Slug Generator", "description": "Generate URL-friendly slugs from any text."},
             {"slug": "word-frequency-analyzer", "name": "Word Frequency Analyzer", "description": "Analyse how often each word appears in text."},
             {"slug": "paraphrasing-tool", "name": "Paraphrasing Tool", "description": "Rewrite any text in a different style while keeping the original meaning.", "ai": True},
+            {"slug": "article-rewriter", "name": "Article Rewriter", "description": "Rewrite full articles to be unique and plagiarism-free with AI.", "ai": True},
         ],
     },
     {
@@ -205,8 +206,8 @@ CATEGORIES = [
         "tools": [
             {"slug": "privacy-policy-generator", "name": "Privacy Policy Generator", "description": "Generate a GDPR & CCPA-compliant privacy policy with AI.", "ai": True},
             {"slug": "terms-and-conditions-generator", "name": "Terms & Conditions Generator", "description": "Generate terms and conditions for your website with AI.", "ai": True},
-            {"slug": "cookie-policy-generator", "name": "Cookie Policy Generator", "description": "Generate a cookie policy for your website."},
-            {"slug": "disclaimer-generator", "name": "Disclaimer Generator", "description": "Generate a disclaimer for your website or app."},
+            {"slug": "cookie-policy-generator", "name": "Cookie Policy Generator", "description": "Generate a GDPR-compliant cookie policy for your website with AI.", "ai": True},
+            {"slug": "disclaimer-generator", "name": "Disclaimer Generator", "description": "Generate a professional disclaimer for your website or app with AI.", "ai": True},
             {"slug": "nda-generator", "name": "NDA Generator", "description": "Generate a non-disclosure agreement with AI.", "ai": True},
             {"slug": "resignation-letter-generator", "name": "Resignation Letter Generator", "description": "Generate a professional resignation letter with AI.", "ai": True},
             {"slug": "cover-letter-generator", "name": "Cover Letter Generator", "description": "Generate a tailored cover letter for job applications.", "ai": True},
@@ -233,6 +234,9 @@ CATEGORIES = [
             {"slug": "ats-resume-checker", "name": "ATS Resume Checker", "description": "Check if your resume passes ATS filters.", "ai": True},
             {"slug": "cover-letter-generator", "name": "Cover Letter Generator", "description": "Generate tailored cover letters.", "ai": True},
             {"slug": "job-description-generator", "name": "Job Description Generator", "description": "Write clear, inclusive job descriptions with AI.", "ai": True},
+            {"slug": "resume-summary-generator", "name": "Resume Summary Generator", "description": "Generate 3 powerful resume professional summary options with AI.", "ai": True},
+            {"slug": "resume-bullet-generator", "name": "Resume Bullet Point Generator", "description": "Transform job duties into powerful, quantifiable resume bullets with AI.", "ai": True},
+            {"slug": "interview-question-generator", "name": "Interview Question Generator", "description": "Generate 10 tailored interview questions with interviewer notes.", "ai": True},
         ],
     },
     {
@@ -246,6 +250,7 @@ CATEGORIES = [
             {"slug": "social-media-post-generator", "name": "Social Media Post Generator", "description": "Generate engaging posts for any platform with AI.", "ai": True},
             {"slug": "linkedin-headline-generator", "name": "LinkedIn Headline Generator", "description": "Write a magnetic LinkedIn headline that attracts recruiters.", "ai": True},
             {"slug": "youtube-thumbnail-maker", "name": "YouTube Thumbnail Maker", "description": "Create eye-catching YouTube thumbnails."},
+            {"slug": "youtube-title-generator", "name": "YouTube Title Generator", "description": "Generate 10 click-worthy, SEO-optimized YouTube video titles with AI.", "ai": True},
         ],
     },
     {
@@ -299,6 +304,9 @@ CATEGORIES = [
             {"slug": "ai-meta-description-generator", "name": "AI Meta Description Generator", "description": "Generate click-worthy SEO meta descriptions with AI.", "ai": True},
             {"slug": "ai-content-generator", "name": "AI Content Generator", "description": "Generate blog posts, articles, and web copy with AI.", "ai": True},
             {"slug": "ai-essay-generator", "name": "AI Essay Generator", "description": "Generate well-structured essays on any topic with AI.", "ai": True},
+            {"slug": "ai-business-name-generator", "name": "AI Business Name Generator", "description": "Generate 10 memorable, domain-friendly business names with AI.", "ai": True},
+            {"slug": "ai-faq-generator", "name": "AI FAQ Generator", "description": "Generate SEO-optimized FAQ questions and answers for any topic.", "ai": True},
+            {"slug": "cold-email-generator", "name": "Cold Email Generator", "description": "Write high-converting cold emails with subject line and CTA with AI.", "ai": True},
         ],
     },
 ]

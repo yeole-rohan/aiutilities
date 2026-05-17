@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}YouTube Title Generator — Free AI YouTube Video Title Creator | AIUtilities{% endblock %}
+{% block description %}Generate 10 click-worthy, SEO-optimized YouTube video titles with AI. Enter your topic and target keyword — get titles that rank and drive clicks. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-title-generator' %}{% endblock %}
+{% block og_title %}YouTube Title Generator — Free AI YouTube Video Title Creator | AIUtilities{% endblock %}
+{% block og_description %}Generate 10 click-worthy, SEO-optimized YouTube video titles with AI. Enter your topic and target keyword — get titles that rank and drive clicks. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-title-generator' %}{% endblock %}
+{% block twitter_title %}YouTube Title Generator — Free AI YouTube Video Title Creator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 10 click-worthy, SEO-optimized YouTube titles with AI. Enter topic and keyword — get titles that rank and drive clicks. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"YouTube Title Generator","description":"Generate 10 click-worthy, SEO-optimized YouTube video titles using proven title formulas.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-title-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"YouTube Title Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-title-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      YouTube Title Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate 10 YouTube video titles that rank and get clicked. AI uses proven formulas — curiosity gaps, power words, keyword placement — to maximize views and CTR.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 10 titles generated</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 70 characters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'youtube-title-generator' %}"
+            hx-target="#youtube-title-output"
+            hx-swap="innerHTML"
+            hx-indicator="#youtube-title-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Video Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input"
+            placeholder="e.g. how to grow on YouTube, ketogenic diet for beginners, passive income ideas 2025">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="video_type">Video Type</label>
+            <select id="video_type" name="video_type" class="ai-tool-select">
+              <option value="tutorial / how-to">Tutorial / How-To</option>
+              <option value="listicle (X Ways / X Things)">Listicle (X Ways / X Things)</option>
+              <option value="case study / story">Case Study / Story</option>
+              <option value="review or comparison">Review / Comparison</option>
+              <option value="beginner's guide">Beginner's Guide</option>
+              <option value="tips and tricks">Tips & Tricks</option>
+              <option value="reaction or commentary">Reaction / Commentary</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="keyword">Target Keyword <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="keyword" name="keyword" class="ai-tool-input"
+              placeholder="e.g. YouTube SEO, keto diet, passive income">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="audience" name="audience" class="ai-tool-input"
+            placeholder="e.g. beginner YouTubers, small business owners, fitness beginners">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate YouTube Titles →</button>
+        <div id="youtube-title-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating YouTube title ideas…</span>
+        </div>
+      </form>
+    </div>
+    <div id="youtube-title-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Proven YouTube Title Formulas</h2>
+    <div style="display:grid;gap:.875rem;">
+      {% for formula in "How to [Goal] Without [Common Obstacle] (e.g. How to Grow on YouTube Without Buying Ads),X [Things/Ways/Mistakes] That [Strong Outcome] (e.g. 7 Mistakes That Kill Your YouTube Channel),The Truth About [Topic] Nobody Tells You,I Tried [Thing] for [Time] — Here's What Happened,Why [Mainstream Belief] Is Wrong (and What to Do Instead),[Number]-Step [Process] to [Desired Result] in [Timeframe]".split(",") %}
+      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.875rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+        <span style="color:#16a34a;font-weight:700;flex-shrink:0;margin-top:.1rem;">→</span>
+        <p style="font-size:.875rem;color:#374151;margin:0;">{{ formula }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a YouTube title be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Aim for 50–70 characters. YouTube shows 60–70 characters before truncating in most views. Put your most important keywords and hook in the first 50 characters. The full title can be up to 100 characters, but the visible portion is what drives clicks.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should the keyword appear at the beginning of the title?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">YouTube's algorithm gives more weight to keywords in the first few words. However, click-through rate (CTR) also matters. Balance SEO (keyword early) with click appeal (hook first). Test both approaches — sometimes a curiosity-driven hook that pushes the keyword to mid-title outperforms.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I need capital letters and brackets in titles?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Title Case vs. sentence case is a channel style choice — both work. Brackets like [2025], [Full Guide], or [MUST WATCH] can boost CTR by adding context and urgency, especially in search results. Use them sparingly — if every video has brackets, they lose effect.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I change my YouTube title after publishing?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, you can update titles at any time in YouTube Studio. This is actually a useful strategy — if a video isn't getting views, try A/B-testing a new title. YouTube's built-in A/B testing for titles (via YouTube Studio Experiments) is available to eligible channels.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/social-media-post-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Social Media Post Generator</a>
+      <a href="/tools/social-media/hashtag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hashtag Generator</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Description Generator</a>
+      <a href="/tools/ai/ai-faq-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI FAQ Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

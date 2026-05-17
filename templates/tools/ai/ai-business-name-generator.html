@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Business Name Generator — Free Business Name Ideas | AIUtilities{% endblock %}
+{% block description %}Generate 10 memorable, unique business names with AI. Enter your business description, industry, and style — get domain-friendly name ideas with rationale. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-name-generator' %}{% endblock %}
+{% block og_title %}AI Business Name Generator — Free Business Name Ideas | AIUtilities{% endblock %}
+{% block og_description %}Generate 10 memorable, unique business names with AI. Enter your business description, industry, and style — get domain-friendly name ideas with rationale. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-name-generator' %}{% endblock %}
+{% block twitter_title %}AI Business Name Generator — Free Business Name Ideas | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 10 memorable, unique business names with AI. Enter description, industry, and style — get domain-friendly names with rationale. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Business Name Generator","description":"Generate 10 memorable, domain-friendly business name ideas with rationale using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-name-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Business Name Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-name-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Business Name Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate 10 memorable, brandable business names in seconds. AI creates names that are easy to spell, domain-friendly, and come with a rationale — free.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 10 names generated</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Domain-friendly</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-business-name-generator' %}"
+            hx-target="#business-name-output"
+            hx-swap="innerHTML"
+            hx-indicator="#business-name-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="description">What Does Your Business Do? <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="description" name="description" class="ai-tool-input"
+            placeholder="e.g. AI-powered accounting software for freelancers, eco-friendly dog treats, online fitness coaching">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="industry">Industry <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="industry" name="industry" class="ai-tool-input"
+              placeholder="e.g. SaaS, food & beverage, health & wellness">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="style">Naming Style</label>
+            <select id="style" name="style" class="ai-tool-select">
+              <option value="modern and professional">Modern & Professional</option>
+              <option value="creative and playful">Creative & Playful</option>
+              <option value="bold and powerful">Bold & Powerful</option>
+              <option value="simple and minimal">Simple & Minimal</option>
+              <option value="tech-forward and innovative">Tech-Forward</option>
+              <option value="warm and friendly">Warm & Friendly</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="keywords">Keywords to Include <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="keywords" name="keywords" class="ai-tool-input"
+            placeholder="e.g. swift, green, hub, labs, flow">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Business Names →</button>
+        <div id="business-name-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating business name ideas…</span>
+        </div>
+      </form>
+    </div>
+    <div id="business-name-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Great Business Name?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Easy to Spell & Say</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">If people can't spell it after hearing it, they can't Google it. Test by saying it out loud and asking someone to write it down.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌐</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">.com Domain Available</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Check availability immediately. Use Namecheap, GoDaddy, or Google Domains. If your .com is taken, consider a suffix (get + name, try + name) before settling for .co or .io.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📱</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Social Handle Available</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Check Instagram, Twitter/X, LinkedIn, and TikTok for your shortlisted names using Namecheckr. Consistency across platforms is important for brand recognition.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">™</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">No Trademark Conflicts</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Before registering, do a basic trademark search in your country (USPTO for US, EUIPO for EU). A name may be free on Google but trademarked in your industry class.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I check if a business name is taken?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Check: (1) Domain availability at any domain registrar, (2) Trademark database for your country, (3) Your state/country's business registration database, (4) Google the name to see existing businesses. All four checks are needed before committing.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use my own name as the business name?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Eponymous names work well for consultants, freelancers, and personal brands (accountants, lawyers, designers). They're harder to scale and sell later since the business is tied to your identity. For scalable businesses or SaaS, a distinct brand name usually works better.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is a shorter business name always better?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Shorter is easier to remember and type, but it's not everything. A slightly longer, memorable name beats a short, forgettable one. The sweet spot is 2 syllables or 2 short words. Some of the world's most valuable brands — Amazon, Apple, Google — are 2–3 syllables.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-faq-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI FAQ Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/ai/ai-meta-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
