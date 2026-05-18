@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}LinkedIn Summary Generator — Free AI LinkedIn About Section Writer | AIUtilities{% endblock %}
+{% block description %}Generate a compelling LinkedIn About section with AI. Enter your job title, skills, and goals — get 2 professional summary versions ready to copy. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-summary-generator' %}{% endblock %}
+{% block og_title %}LinkedIn Summary Generator — Free AI LinkedIn About Section Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a compelling LinkedIn About section with AI. Enter your job title, skills, and goals — get 2 professional summary versions ready to copy. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-summary-generator' %}{% endblock %}
+{% block twitter_title %}LinkedIn Summary Generator — Free AI About Section Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a compelling LinkedIn About section with AI. Job title, skills, goals — 2 versions. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"LinkedIn Summary Generator","description":"Generate a compelling LinkedIn About section using AI — with two tone variations optimized for profile views and recruiter outreach.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-summary-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"LinkedIn Summary Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'linkedin-summary-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      LinkedIn Summary Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write a LinkedIn About section that gets noticed. Enter your role, key skills, and what you're looking for — get 2 tailored summary versions in seconds.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 2 tone variations</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Recruiter-optimized</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'linkedin-summary-generator' %}"
+            hx-target="#linkedin-output"
+            hx-swap="innerHTML"
+            hx-indicator="#linkedin-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="job_title">Job Title / Role <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="job_title" name="job_title" class="ai-tool-input"
+            placeholder="e.g. Senior Product Manager, Full-Stack Developer, Marketing Director">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="skills">Key Skills & Expertise <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="skills" name="skills" class="ai-tool-input"
+            placeholder="e.g. Python, data analysis, team leadership, SaaS growth, B2B sales">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="achievement">Top Achievement <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="achievement" name="achievement" class="ai-tool-input"
+            placeholder="e.g. grew ARR from $2M to $8M, built and led a 15-person engineering team, launched product used by 500K users">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="goal">What You're Looking For <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="goal" name="goal" class="ai-tool-input"
+              placeholder="e.g. senior leadership roles, freelance consulting, founding team opportunities">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Summary Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="professional and confident">Professional & Confident</option>
+              <option value="conversational and approachable">Conversational & Approachable</option>
+              <option value="data-driven and results-focused">Data-driven & Results-focused</option>
+              <option value="creative and storytelling">Creative & Storytelling</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate LinkedIn Summary →</button>
+        <div id="linkedin-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your LinkedIn summary…</span>
+        </div>
+      </form>
+    </div>
+    <div id="linkedin-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a LinkedIn About Section Work</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Hook in the first 2 lines</h3><p style="font-size:.8125rem;color:#374151;">LinkedIn shows only 2–3 lines before "See more." Put your most compelling hook first — a bold claim, a key result, or a clear statement of what you do and for whom.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Lead with value, not history</h3><p style="font-size:.8125rem;color:#374151;">Your About section isn't a resume timeline. Focus on what you bring — outcomes you create, problems you solve — not where you've been. Save the chronology for the Experience section.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">End with a call to action</h3><p style="font-size:.8125rem;color:#374151;">Tell readers what to do next: "Connect if you're building in fintech," "DM me about consulting engagements," or "Open to leadership roles in EdTech." Clear CTAs get more profile actions.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a LinkedIn About section be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">LinkedIn allows up to 2,600 characters. The sweet spot is 200–400 words — long enough to showcase your value, short enough that people read it all. Use short paragraphs and line breaks for readability. Walls of text get skipped.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I write in first person or third person?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">First person ("I help companies...") is almost always better for LinkedIn. It feels authentic and direct. Third person ("Jane is a senior PM who...") feels formal and distant — like reading a bio someone else wrote about you. Reserve third person for speaker bios and press kits.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will recruiters actually read my About section?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — if your headline and profile photo get them to click. Recruiters check your About section to understand your trajectory and goals, which your job titles alone don't show. A strong About section also helps LinkedIn's algorithm surface you in relevant searches.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/twitter-bio-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Twitter Bio Generator</a>
+      <a href="/tools/resume/resume-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Resume Summary Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/ai/salary-negotiation-email/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Salary Negotiation Email</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

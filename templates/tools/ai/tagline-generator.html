@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tagline Generator — Free AI Slogan & Tagline Creator | AIUtilities{% endblock %}
+{% block description %}Generate 10 catchy taglines and slogans with AI. Enter your brand name, industry, and value proposition — get memorable taglines ready to use. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'tagline-generator' %}{% endblock %}
+{% block og_title %}Tagline Generator — Free AI Slogan & Tagline Creator | AIUtilities{% endblock %}
+{% block og_description %}Generate 10 catchy taglines and slogans with AI. Enter your brand name, industry, and value proposition — get memorable taglines ready to use. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'tagline-generator' %}{% endblock %}
+{% block twitter_title %}Tagline Generator — Free AI Slogan Creator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 10 catchy taglines with AI. Brand, industry, value prop — memorable slogans. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Tagline Generator","description":"Generate 10 catchy, memorable taglines and slogans using AI — tailored to your brand, industry, and tone.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'tagline-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"Tagline Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'tagline-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Tagline Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Find your brand's perfect tagline. Enter what you do and who you serve — get 10 catchy, memorable slogans that stick in your audience's mind.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 10 tagline options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple tones</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'tagline-generator' %}"
+            hx-target="#tagline-output"
+            hx-swap="innerHTML"
+            hx-indicator="#tagline-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="brand_name">Brand / Product Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="brand_name" name="brand_name" class="ai-tool-input"
+            placeholder="e.g. NovaPay, GreenLeaf Coffee, Stackly, PetCare Pro">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="industry">Industry / Niche <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="industry" name="industry" class="ai-tool-input"
+              placeholder="e.g. fintech, specialty coffee, SaaS, pet care, fitness">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tagline Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="bold and punchy">Bold & Punchy</option>
+              <option value="warm and friendly">Warm & Friendly</option>
+              <option value="professional and trustworthy">Professional & Trustworthy</option>
+              <option value="witty and playful">Witty & Playful</option>
+              <option value="inspirational and motivating">Inspirational & Motivating</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="value_prop">What Makes You Different <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="value_prop" name="value_prop" class="ai-tool-input"
+            placeholder="e.g. 10-second payments, single-origin beans ethically sourced, no-code automation for SMBs">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Taglines →</button>
+        <div id="tagline-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Crafting your taglines…</span>
+        </div>
+      </form>
+    </div>
+    <div id="tagline-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Tagline Unforgettable?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Short enough to stick</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The best taglines are 2–6 words. "Just Do It." "Think Different." "Got Milk?" Brevity forces clarity. If it takes more than 6 words, you haven't found the core idea yet.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Says something only you can say</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">"Quality you can trust" could be any brand. A great tagline is so specific to your brand that a competitor using it would seem odd. Own your niche, your difference, your customer's transformation.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">❤️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Speaks to emotion, not features</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">People buy feelings, not specs. "Snap. Send. Done." beats "Share photos with friends easily." Lead with the outcome or feeling your customer wants, not the mechanism.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔊</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Sounds good out loud</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Taglines are spoken in ads, presentations, and pitches. Read candidates aloud — rhythm, alliteration, and cadence matter as much as meaning. If it trips off the tongue awkwardly, it won't stick.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between a tagline and a slogan?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">A tagline represents the brand permanently and appears alongside the logo — it defines who you are. A slogan is campaign-specific — "I'm Lovin' It" is McDonald's tagline; a limited-time deal might have its own slogan. This tool generates taglines, but the output works for campaign slogans too.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I trademark the tagline this tool generates?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Potentially yes — but check with a trademark attorney first. AI-generated text is not automatically trademarked. You'll need to conduct a trademark search (via USPTO or your country's trademark office) to ensure the phrase isn't already registered in your industry class before using it commercially.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I know which tagline to choose?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Test them. Share your top 3 with real potential customers (not just friends and colleagues) and ask which feels most like what the brand promises. A/B test them in your marketing. The tagline that makes your target customer feel understood is the right one — not the one that sounds cleverest to you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+      <a href="/tools/ai/ai-business-plan-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Plan Generator</a>
+      <a href="/tools/ai/ai-press-release-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Press Release Generator</a>
+      <a href="/tools/ecommerce/product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Description Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

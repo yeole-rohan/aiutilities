@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Business Plan Generator — Free Business Plan Writer | AIUtilities{% endblock %}
+{% block description %}Generate a complete business plan with AI. Enter your business idea, industry, and target market — get a structured plan with executive summary, market analysis, and financials. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-plan-generator' %}{% endblock %}
+{% block og_title %}AI Business Plan Generator — Free Business Plan Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a complete business plan with AI. Enter your business idea, industry, and target market — get a structured plan with executive summary, market analysis, and financials. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-plan-generator' %}{% endblock %}
+{% block twitter_title %}AI Business Plan Generator — Free Business Plan Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a complete business plan with AI. Idea, industry, market — get executive summary, market analysis, financials. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Business Plan Generator","description":"Generate a complete, structured business plan using AI — with executive summary, market analysis, strategy, and financial overview.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-plan-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Business Plan Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-business-plan-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Business Plan Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Describe your business idea and get a complete, structured business plan in seconds — executive summary, market analysis, competitive landscape, strategy, and financial overview.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full structured plan</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Investor-ready format</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-business-plan-generator' %}"
+            hx-target="#plan-output"
+            hx-swap="innerHTML"
+            hx-indicator="#plan-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="business_idea">Business Idea <span style="color:#ef4444;">*</span></label>
+          <textarea id="business_idea" name="business_idea" class="ai-tool-input" rows="3"
+            style="resize:vertical;font-family:inherit;"
+            placeholder="e.g. A subscription box service delivering curated local artisan food products to urban professionals every month"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="industry">Industry <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="industry" name="industry" class="ai-tool-input"
+              placeholder="e.g. Food & Beverage, SaaS, Retail, Healthcare">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="target_market">Target Market <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="target_market" name="target_market" class="ai-tool-input"
+              placeholder="e.g. urban millennials aged 25–40, small business owners">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="revenue_model">Revenue Model <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="revenue_model" name="revenue_model" class="ai-tool-input"
+            placeholder="e.g. monthly subscription $49/mo, freemium SaaS, one-time purchase + upsells">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Business Plan →</button>
+        <div id="plan-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Building your business plan…</span>
+        </div>
+      </form>
+    </div>
+    <div id="plan-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What's Included in Your Business Plan</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Executive Summary</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A concise overview of your business concept, mission, and the problem you solve — written so investors understand your idea in under 2 minutes.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📊</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Market Analysis</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Target market size, customer segments, and industry trends that support your opportunity. Shows you understand the landscape.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚔️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Competitive Landscape</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Who your competitors are, how you differentiate, and your unique value proposition. Includes your competitive moat.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💰</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Revenue & Financials</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Revenue model, pricing strategy, key cost drivers, and a path to profitability. Gives investors the numbers story.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this for a real investor pitch?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — as a starting point. Use the AI output as a structured first draft, then refine each section with real market research, actual financial projections, and your specific competitive insights. No AI-generated plan should go to investors without human review and real data.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long is the generated business plan?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The generated plan is typically 600–900 words across 6–8 sections. It's a high-level strategic outline — enough for an initial pitch or loan application — not a 40-page detailed business plan. You can always expand sections by re-generating with more specific inputs.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What if my idea is still vague?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">That's fine — describe what you know. Even "an app that connects freelance designers with startups" gives enough for a solid structure. The more specific you are (who it's for, how you make money), the more actionable the output. You can iterate by regenerating with more detail.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+      <a href="/tools/ai/ai-press-release-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Press Release Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

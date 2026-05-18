@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Press Release Generator — Free PR Writer | AIUtilities{% endblock %}
+{% block description %}Generate a professional press release with AI. Enter your headline, company, and announcement — get a ready-to-send press release in AP Style format. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-press-release-generator' %}{% endblock %}
+{% block og_title %}AI Press Release Generator — Free PR Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a professional press release with AI. Enter your headline, company, and announcement — get a ready-to-send press release in AP Style format. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-press-release-generator' %}{% endblock %}
+{% block twitter_title %}AI Press Release Generator — Free PR Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a professional press release with AI. Headline, company, announcement — AP Style format. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Press Release Generator","description":"Generate a professional press release in AP Style format using AI — with headline, dateline, body, quote, and boilerplate.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-press-release-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Press Release Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-press-release-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      AI Press Release Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write a professional, journalist-ready press release in seconds. Enter your announcement details and get a properly structured PR in AP Style — headline, dateline, body, quote, and boilerplate.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ AP Style format</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Quote + boilerplate</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-press-release-generator' %}"
+            hx-target="#pr-output"
+            hx-swap="innerHTML"
+            hx-indicator="#pr-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="headline">Headline / Announcement <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="headline" name="headline" class="ai-tool-input"
+            placeholder="e.g. Acme Corp Raises $10M Series A to Expand AI-Powered Logistics Platform">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="company">Company Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="company" name="company" class="ai-tool-input"
+              placeholder="e.g. Acme Corp">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="contact">Press Contact <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="contact" name="contact" class="ai-tool-input"
+              placeholder="e.g. Jane Smith, press@acme.com, (555) 123-4567">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="announcement">Key Details of Announcement <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <textarea id="announcement" name="announcement" class="ai-tool-input" rows="3"
+            style="resize:vertical;font-family:inherit;"
+            placeholder="e.g. The funding will be used to hire 50 engineers, expand to 3 new markets, and launch a new mobile app for real-time shipment tracking by Q4 2025."></textarea>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="quote">Executive Quote <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="quote" name="quote" class="ai-tool-input"
+            placeholder="e.g. John Doe, CEO: 'This funding validates our mission to eliminate supply chain delays for SMBs.'">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Press Release →</button>
+        <div id="pr-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your press release…</span>
+        </div>
+      </form>
+    </div>
+    <div id="pr-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Anatomy of a Strong Press Release</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Headline: News, not hype</h3><p style="font-size:.8125rem;color:#374151;">The best headlines state the news directly — who did what. "Company X Launches Y" or "Company X Raises $Z" beats anything with exclamation points or superlatives.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Lead paragraph: answer the 5 Ws</h3><p style="font-size:.8125rem;color:#374151;">Who, what, when, where, why — in the first two sentences. Journalists scan for this. If they can't find it immediately, they move on.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Quote: add the human element</h3><p style="font-size:.8125rem;color:#374151;">A strong quote from a named executive says something a journalist can't paraphrase — an opinion, a vision, or a compelling insight. Avoid corporate non-quotes like "We're excited to announce."</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What is AP Style and why does it matter?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">AP Style (Associated Press Stylebook) is the standard grammar and punctuation guide used by most news organizations. Writing in AP Style signals professionalism to journalists and reduces the editing they need to do — making your release more likely to be picked up as-is.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I distribute my press release?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">For free distribution: email journalists directly (build a targeted media list), post on your newsroom/blog, and share on LinkedIn. For paid distribution: PR Newswire, Business Wire, and GlobeNewswire distribute to newsrooms. For SEO value: PRWeb and EIN Presswire are lower-cost options.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a press release be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">400–600 words is the standard length. One page is ideal. If it can't fit on one page, your release either has too many topics (split it) or too much filler (cut it). Journalists get hundreds of releases a day — shorter is always better.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-business-plan-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Plan Generator</a>
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

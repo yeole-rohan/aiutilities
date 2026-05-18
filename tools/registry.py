@@ -111,6 +111,7 @@ CATEGORIES = [
             {"slug": "word-frequency-analyzer", "name": "Word Frequency Analyzer", "description": "Analyse how often each word appears in text."},
             {"slug": "paraphrasing-tool", "name": "Paraphrasing Tool", "description": "Rewrite any text in a different style while keeping the original meaning.", "ai": True},
             {"slug": "article-rewriter", "name": "Article Rewriter", "description": "Rewrite full articles to be unique and plagiarism-free with AI.", "ai": True},
+            {"slug": "news-article-summarizer", "name": "News Article Summarizer", "description": "Summarize any news article into bullet points and a TL;DR with AI.", "ai": True},
         ],
     },
     {
@@ -251,6 +252,8 @@ CATEGORIES = [
             {"slug": "linkedin-headline-generator", "name": "LinkedIn Headline Generator", "description": "Write a magnetic LinkedIn headline that attracts recruiters.", "ai": True},
             {"slug": "youtube-thumbnail-maker", "name": "YouTube Thumbnail Maker", "description": "Create eye-catching YouTube thumbnails."},
             {"slug": "youtube-title-generator", "name": "YouTube Title Generator", "description": "Generate 10 click-worthy, SEO-optimized YouTube video titles with AI.", "ai": True},
+            {"slug": "linkedin-summary-generator", "name": "LinkedIn Summary Generator", "description": "Write a compelling LinkedIn About section that attracts opportunities.", "ai": True},
+            {"slug": "twitter-bio-generator", "name": "Twitter Bio Generator", "description": "Generate 5 punchy Twitter/X bios under 160 characters with AI.", "ai": True},
         ],
     },
     {
@@ -262,7 +265,9 @@ CATEGORIES = [
             {"slug": "amazon-fee-calculator", "name": "Amazon Fee Calculator", "description": "Calculate Amazon FBA and FBM fees."},
             {"slug": "profit-margin-calculator", "name": "Profit Margin Calculator", "description": "Calculate gross and net profit margins."},
             {"slug": "shipping-cost-calculator", "name": "Shipping Cost Calculator", "description": "Estimate international shipping costs."},
-            {"slug": "product-description-generator", "name": "Product Description Generator", "description": "Write compelling product descriptions."},
+            {"slug": "product-description-generator", "name": "Product Description Generator", "description": "Write compelling product descriptions.", "ai": True},
+            {"slug": "etsy-product-description-generator", "name": "Etsy Product Description Generator", "description": "Generate Etsy listing title, description, and 13 tags with AI.", "ai": True},
+            {"slug": "product-review-generator", "name": "Product Review Generator", "description": "Generate authentic, detailed product reviews with AI.", "ai": True},
         ],
     },
     {
@@ -307,6 +312,11 @@ CATEGORIES = [
             {"slug": "ai-business-name-generator", "name": "AI Business Name Generator", "description": "Generate 10 memorable, domain-friendly business names with AI.", "ai": True},
             {"slug": "ai-faq-generator", "name": "AI FAQ Generator", "description": "Generate SEO-optimized FAQ questions and answers for any topic.", "ai": True},
             {"slug": "cold-email-generator", "name": "Cold Email Generator", "description": "Write high-converting cold emails with subject line and CTA with AI.", "ai": True},
+            {"slug": "ai-business-plan-generator", "name": "AI Business Plan Generator", "description": "Generate a one-page business plan with market, revenue, and go-to-market strategy.", "ai": True},
+            {"slug": "ai-press-release-generator", "name": "AI Press Release Generator", "description": "Generate professional press releases in AP Style format with AI.", "ai": True},
+            {"slug": "salary-negotiation-email", "name": "Salary Negotiation Email Generator", "description": "Write a confident, professional salary negotiation email with AI.", "ai": True},
+            {"slug": "thank-you-email-generator", "name": "Thank You Email Generator", "description": "Generate sincere, personalised thank-you emails for any context with AI.", "ai": True},
+            {"slug": "tagline-generator", "name": "Tagline & Slogan Generator", "description": "Generate 10 memorable brand taglines and slogans with AI.", "ai": True},
         ],
     },
 ]

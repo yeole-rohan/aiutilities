@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Product Review Generator — Free AI Review Writer | AIUtilities{% endblock %}
+{% block description %}Generate authentic, detailed product reviews with AI. Enter product name, rating, pros and cons — get a genuine-sounding review ready to post. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'product-review-generator' %}{% endblock %}
+{% block og_title %}Product Review Generator — Free AI Review Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate authentic, detailed product reviews with AI. Enter product name, rating, pros and cons — get a genuine-sounding review ready to post. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'product-review-generator' %}{% endblock %}
+{% block twitter_title %}Product Review Generator — Free AI Review Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate authentic product reviews with AI. Enter product, rating, pros/cons — get a genuine review. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Product Review Generator","description":"Generate authentic, detailed product reviews using AI — with rating, pros, cons, and genuine tone.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'product-review-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"eCommerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Product Review Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'product-review-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Product Review Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate authentic, detailed product reviews in seconds. Enter what you liked, what you didn't, and how you use it — AI writes a natural first-person review ready to post.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Natural, first-person voice</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Honest tone</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ecommerce' 'product-review-generator' %}"
+            hx-target="#review-output"
+            hx-swap="innerHTML"
+            hx-indicator="#review-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="product_name">Product Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="product_name" name="product_name" class="ai-tool-input"
+            placeholder="e.g. Sony WH-1000XM5, Instant Pot Duo 7-in-1, Anker PowerBank 26800">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="rating">Star Rating</label>
+            <select id="rating" name="rating" class="ai-tool-select">
+              <option value="5">⭐⭐⭐⭐⭐ 5 stars</option>
+              <option value="4">⭐⭐⭐⭐ 4 stars</option>
+              <option value="3">⭐⭐⭐ 3 stars</option>
+              <option value="2">⭐⭐ 2 stars</option>
+              <option value="1">⭐ 1 star</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Review Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="honest and balanced">Honest & Balanced</option>
+              <option value="enthusiastic and positive">Enthusiastic & Positive</option>
+              <option value="detailed and analytical">Detailed & Analytical</option>
+              <option value="casual and conversational">Casual & Conversational</option>
+              <option value="critical but fair">Critical but Fair</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="pros">What You Liked <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="pros" name="pros" class="ai-tool-input"
+              placeholder="e.g. great battery life, easy to set up, sturdy build">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="cons">What You Didn't Like <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="cons" name="cons" class="ai-tool-input"
+              placeholder="e.g. charging cable short, app buggy, expensive">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="use_case">How You Use It <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="use_case" name="use_case" class="ai-tool-input"
+            placeholder="e.g. daily commute, home office, weekend hiking trips">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Review →</button>
+        <div id="review-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your product review…</span>
+        </div>
+      </form>
+    </div>
+    <div id="review-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Review Trustworthy?</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Specificity beats vagueness</h3><p style="font-size:.8125rem;color:#374151;">"Battery lasts 18 hours on my commute" is more credible than "great battery." Specific details signal a real user.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Include at least one negative</h3><p style="font-size:.8125rem;color:#374151;">All-positive reviews look fake. A minor con ("the app could be better") actually increases trust by showing balanced judgment.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Mention your use context</h3><p style="font-size:.8125rem;color:#374151;">Readers want to know if your situation matches theirs. "As a daily gym-goer" or "for light home cooking" helps them calibrate relevance.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this to write reviews for Amazon, Google, or Trustpilot?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — this tool generates review text you can use on any platform. Always edit the output to match your actual experience before posting. Platform terms require reviews to reflect genuine use.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a product review be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">150–300 words is the sweet spot for most platforms. Long enough to be useful, short enough to be read. Amazon Vine reviewers average around 250 words. For Google or Trustpilot, 100–150 words is sufficient.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ecommerce/product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Description Generator</a>
+      <a href="/tools/ecommerce/etsy-product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Etsy Description Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

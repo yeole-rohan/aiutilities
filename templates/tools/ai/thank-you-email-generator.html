@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Thank You Email Generator — Free AI Thank You Letter Writer | AIUtilities{% endblock %}
+{% block description %}Generate a professional thank you email with AI. Enter the recipient, context, and key points — get a warm, genuine thank you ready to send. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'thank-you-email-generator' %}{% endblock %}
+{% block og_title %}Thank You Email Generator — Free AI Thank You Letter Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a professional thank you email with AI. Enter the recipient, context, and key points — get a warm, genuine thank you ready to send. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'thank-you-email-generator' %}{% endblock %}
+{% block twitter_title %}Thank You Email Generator — Free AI Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a professional thank you email with AI. Recipient, context, key points — warm, genuine email. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Thank You Email Generator","description":"Generate a professional thank you email using AI — for interviews, meetings, gifts, referrals, and more.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'thank-you-email-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"Thank You Email Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'thank-you-email-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Thank You Email Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Write a genuine, professional thank you email in seconds. Whether it's after a job interview, a meeting, a referral, or a gift — get the right words without staring at a blank screen.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any context</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Warm & genuine tone</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'thank-you-email-generator' %}"
+            hx-target="#thankyou-output"
+            hx-swap="innerHTML"
+            hx-indicator="#thankyou-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="recipient">Recipient Name / Role <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="recipient" name="recipient" class="ai-tool-input"
+            placeholder="e.g. Sarah (hiring manager), Dr. Johnson, my mentor Alex, the team at Acme Corp">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="context">Context / Reason <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="context" name="context" class="ai-tool-input"
+            placeholder="e.g. job interview, intro call, referral, wedding gift, helping with my project, mentorship session">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="key_points">Key Points to Mention <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="key_points" name="key_points" class="ai-tool-input"
+            placeholder="e.g. discussed the product roadmap, they offered to review my resume, enjoyed their advice on leadership">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="tone">Email Tone</label>
+          <select id="tone" name="tone" class="ai-tool-select">
+            <option value="warm and professional">Warm & Professional</option>
+            <option value="friendly and casual">Friendly & Casual</option>
+            <option value="formal and polished">Formal & Polished</option>
+            <option value="brief and direct">Brief & Direct</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Thank You Email →</button>
+        <div id="thankyou-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your thank you email…</span>
+        </div>
+      </form>
+    </div>
+    <div id="thankyou-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">When to Send a Thank You Email</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💼</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">After a Job Interview</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Send within 24 hours. Reference a specific part of the conversation to show you were engaged. It reinforces your interest and keeps you top of mind during deliberation.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🤝</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">After a Meeting or Call</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Summarize what was agreed on, thank them for their time, and confirm next steps. Turns a conversation into a paper trail and shows reliability.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎁</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">For a Gift or Favor</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Be specific about what you appreciated and how it impacted you. Generic "thanks for everything" emails read as afterthoughts. Specificity makes appreciation feel real.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔗</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">After a Referral or Introduction</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Thank the person who made the introduction, and update them on how it went. This closes the loop and makes them more likely to help you again in the future.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How soon should I send a thank you email after an interview?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Within 24 hours — ideally same day or the next morning. Sending within a few hours of the interview signals enthusiasm and responsiveness. Anything beyond 48 hours loses impact. If you interviewed with multiple people, send individual, personalized notes to each.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a thank you email be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">3–5 sentences for most situations. Thank them, reference something specific, and close with a forward-looking line. For post-interview emails, 100–150 words is the sweet spot. Longer emails risk burying the gratitude in filler.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I send a thank you email or a handwritten card?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">For professional contexts (interviews, business meetings), email is standard and expected — it's faster and creates a record. For personal contexts (gifts, major personal favors), a handwritten card adds a level of care that email can't match. When in doubt, do both: email immediately, card to follow.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/salary-negotiation-email/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Salary Negotiation Email</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/social-media/linkedin-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Summary Generator</a>
+      <a href="/tools/resume/resume-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Resume Summary Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

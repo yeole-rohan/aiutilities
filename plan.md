@@ -35,6 +35,31 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Scientific notation converter
 - Statistics calculator
 - Trigonometry calculator
+- Acceleration calculator
+- BMR calculator
+- Density calculator
+- Derivative calculator
+- Determinant calculator
+- Fraction calculator
+- GPA calculator
+- Integral calculator
+- Matrix calculator
+- Mean median mode calculator
+- Ohm's law calculator
+- Percentage calculator
+- Permutation combination calculator
+- pH calculator
+- Physics calculator
+- Power calculator
+- Probability calculator
+- Proportion calculator
+- Ratio calculator
+- Resistance calculator
+- Roman numeral converter
+- Standard deviation calculator
+- Velocity calculator
+- Volume calculator
+- Wavelength calculator
 
 ---
 
@@ -58,6 +83,24 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Target heart rate calculator
 - Water intake calculator
 - Weight gain calculator
+- Alcohol unit calculator
+- Attendance calculator
+- Bench press / one rep max calculator
+- Cholesterol ratio calculator
+- Cycling speed calculator
+- Deadlift calculator
+- Fat intake calculator
+- Lean body mass calculator
+- Menstrual cycle / period calculator
+- Moon phase calculator
+- Ovulation calculator
+- Period tracker calculator
+- Pregnancy calculator
+- Pregnancy due date calculator
+- Running pace calculator
+- TDEE calculator
+- Waist hip ratio calculator
+- Weight loss calculator
 
 ---
 
@@ -106,6 +149,42 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Salary calculator
 - Sales tax calculator
 - Tip calculator
+- Cap rate calculator
+- Churn rate calculator
+- Crypto profit calculator
+- Debt payoff calculator
+- Dividend calculator
+- Down payment calculator
+- Engagement rate calculator
+- Future value calculator
+- Gas mileage calculator
+- GST calculator
+- Home affordability calculator
+- Hourly wage calculator
+- Inflation calculator
+- IRA calculator
+- IRR calculator
+- Life insurance calculator
+- Lumpsum calculator
+- Markup calculator
+- Mutual fund calculator
+- Net worth calculator
+- NPV calculator
+- Overtime calculator
+- Payroll calculator
+- Pension calculator
+- Present value calculator
+- Property tax calculator
+- Rent calculator
+- Retirement calculator
+- Savings calculator
+- Simple interest calculator
+- SIP calculator
+- Solar panel calculator
+- Stamp duty calculator
+- Stock average calculator
+- Student loan calculator
+- VAT calculator
 
 ---
 
@@ -123,6 +202,17 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Paint cost calculator
 - Steel weight calculator
 - Volumetric weight calculator
+- Flooring calculator
+- Flow rate calculator
+- Generator size calculator
+- HVAC load calculator
+- Pipe size calculator
+- Rebar calculator
+- Roof pitch calculator
+- Stair calculator
+- Tile calculator
+- Watt calculator
+- Wire gauge calculator
 
 ---
 
@@ -154,6 +244,15 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Torque converter
 - Volume converter (L, gal, fl oz)
 - Weight converter (kg, lbs, oz, g)
+- GPS coordinates / latitude longitude converter
+- Marks to percentage converter
+- Minutes to hours / seconds to minutes converter
+- Number to words converter
+- Roman numeral converter
+- Sq ft to sq m converter
+- UTC converter
+- Voltage converter
+- Weeks to months converter
 
 ---
 
@@ -172,6 +271,11 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Epoch / Unix timestamp converter
 - Time zone converter
 - Working hours calculator
+- Alarm clock online
+- Meeting time planner
+- Pomodoro timer
+- Stopwatch online
+- Week number calculator
 
 ---
 
@@ -223,6 +327,14 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - PDF to ZIP
 - Remove PDF password
 - Rotate PDF
+- PDF to CSV converter
+- PDF to ePub converter
+- PDF to Excel converter
+- PDF to HTML converter
+- PDF to PPT converter
+- Remove PDF pages
+- Reorder PDF pages
+- Word to PDF converter
 
 ---
 
@@ -273,6 +385,16 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Rotate image
 - SVG to PNG
 - WebP to JPG / PNG
+- Favicon generator
+- Image collage maker
+- Image to SVG converter
+- Invert image colors
+- PNG to ICO converter
+- PNG to SVG converter
+- Profile picture maker
+- Round corners image
+- Sharpen image online
+- Transparent background maker
 
 ---
 
@@ -298,6 +420,13 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Resize video
 - Rotate video
 - Trim video
+- GIF to MP4 converter
+- MP4 to MOV converter
+- Screen recorder online
+- Subtitle generator
+- Video quality enhancer / upscaler
+- Video to frames converter
+- Video volume booster
 
 ---
 
@@ -332,44 +461,64 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Reduce audio file size
 - Remove background noise
 - Speech to text
+- Audio converter
+- BPM finder
+- Change pitch tool / pitch shifter
+- Frequency generator / tone generator
+- WAV to MP3 converter
 
 ---
 
 ## Category 11 — Text & Writing Tools
 
 - Anagram generator
-- Article rewriter
+- [x] Article rewriter
 - Bibliography generator
 - Bio generator
-- Case converter (camel, kebab, pascal, snake, title)
+- [x] Case converter (camel, kebab, pascal, snake, title)
 - Character counter
 - Citation generator (APA, MLA, Chicago)
 - Compare text tool
-- Essay generator
+- [x] Essay generator
 - Extract emails from text
 - Extract hashtags from text
 - Extract numbers from text
 - Extract URLs from text
 - Fake text generator
 - Fancy text generator
-- Grammar checker
+- [x] Grammar checker
 - Join text tool
 - Keyword counter
-- Lorem ipsum generator
-- Paraphrasing tool
+- [x] Lorem ipsum generator
+- [x] Paraphrasing tool
 - Plagiarism checker
 - Random text generator
-- Remove duplicate lines
+- [x] Remove duplicate lines
 - Remove emojis from text
 - Remove extra spaces
 - Sentence counter
-- Slug generator
+- [x] Slug generator
 - Spell checker
-- Summarizer
+- [x] Summarizer
 - Text encryption tool
-- Text to speech
-- Word counter
-- Word frequency analyzer
+- [x] Text to speech
+- [x] Word counter
+- [x] Word frequency analyzer
+- Add line numbers tool
+- Blog title generator
+- Duplicate word finder
+- Flashcard generator
+- Headline generator
+- Keyword density checker
+- Passive voice checker
+- Poem generator
+- Punctuation checker
+- Reading time calculator
+- Remove line breaks
+- Sentence rewriter
+- Text cleaner
+- Title case converter
+- Whitespace remover
 
 ---
 
@@ -406,6 +555,12 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - SQL formatter
 - XML formatter / validator
 - YAML to JSON converter
+- Checksum calculator
+- IBAN validator
+- SQL beautifier / minifier / validator
+- TypeScript formatter
+- Webhook tester
+- XML beautifier
 
 ---
 
@@ -433,6 +588,15 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - SSL certificate checker
 - Token generator
 - UUID generator
+- Data breach checker
+- Email breach checker
+- Malware scanner online
+- OTP generator
+- Proxy checker
+- Steganography decoder / encoder
+- TLS checker
+- Virus scanner online
+- WebRTC leak test
 
 ---
 
@@ -462,6 +626,17 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - URL shortener
 - Website speed test
 - WHOIS lookup
+- CNAME lookup
+- Domain generator
+- Google index checker
+- MAC address lookup
+- Mobile friendly test
+- MX record lookup
+- Page speed checker
+- Reverse IP lookup
+- Traceroute online
+- Website rank checker
+- ZIP code lookup
 
 ---
 
@@ -474,30 +649,45 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Breadcrumb schema generator
 - Canonical tag generator
 - Event schema generator
-- FAQ schema generator
+- [x] FAQ schema generator
 - Google ranking checker
 - HTML sitemap generator
 - Keyword rank checker
 - Keyword research tool
 - Lighthouse report generator
 - Local business schema generator
-- Meta description generator / checker
-- Meta tag generator
+- [x] Meta description generator / checker
+- [x] Meta tag generator
 - Meta title generator / checker
 - On-page / off-page SEO checker
-- OpenGraph meta tag generator
+- [x] OpenGraph meta tag generator
 - Organization schema generator
 - Person schema generator
 - Product schema generator
 - Review schema generator
-- Robots.txt generator
-- Schema markup generator / validator
+- [x] Robots.txt generator
+- [x] Schema markup generator / validator
 - SEO analyzer
 - SEO audit tool
-- SERP preview tool
+- [x] SERP preview tool
 - Sitemap generator
 - Social meta tag generator
-- XML sitemap generator
+- [x] XML sitemap generator
+- Campaign URL builder / UTM builder
+- Content optimization tool
+- Duplicate content checker
+- hreflang tag generator
+- Keyword density checker
+- Keyword suggestion tool
+- Long tail keyword generator
+- LSI keyword generator
+- Meta keywords generator
+- Page authority checker
+- Plagiarism checker
+- Schema validator
+- Sitemap validator
+- Website authority checker
+- Website SEO checker
 
 ---
 
@@ -529,6 +719,10 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - QR code generator — Instagram / YouTube / Bitcoin / UPI / PayPal
 - QR code with logo generator
 - QR code color generator
+- UPI QR code generator
+- WhatsApp QR code generator
+- Instagram QR code generator
+- YouTube QR code generator
 
 ---
 
@@ -542,27 +736,34 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Complaint letter generator
 - Consent form generator
 - Contract template generator
-- Cookie policy generator
-- Disclaimer generator
+- [x] Cookie policy generator
+- [x] Disclaimer generator
 - Employment contract generator
 - Experience letter generator
 - Freelance contract generator
 - Internship certificate generator
 - Lease agreement generator
 - Leave letter generator
-- NDA generator
+- [x] NDA generator
 - Offer letter generator
-- Privacy policy generator
+- [x] Privacy policy generator
 - Promotion letter generator
 - Refund policy generator
 - Relieving letter generator
 - Rental agreement generator
-- Resignation letter generator
+- [x] Resignation letter generator
 - Return policy generator
 - Salary certificate generator
 - Service agreement generator
 - Shipping policy generator
-- Terms and conditions generator
+- [x] Terms and conditions generator
+- Affidavit generator
+- Packing slip generator
+- Power of attorney generator
+- Purchase order generator
+- Quotation generator
+- Return policy generator
+- Shipping policy generator
 
 ---
 
@@ -577,25 +778,34 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Proforma invoice generator
 - Receipt generator
 - Rent receipt generator
+- Packing slip generator
+- Purchase order generator
+- Quotation generator
 
 ---
 
 ## Category 20 — Resume & HR Tools
 
-- ATS resume checker
-- Cover letter generator
+- [x] ATS resume checker
+- [x] Cover letter generator
 - CV maker
-- Interview question generator
-- Job description generator
+- [x] Interview question generator
+- [x] Job description generator
 - Mock interview tool
 - Offer letter generator
 - Payslip / salary slip generator
 - Resume builder
-- Resume bullet point generator
+- [x] Resume bullet point generator
 - Resume keyword scanner
-- Resume objective / summary generator
+- [x] Resume objective / summary generator
 - Resume score checker
 - Salary negotiation email generator
+- Career path finder
+- LinkedIn profile generator
+- LinkedIn summary generator
+- Mission statement generator
+- SWOT analysis generator
+- Vision statement generator
 
 ---
 
@@ -603,44 +813,63 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 
 - Caption generator
 - Facebook video downloader
-- Hashtag generator / analyzer
-- Instagram bio formatter / generator
+- [x] Hashtag generator / analyzer
+- [x] Instagram bio formatter / generator
 - Instagram caption / hashtag generator
 - Instagram DP / reel / story downloader
 - Instagram earnings calculator
 - Instagram highlight cover maker
-- LinkedIn headline / summary generator
+- [x] LinkedIn headline / summary generator
 - Social media banner maker
 - Social media bio formatter
 - Social media font generator
-- Social media post generator
+- [x] Social media post generator
 - Social media watermark tool
 - TikTok caption generator
 - TikTok earnings calculator
 - YouTube thumbnail downloader / maker
+- [x] YouTube title generator
+- Engagement rate calculator
+- TikTok hashtag generator
+- TikTok video downloader
+- Twitter header maker
+- Twitter video downloader
+- YouTube banner maker
+- YouTube description generator
+- YouTube earnings calculator
+- YouTube shorts downloader
+- YouTube tag extractor
+- YouTube tag generator
 
 ---
 
 ## Category 22 — eCommerce Tools
 
-- Amazon fee / profit calculator
+- [x] Amazon fee / profit calculator
 - Amazon image resizer
-- Barcode generator
+- [x] Barcode generator
 - Compare product prices tool
 - Currency converter
 - Dropshipping profit calculator
 - eBay / Etsy fee calculator
 - Image optimizer
-- International shipping calculator
+- [x] International shipping calculator
 - Product barcode generator
-- Product description generator
+- [x] Product description generator
 - Product label generator
 - Product review generator
 - Product title generator
-- Profit margin calculator
+- [x] Profit margin calculator
 - Sales tax calculator
-- Shipping cost calculator
+- [x] Shipping cost calculator
 - Shipping label generator
+- Coupon code generator
+- Etsy listing generator
+- Product keyword generator
+- Purchase order generator
+- Quotation generator
+- SKU generator
+- Shopify profit calculator
 
 ---
 
@@ -658,6 +887,17 @@ We will be building 10 tools or pages/day to keep up with google crwaling budget
 - Random picker tool
 - Random text generator
 - Team randomizer
+- Coin flip simulator
+- Dice roller online
+- Lottery number generator
+- Meme generator
+- Name picker wheel
+- Random address generator
+- Spin wheel generator
+- Story generator
+- Truth or dare generator
+- Username generator
+- Yes or no generator
 
 ---
 
@@ -687,6 +927,191 @@ These are AI-enhanced versions of tools in Categories 1–23. They use an LLM AP
 
 ---
 
+## §24a — AI Tools Built (30 tools across 3 batches)
+
+### Batch 1 (tools 1–10)
+- [x] AI Grammar Checker — /tools/ai/ai-grammar-checker/
+- [x] AI Summarizer — /tools/ai/ai-summarizer/
+- [x] AI Email Generator — /tools/ai/ai-email-generator/
+- [x] AI Code Generator — /tools/ai/ai-code-generator/
+- [x] AI Meta Description Generator — /tools/ai/ai-meta-description-generator/
+- [x] Paraphrasing Tool — /tools/text/paraphrasing-tool/
+- [x] Cover Letter Generator — /tools/document/cover-letter-generator/
+- [x] Hashtag Generator — /tools/social-media/hashtag-generator/
+- [x] Product Description Generator — /tools/ecommerce/product-description-generator/
+- [x] ATS Resume Checker — /tools/resume/ats-resume-checker/
+
+### Batch 2 (tools 11–20)
+- [x] AI Content Generator — /tools/ai/ai-content-generator/
+- [x] AI Essay Generator — /tools/ai/ai-essay-generator/
+- [x] Instagram Bio Generator — /tools/social-media/instagram-bio-generator/
+- [x] Social Media Post Generator — /tools/social-media/social-media-post-generator/
+- [x] LinkedIn Headline Generator — /tools/social-media/linkedin-headline-generator/
+- [x] Job Description Generator — /tools/resume/job-description-generator/
+- [x] Privacy Policy Generator — /tools/document/privacy-policy-generator/
+- [x] Terms & Conditions Generator — /tools/document/terms-and-conditions-generator/
+- [x] Resignation Letter Generator — /tools/document/resignation-letter-generator/
+- [x] NDA Generator — /tools/document/nda-generator/
+
+### Batch 3 (tools 21–30)
+- [x] Cookie Policy Generator — /tools/document/cookie-policy-generator/
+- [x] Disclaimer Generator — /tools/document/disclaimer-generator/
+- [x] Article Rewriter — /tools/text/article-rewriter/
+- [x] Resume Summary Generator — /tools/resume/resume-summary-generator/
+- [x] Resume Bullet Point Generator — /tools/resume/resume-bullet-generator/
+- [x] Interview Question Generator — /tools/resume/interview-question-generator/
+- [x] AI Business Name Generator — /tools/ai/ai-business-name-generator/
+- [x] AI FAQ Generator — /tools/ai/ai-faq-generator/
+- [x] Cold Email Generator — /tools/ai/cold-email-generator/
+- [x] YouTube Title Generator — /tools/social-media/youtube-title-generator/
+
+### Batch 4 (tools 31–40) ✓ COMPLETE
+- [x] Etsy Product Description Generator — /tools/ecommerce/etsy-product-description-generator/
+- [x] News Article Summarizer — /tools/text/news-article-summarizer/
+- [x] Product Review Generator — /tools/ecommerce/product-review-generator/
+- [x] AI Business Plan Generator — /tools/ai/ai-business-plan-generator/
+- [x] AI Press Release Generator — /tools/ai/ai-press-release-generator/
+- [x] LinkedIn Summary Generator — /tools/social-media/linkedin-summary-generator/
+- [x] Twitter Bio Generator — /tools/social-media/twitter-bio-generator/
+- [x] AI Salary Negotiation Email — /tools/ai/salary-negotiation-email/
+- [x] AI Thank You Email Generator — /tools/ai/thank-you-email-generator/
+- [x] Tagline / Slogan Generator — /tools/ai/tagline-generator/
+
+---
+
+## §24b — Additional AI Tools from CSV (not yet built)
+
+High-volume AI tools to add — stateless, single-session, no auth required:
+
+**Content & Writing**
+- AI paragraph generator (50,000/mo)
+- AI paragraph rewriter (50,000/mo)
+- AI sentence rewriter (50,000/mo)
+- AI blog generator (500/mo)
+- AI blog writer (5,000/mo)
+- AI introduction generator (500/mo)
+- AI conclusion generator (500/mo)
+- AI headline generator (500/mo)
+- AI title generator (5,000/mo)
+- AI SEO title generator (500/mo)
+- AI article summarizer (5,000/mo)
+- AI video summarizer (5,000/mo)
+- AI YouTube summarizer (5,000/mo)
+- AI report generator (5,000/mo)
+- AI script generator (5,000/mo)
+- AI video script generator (500/mo)
+- AI YouTube script generator (500/mo)
+- AI YouTube description generator (500/mo)
+- AI newsletter generator (5,000/mo)
+- AI content calendar generator (50/mo)
+- AI story generator (500,000/mo)
+- AI poem generator (5,000/mo)
+- AI rap generator (5,000/mo)
+- AI song generator (500,000/mo)
+- AI writing prompt generator (500/mo)
+- AI story prompt generator (500/mo)
+
+**Code & Developer**
+- AI Python code generator (5,000/mo)
+- AI Java code generator (500/mo)
+- AI SQL query generator (500/mo)
+- AI regex builder / generator (50/mo)
+- AI README generator (500/mo)
+- AI commit message generator (50/mo)
+- AI changelog generator (50/mo)
+- AI Excel formula generator (500/mo)
+- AI Google Sheets formula generator (50/mo)
+- AI unit test generator (50/mo)
+- AI bash script generator (50/mo)
+- AI test case generator (5,000/mo)
+
+**Design & Image**
+- AI logo generator (500,000/mo)
+- AI poster generator (50,000/mo)
+- AI flyer generator (5,000/mo)
+- AI thumbnail generator (5,000/mo)
+- AI YouTube thumbnail generator (5,000/mo)
+- AI banner generator (5,000/mo)
+- AI icon generator (5,000/mo)
+- AI mockup generator (5,000/mo)
+- AI illustration generator (5,000/mo)
+- AI SVG generator (5,000/mo)
+- AI wallpaper generator (5,000/mo)
+- AI color palette generator (5,000/mo)
+- AI wireframe generator (5,000/mo)
+- AI book cover generator (5,000/mo)
+- AI image colorizer (500/mo)
+- AI image prompt generator (5,000/mo)
+- AI old photo restoration (5,000/mo)
+- AI tattoo generator (50,000/mo)
+- AI coloring page generator (5,000/mo)
+- AI sticker generator (5,000/mo)
+- AI PowerPoint generator (50,000/mo)
+
+**Voice & Audio**
+- AI voice generator (500,000/mo)
+- AI text to speech (50,000/mo)
+- AI music generator (500,000/mo)
+- AI voiceover generator (500/mo)
+- AI audio to text converter (500/mo)
+- AI melody generator (500/mo)
+
+**Business & Marketing**
+- AI business plan generator (5,000/mo)
+- AI pitch deck generator (5,000/mo)
+- AI business idea generator (500/mo)
+- AI slogan generator (5,000/mo)
+- AI tagline generator (500/mo)
+- AI ad copy generator (500/mo)
+- AI captions generator (500/mo)
+- AI Instagram caption generator (5,000/mo)
+- AI Instagram post generator (5,000/mo)
+- AI Facebook post generator (500/mo)
+- AI tweet generator (500/mo)
+- AI TikTok caption generator (50/mo)
+- AI press release generator (500/mo)
+- AI proposal generator (5,000/mo)
+- AI brochure generator (500/mo)
+- AI Amazon listing generator (50/mo)
+- AI Etsy listing generator (50/mo)
+- AI eBay listing generator (50/mo)
+- AI review response generator (500/mo)
+- AI testimonial generator (50/mo)
+
+**Education & Learning**
+- AI quiz generator (5,000/mo)
+- AI flashcard generator (5,000/mo)
+- AI lesson plan generator (5,000/mo)
+- AI MCQ generator (500/mo)
+- AI question generator (5,000/mo)
+- AI worksheet generator (5,000/mo)
+- AI answer generator (50,000/mo)
+- AI lecture notes generator (500/mo)
+- AI course outline generator (50/mo)
+- AI learning path generator (50/mo)
+
+**Prompts & AI Tools**
+- AI prompt generator (50,000/mo)
+- ChatGPT prompt generator (50,000/mo)
+- AI Midjourney prompt generator (500/mo)
+- AI DALL-E prompt generator (500/mo)
+- AI prompt builder / enhancer (500/mo)
+
+**Other Utilities**
+- AI citation generator (5,000/mo)
+- AI bibliography generator (500/mo)
+- AI language translator (5,000/mo)
+- AI sentiment analysis tool (500/mo)
+- AI tone changer (500/mo)
+- AI SWOT analysis generator (50/mo)
+- AI meeting agenda generator (50/mo)
+- AI meeting minutes generator (500/mo)
+- AI career path generator (50/mo)
+- AI workout plan generator (500/mo)
+- AI diet plan generator (50/mo)
+
+---
+
 ## §25 — Out-of-Scope (Products, Not Tools)
 
 These require persistent infrastructure, OAuth, or multi-session state — they are standalone SaaS products, not utility tools:
@@ -695,6 +1120,10 @@ These require persistent infrastructure, OAuth, or multi-session state — they 
 |---|---|
 | AI chatbot builder | Full NLP platform, training data, deployment infrastructure |
 | AI agent builder | Orchestration engine, tool-chaining, API routing |
+| AI workflow automation / builder | Multi-step pipeline execution, persistent runs, Zapier-equivalent |
+| AI automation tool (platform) | Platform-level; requires persistent job execution engine |
+| AI chatbot for customer service / ecommerce / HR / healthcare | Persistent bot deployment, webhook integrations, live data feeds |
+| AI chatbot generator (deployed) | Building/hosting bots is SaaS, not a stateless tool |
 | Social media analytics tool | Needs live platform API auth + data storage |
 | Full SEO audit platform (crawler) | Web crawler infrastructure |
 | Job application tracker | Persistent multi-session user data |
@@ -703,6 +1132,21 @@ These require persistent infrastructure, OAuth, or multi-session state — they 
 | Email marketing generator | Campaign sequences, list management |
 | Hashtag performance analyzer | Live platform API data |
 | Social media post scheduler | OAuth + platform publishing APIs |
+| AI CRM automation tool | CRM system integration, OAuth, persistent data pipelines |
+| AI inventory forecasting tool | Persistent inventory database, multi-session state |
+| AI lead generation chatbot (deployed) | Deployment, CRM hooks, long-running sessions |
+| AI social media automation / scheduler | OAuth + platform publishing APIs |
+| AI YouTube automation tool | YouTube OAuth, persistent channel management |
+| AI TikTok automation tool | TikTok OAuth, persistent publishing |
+| AI Instagram automation / growth tool | Instagram OAuth, follower tracking over time |
+| AI task manager / project manager | Persistent multi-session state (SaaS product) |
+| AI note-taking assistant (persistent) | Multi-session storage |
+| AI inbox / email assistant | Requires email OAuth (Gmail/Outlook) |
+| Website monitoring / uptime monitor | Persistent background workers, alert infrastructure |
+| AI knowledge base generator (platform) | Persistent document storage and retrieval |
+| AI tutoring chatbot (persistent) | Student session state, progress tracking across sessions |
+| AI RPA / browser automation | Robotic process automation platform with persistent agents |
+| Custom AI chatbot (deployed embed) | Embed infrastructure, live session management |
 
 ---
 
@@ -710,10 +1154,10 @@ These require persistent infrastructure, OAuth, or multi-session state — they 
 
 ### Phase 1 — Foundation (now)
 - [x] Project setup, auth (django-allauth)
-- [ ] Tool base template (input → output, copy button, share button)
+- [x] Tool base template (input → output, copy button, share button)
 - [ ] Category landing pages (`/tools/<category>/`)
 - [ ] First 10 tools from each category (highest search volume)
-- [ ] Sitemap.xml + robots.txt
+- [x] Sitemap.xml + robots.txt
 
 ### Phase 2 — Core Tools (next)
 - [ ] All calculators (Categories 1–4)
@@ -737,9 +1181,10 @@ These require persistent infrastructure, OAuth, or multi-session state — they 
 - [ ] eCommerce (Category 22)
 
 ### Phase 5 — AI Layer
-- [ ] Integrate Claude API
-- [ ] Build AI wrapper for all Category 1–23 tools
-- [ ] `/ai/<tool-slug>/` routes
+- [x] Integrate Groq API (Llama 3.3 70B) — key rotation across 4 keys
+- [x] `/ai/<tool-slug>/` routes — HTMX dispatcher in ai_views.py
+- [x] Build AI tools — 30 tools built across 3 batches (see below)
+- [ ] Build AI wrapper for remaining Category 1–23 tools
 - [ ] Rate-limiting & optional login for AI tools
 
 ### Phase 6 — SEO & Growth

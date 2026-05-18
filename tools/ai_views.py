@@ -14,7 +14,6 @@ def _escape(text: str) -> str:
 
 def _result_html(content: str, copy_id: str = "ai-result") -> str:
     escaped = _escape(content)
-    safe = escaped.replace("\n", "<br>")
     return f"""
 <div style="animation:fadeIn .3s ease;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
@@ -1083,6 +1082,327 @@ def youtube_title_generator(request):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Batch 4 — Tools 31–40
+# ─────────────────────────────────────────────────────────────────────────────
+
+@require_POST
+def etsy_product_description_generator(request):
+    product_name = request.POST.get("product_name", "").strip()
+    product_type = request.POST.get("product_type", "").strip()
+    materials = request.POST.get("materials", "").strip()
+    target_buyer = request.POST.get("target_buyer", "").strip()
+    keywords = request.POST.get("keywords", "").strip()
+
+    if not product_name:
+        return HttpResponse(_error_html("Please enter your product name."))
+
+    materials_line = f"Materials / made from: {materials}." if materials else ""
+    buyer_line = f"Target buyer: {target_buyer}." if target_buyer else ""
+    keywords_line = f"Keywords to include naturally: {keywords}." if keywords else ""
+    type_line = f"Product type / category: {product_type}." if product_type else ""
+    system = (
+        "You are an expert Etsy seller and copywriter. Write Etsy listings that are "
+        "SEO-optimized, warm, and story-driven. Etsy buyers want to feel the human "
+        "connection. Include keyword-rich title (under 130 chars), a compelling "
+        "description (3–4 short paragraphs), and exactly 13 comma-separated tags "
+        "(Etsy allows 13). Format: TITLE: ... / DESCRIPTION: ... / TAGS: ..."
+    )
+    user = (
+        f"Product: {product_name}\n"
+        f"{type_line} {materials_line} {buyer_line} {keywords_line}\n\n"
+        "Write the full Etsy listing."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.75)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "etsy-result"))
+
+
+@require_POST
+def news_article_summarizer(request):
+    article = request.POST.get("article", "").strip()
+    num_points = request.POST.get("num_points", "5")
+    include_tldr = request.POST.get("include_tldr", "yes")
+
+    if not article:
+        return HttpResponse(_error_html("Please paste the article text."))
+    if len(article) > 12000:
+        article = article[:12000]
+
+    tldr_line = "Start with a one-sentence TL;DR on its own line before the bullets." if include_tldr == "yes" else ""
+    system = (
+        "You are a professional news editor. Summarise articles into clear, factual "
+        "bullet points. Preserve key facts, names, numbers, and quotes. Be concise — "
+        "each bullet under 25 words. No opinion, no padding."
+    )
+    user = (
+        f"{tldr_line}\n\n"
+        f"Summarise the following article into {num_points} bullet points:\n\n"
+        f"{article}"
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=600, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "news-summary-result"))
+
+
+@require_POST
+def product_review_generator(request):
+    product_name = request.POST.get("product_name", "").strip()
+    rating = request.POST.get("rating", "5")
+    pros = request.POST.get("pros", "").strip()
+    cons = request.POST.get("cons", "").strip()
+    use_case = request.POST.get("use_case", "").strip()
+    tone = request.POST.get("tone", "honest and balanced")
+
+    if not product_name:
+        return HttpResponse(_error_html("Please enter a product name."))
+
+    pros_line = f"Positives to mention: {pros}." if pros else ""
+    cons_line = f"Negatives / limitations: {cons}." if cons else ""
+    use_line = f"How I use it: {use_case}." if use_case else ""
+    system = (
+        "You are a verified buyer writing an authentic product review. Write in a "
+        "natural, conversational first-person voice. Avoid sounding like marketing copy. "
+        "Include a title line, a rating line, and 2–3 paragraphs. Sound genuine."
+    )
+    user = (
+        f"Product: {product_name}\n"
+        f"Star rating: {rating}/5\n"
+        f"Tone: {tone}\n"
+        f"{pros_line} {cons_line} {use_line}\n\n"
+        "Write the review."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.8)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "review-result"))
+
+
+@require_POST
+def ai_business_plan_generator(request):
+    business_idea = request.POST.get("business_idea", "").strip()
+    industry = request.POST.get("industry", "").strip()
+    target_market = request.POST.get("target_market", "").strip()
+    revenue_model = request.POST.get("revenue_model", "").strip()
+
+    if not business_idea:
+        return HttpResponse(_error_html("Please describe your business idea."))
+
+    industry_line = f"Industry: {industry}." if industry else ""
+    market_line = f"Target market: {target_market}." if target_market else ""
+    revenue_line = f"Revenue model: {revenue_model}." if revenue_model else ""
+    system = (
+        "You are a seasoned business consultant and startup advisor. Write concise, "
+        "structured one-page business plans using markdown. Include: ## Executive Summary, "
+        "## Problem & Solution, ## Target Market, ## Revenue Model, ## Key Competitors, "
+        "## Go-to-Market Strategy, ## Key Metrics to Track. Be specific, not generic."
+    )
+    user = (
+        f"Business idea: {business_idea}\n"
+        f"{industry_line} {market_line} {revenue_line}\n\n"
+        "Write a one-page business plan."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_markdown_result_html(result, "business-plan-result"))
+
+
+@require_POST
+def ai_press_release_generator(request):
+    headline = request.POST.get("headline", "").strip()
+    company = request.POST.get("company", "").strip()
+    announcement = request.POST.get("announcement", "").strip()
+    quote = request.POST.get("quote", "").strip()
+    contact = request.POST.get("contact", "").strip()
+
+    if not headline:
+        return HttpResponse(_error_html("Please enter the press release headline."))
+
+    quote_line = f'Include this quote: "{quote}"' if quote else ""
+    contact_line = f"Contact info for boilerplate: {contact}." if contact else ""
+    company_line = f"Company name: {company}." if company else ""
+    system = (
+        "You are a PR professional. Write press releases in standard AP Style format: "
+        "FOR IMMEDIATE RELEASE, dateline, lead paragraph (who/what/when/where/why), "
+        "body paragraphs, quote, boilerplate, ### end marker. Professional tone."
+    )
+    user = (
+        f"Headline: {headline}\n"
+        f"{company_line}\n"
+        f"Announcement details: {announcement}\n"
+        f"{quote_line} {contact_line}\n\n"
+        "Write the full press release."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=900, temperature=0.5)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "press-release-result"))
+
+
+@require_POST
+def linkedin_summary_generator(request):
+    job_title = request.POST.get("job_title", "").strip()
+    skills = request.POST.get("skills", "").strip()
+    achievement = request.POST.get("achievement", "").strip()
+    goal = request.POST.get("goal", "").strip()
+    tone = request.POST.get("tone", "professional and approachable")
+
+    if not job_title:
+        return HttpResponse(_error_html("Please enter your job title."))
+
+    skills_line = f"Key skills: {skills}." if skills else ""
+    achievement_line = f"Top achievement: {achievement}." if achievement else ""
+    goal_line = f"Career goal / what I'm open to: {goal}." if goal else ""
+    system = (
+        "You are a LinkedIn profile expert and personal brand coach. Write LinkedIn About "
+        "sections (summaries) that are authentic, keyword-rich, and tell a compelling story. "
+        "3–4 short paragraphs, first-person, ends with a soft CTA. 200–300 words. "
+        "Generate 2 versions: one shorter (150 words) and one fuller (280 words)."
+    )
+    user = (
+        f"Role: {job_title}\n"
+        f"Tone: {tone}\n"
+        f"{skills_line} {achievement_line} {goal_line}\n\n"
+        "Write 2 LinkedIn summary options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.75)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "linkedin-summary-result"))
+
+
+@require_POST
+def twitter_bio_generator(request):
+    profession = request.POST.get("profession", "").strip()
+    keywords = request.POST.get("keywords", "").strip()
+    vibe = request.POST.get("vibe", "professional")
+    cta = request.POST.get("cta", "").strip()
+
+    if not profession:
+        return HttpResponse(_error_html("Please enter your profession or what you do."))
+
+    keywords_line = f"Keywords / interests to include: {keywords}." if keywords else ""
+    cta_line = f"End with this CTA or link mention: {cta}." if cta else ""
+    system = (
+        "You are a Twitter/X profile expert. Write Twitter bios under 160 characters — "
+        "punchy, memorable, and personality-driven. Each bio should be on its own numbered "
+        "line. Include emoji where they add value. Generate 5 bio options."
+    )
+    user = (
+        f"What I do: {profession}\n"
+        f"Vibe/tone: {vibe}\n"
+        f"{keywords_line} {cta_line}\n\n"
+        "Generate 5 Twitter bio options (each under 160 characters)."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=350, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "twitter-bio-result"))
+
+
+@require_POST
+def salary_negotiation_email(request):
+    current_salary = request.POST.get("current_salary", "").strip()
+    desired_salary = request.POST.get("desired_salary", "").strip()
+    offer = request.POST.get("offer", "").strip()
+    company = request.POST.get("company", "").strip()
+    reason = request.POST.get("reason", "").strip()
+
+    if not desired_salary:
+        return HttpResponse(_error_html("Please enter your desired salary."))
+
+    current_line = f"Current salary: {current_salary}." if current_salary else ""
+    offer_line = f"Offer received: {offer}." if offer else ""
+    company_line = f"Company: {company}." if company else ""
+    reason_line = f"Key reasons for ask: {reason}." if reason else ""
+    system = (
+        "You are a career coach specialising in salary negotiation. Write professional, "
+        "confident negotiation emails that are warm, not aggressive. Lead with enthusiasm "
+        "for the role, state the ask clearly, justify with 1–2 data points, and end "
+        "collaboratively. Under 200 words."
+    )
+    user = (
+        f"Desired salary: {desired_salary}\n"
+        f"{current_line} {offer_line} {company_line} {reason_line}\n\n"
+        "Write the salary negotiation email with subject line."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "salary-email-result"))
+
+
+@require_POST
+def thank_you_email_generator(request):
+    recipient = request.POST.get("recipient", "").strip()
+    context = request.POST.get("context", "job interview")
+    key_points = request.POST.get("key_points", "").strip()
+    tone = request.POST.get("tone", "professional and warm")
+
+    if not recipient:
+        return HttpResponse(_error_html("Please enter the recipient's name or role."))
+
+    points_line = f"Specific things to mention or reference: {key_points}." if key_points else ""
+    system = (
+        "You are a professional communications expert. Write genuine, concise thank-you "
+        "emails that feel personal — not templated. Include a subject line, opening, "
+        "body (2–3 sentences), and warm close. Under 150 words."
+    )
+    user = (
+        f"Recipient: {recipient}\n"
+        f"Context: {context}\n"
+        f"Tone: {tone}\n"
+        f"{points_line}\n\n"
+        "Write the thank-you email with subject line."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=400, temperature=0.75)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "thankyou-email-result"))
+
+
+@require_POST
+def tagline_generator(request):
+    brand_name = request.POST.get("brand_name", "").strip()
+    industry = request.POST.get("industry", "").strip()
+    value_prop = request.POST.get("value_prop", "").strip()
+    tone = request.POST.get("tone", "bold and memorable")
+
+    if not brand_name:
+        return HttpResponse(_error_html("Please enter your brand name."))
+
+    industry_line = f"Industry: {industry}." if industry else ""
+    value_line = f"Core value proposition: {value_prop}." if value_prop else ""
+    system = (
+        "You are a world-class brand strategist and copywriter. Generate memorable taglines "
+        "and slogans — under 8 words each, punchy, distinct. Mix styles: benefit-driven, "
+        "emotional, aspirational, witty. Number each one 1–10."
+    )
+    user = (
+        f"Brand: {brand_name}\n"
+        f"Tone: {tone}\n"
+        f"{industry_line} {value_line}\n\n"
+        "Generate 10 tagline / slogan options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=400, temperature=0.95)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "tagline-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Dispatcher map (tool_slug → handler)
 # ─────────────────────────────────────────────────────────────────────────────
 AI_HANDLERS = {
@@ -1119,4 +1439,15 @@ AI_HANDLERS = {
     "ai-faq-generator": ai_faq_generator,
     "cold-email-generator": cold_email_generator,
     "youtube-title-generator": youtube_title_generator,
+    # Batch 4
+    "etsy-product-description-generator": etsy_product_description_generator,
+    "news-article-summarizer": news_article_summarizer,
+    "product-review-generator": product_review_generator,
+    "ai-business-plan-generator": ai_business_plan_generator,
+    "ai-press-release-generator": ai_press_release_generator,
+    "linkedin-summary-generator": linkedin_summary_generator,
+    "twitter-bio-generator": twitter_bio_generator,
+    "salary-negotiation-email": salary_negotiation_email,
+    "thank-you-email-generator": thank_you_email_generator,
+    "tagline-generator": tagline_generator,
 }

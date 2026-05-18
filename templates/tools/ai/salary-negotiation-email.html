@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Salary Negotiation Email Generator — Free AI Pay Negotiation Writer | AIUtilities{% endblock %}
+{% block description %}Generate a professional salary negotiation email with AI. Enter your desired salary and context — get a confident, polite email ready to send. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'salary-negotiation-email' %}{% endblock %}
+{% block og_title %}Salary Negotiation Email Generator — Free AI Pay Negotiation Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a professional salary negotiation email with AI. Enter your desired salary and context — get a confident, polite email ready to send. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'salary-negotiation-email' %}{% endblock %}
+{% block twitter_title %}Salary Negotiation Email Generator — Free AI Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a professional salary negotiation email with AI. Desired salary, context — confident, polite email. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Salary Negotiation Email Generator","description":"Generate a professional, confident salary negotiation email using AI — for job offers, raises, or counter-offers.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'salary-negotiation-email' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"Salary Negotiation Email Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'salary-negotiation-email' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Salary Negotiation Email Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Ask for what you're worth — without the stress of writing it yourself. Enter your situation and get a professional salary negotiation email that's confident, polite, and effective.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Confident tone</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Polite & professional</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'salary-negotiation-email' %}"
+            hx-target="#salary-output"
+            hx-swap="innerHTML"
+            hx-indicator="#salary-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="desired_salary">Desired Salary / Target <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="desired_salary" name="desired_salary" class="ai-tool-input"
+            placeholder="e.g. $95,000, £65,000, 10% raise, $5K above the offer">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="current_salary">Current / Offered Salary <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="current_salary" name="current_salary" class="ai-tool-input"
+              placeholder="e.g. $82,000 current, $88,000 offered">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="company">Company / Employer <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="company" name="company" class="ai-tool-input"
+              placeholder="e.g. Google, Acme Corp, my current employer">
+          </div>
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="offer">Context / Situation <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="offer" name="offer" class="ai-tool-input"
+            placeholder="e.g. job offer negotiation, annual review raise, counter-offer after competing offer">
+          </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="reason">Your Justification <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="reason" name="reason" class="ai-tool-input"
+            placeholder="e.g. 5 YOE, led team of 8, increased revenue 40%, market rate research shows $90–100K range">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Negotiation Email →</button>
+        <div id="salary-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your negotiation email…</span>
+        </div>
+      </form>
+    </div>
+    <div id="salary-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Salary Negotiation Tips That Work</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Always negotiate in writing</h3><p style="font-size:.8125rem;color:#374151;">Email gives you time to think, creates a paper trail, and removes the emotional pressure of real-time verbal negotiation. Most employers expect it and respect it.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Anchor high, but reasonably</h3><p style="font-size:.8125rem;color:#374151;">Ask 10–15% above your actual target. This gives you room to meet in the middle while still landing where you want. Asking exactly at your target leaves nothing to negotiate down from.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Lead with value, not need</h3><p style="font-size:.8125rem;color:#374151;">Never justify your ask with personal expenses ("my rent went up"). Frame it around market data, your accomplishments, and the value you bring. Employers pay for value, not your bills.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will negotiating hurt my job offer?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Almost never. Employers expect negotiation — it's part of the hiring process. A respectful, professional counter-offer rarely results in a rescinded offer. In fact, not negotiating signals to some employers that you undervalue yourself. The worst realistic outcome is they say no and you accept the original offer.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">When should I send a salary negotiation email?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">For job offers: within 24–48 hours of receiving the written offer. Don't wait past 72 hours. For raises: 2–4 weeks before your performance review, or after a major achievement. Timing matters — negotiate from a position of strength, not desperation.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What if they can't budge on base salary?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Ask what else is negotiable: signing bonus, remote work flexibility, extra PTO, accelerated review date, equity, or professional development budget. Total compensation is more than base salary — often the non-cash components have more flexibility than base pay.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/thank-you-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Thank You Email Generator</a>
+      <a href="/tools/social-media/linkedin-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Summary Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/resume/resume-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Resume Summary Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

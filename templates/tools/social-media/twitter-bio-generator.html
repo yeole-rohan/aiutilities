@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Twitter Bio Generator — Free AI X Bio Writer | AIUtilities{% endblock %}
+{% block description %}Generate 5 Twitter/X bio options with AI. Enter your profession, vibe, and keywords — get creative, punchy bios under 160 characters ready to copy. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'twitter-bio-generator' %}{% endblock %}
+{% block og_title %}Twitter Bio Generator — Free AI X Bio Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 5 Twitter/X bio options with AI. Enter your profession, vibe, and keywords — get creative, punchy bios under 160 characters ready to copy. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'twitter-bio-generator' %}{% endblock %}
+{% block twitter_title %}Twitter Bio Generator — Free AI X Bio Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 5 Twitter/X bio options with AI. Profession, vibe, keywords — punchy bios under 160 chars. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Twitter Bio Generator","description":"Generate 5 creative Twitter/X bio options using AI — each under 160 characters, tailored to your profession and personal brand.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'twitter-bio-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"Twitter Bio Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'twitter-bio-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Twitter Bio Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Get 5 punchy Twitter/X bio options in seconds. Enter what you do, your vibe, and any keywords — AI writes bios that make people click Follow.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 bio options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Under 160 characters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'twitter-bio-generator' %}"
+            hx-target="#twitter-output"
+            hx-swap="innerHTML"
+            hx-indicator="#twitter-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="profession">What You Do <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="profession" name="profession" class="ai-tool-input"
+            placeholder="e.g. indie hacker, UX designer, AI researcher, startup founder, freelance writer">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="keywords">Topics / Keywords <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="keywords" name="keywords" class="ai-tool-input"
+            placeholder="e.g. SaaS, climate tech, productivity, design, Python, crypto">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="vibe">Vibe / Personality</label>
+            <select id="vibe" name="vibe" class="ai-tool-select">
+              <option value="witty and humorous">Witty & Humorous</option>
+              <option value="professional and credible">Professional & Credible</option>
+              <option value="casual and relatable">Casual & Relatable</option>
+              <option value="bold and provocative">Bold & Provocative</option>
+              <option value="minimalist and direct">Minimalist & Direct</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="cta">Call to Action <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="cta" name="cta" class="ai-tool-input"
+              placeholder="e.g. newsletter link, DMs open, building in public">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Twitter Bios →</button>
+        <div id="twitter-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your Twitter bios…</span>
+        </div>
+      </form>
+    </div>
+    <div id="twitter-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Twitter Bio Work</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Clarity beats cleverness</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">People decide whether to follow in under 3 seconds. Make what you do instantly obvious. You can be clever too — but not at the expense of clarity.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Signal your niche</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Generic bios ("entrepreneur | dad | coffee lover") attract nobody. Name the specific thing you tweet about — your niche audience will self-select in.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔗</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Include a hook or CTA</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A short CTA ("→ newsletter link" or "DMs open for collab") gives visitors an action to take. Even "building [thing] in public" sets expectations and attracts the right followers.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔄</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Update it regularly</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Your bio is pinned marketing copy. Update it when your focus shifts, when you launch something, or when you change what you want to be known for. Stale bios hurt credibility.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many characters does Twitter/X allow for bios?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Twitter/X allows up to 160 characters for your bio. That's roughly 25–30 words — less than a tweet. Every word has to earn its place. This tool generates bios that fit within this limit.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use emojis in my Twitter bio?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes, strategically. Emojis replace words and add visual personality. Use 1–3 to break up text and signal tone, not to fill space. "🚀 building" reads better than three random decorative emojis in a row. Avoid using emojis that don't mean anything in context.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does my Twitter bio affect search visibility?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — Twitter search indexes bios. If someone searches "fintech founder" or "UX designer," profiles with those terms in their bio appear in People results. Including your core keywords naturally (not stuffed) improves your discoverability within the platform.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/linkedin-summary-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">LinkedIn Summary Generator</a>
+      <a href="/tools/social-media/instagram-caption-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Instagram Caption Generator</a>
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

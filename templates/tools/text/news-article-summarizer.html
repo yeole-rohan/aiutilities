@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}News Article Summarizer — Free AI News Summary Generator | AIUtilities{% endblock %}
+{% block description %}Summarize any news article into key bullet points and a TL;DR with AI. Paste the article text — get a concise, factual summary in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'news-article-summarizer' %}{% endblock %}
+{% block og_title %}News Article Summarizer — Free AI News Summary Generator | AIUtilities{% endblock %}
+{% block og_description %}Summarize any news article into key bullet points and a TL;DR with AI. Paste the article text — get a concise, factual summary in seconds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'news-article-summarizer' %}{% endblock %}
+{% block twitter_title %}News Article Summarizer — Free AI News Summary | AIUtilities{% endblock %}
+{% block twitter_description %}Summarize any news article into bullet points and a TL;DR with AI. Paste text, get summary. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"News Article Summarizer","description":"Summarize any news article into key bullet points and a one-sentence TL;DR using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'news-article-summarizer' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"News Article Summarizer","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'news-article-summarizer' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      News Article Summarizer
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Paste any news article and get a clear bullet-point summary with a one-sentence TL;DR. Facts only — no opinion, no padding. Stay informed faster.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Bullet points + TL;DR</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Facts preserved</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'text' 'news-article-summarizer' %}"
+            hx-target="#news-output"
+            hx-swap="innerHTML"
+            hx-indicator="#news-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="article">Article Text <span style="color:#ef4444;">*</span></label>
+          <textarea id="article" name="article" class="ai-tool-input" rows="10"
+            style="resize:vertical;font-family:inherit;"
+            placeholder="Paste the full news article text here…"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="num_points">Number of Bullet Points</label>
+            <select id="num_points" name="num_points" class="ai-tool-select">
+              <option value="3">3 points</option>
+              <option value="5" selected>5 points</option>
+              <option value="7">7 points</option>
+              <option value="10">10 points</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="include_tldr">Include TL;DR</label>
+            <select id="include_tldr" name="include_tldr" class="ai-tool-select">
+              <option value="yes" selected>Yes — one-sentence TL;DR</option>
+              <option value="no">No — bullets only</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Summarize Article →</button>
+        <div id="news-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Summarizing article…</span>
+        </div>
+      </form>
+    </div>
+    <div id="news-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">When to Use This Tool</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📰</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Stay on Top of the News</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Skim 10 articles in the time it takes to read one. Paste the full text, get the key facts, and move on. Great for morning briefings.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📚</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Research & Note-Taking</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Extract key facts from long investigative pieces or reports. Perfect for students, researchers, and journalists building a story brief.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💬</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Share with a Team</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Send a clean bullet summary in Slack or email instead of a wall of text. Keep everyone informed without requiring them to read the full article.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Understand Foreign Reporting</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Summarize dense or unfamiliar reporting styles into plain English. Useful for international news, technical topics, or academic publications.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I paste a URL instead of article text?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">This tool works with pasted text only. To use a URL, open the article in your browser, select all text (Ctrl+A), copy it, and paste it here. This avoids paywalls and gives the AI the full article content.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long can the article be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The tool handles up to approximately 10,000 words (about 12,000 characters). For longer documents like full reports or white papers, consider splitting them into sections and summarizing each separately.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Will the summary add opinions or change facts?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI is instructed to stay strictly factual — preserving names, numbers, dates, and quotes from the original. Always verify critical facts against the source, especially for news that will be shared or published.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+      <a href="/tools/text/article-rewriter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Article Rewriter</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Etsy Product Description Generator — Free AI Etsy Listing Writer | AIUtilities{% endblock %}
+{% block description %}Generate Etsy listing title, description, and 13 tags with AI. Enter your product details — get an SEO-optimized, story-driven Etsy listing in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'etsy-product-description-generator' %}{% endblock %}
+{% block og_title %}Etsy Product Description Generator — Free AI Etsy Listing Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate Etsy listing title, description, and 13 tags with AI. Enter your product details — get an SEO-optimized, story-driven Etsy listing in seconds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'etsy-product-description-generator' %}{% endblock %}
+{% block twitter_title %}Etsy Product Description Generator — Free AI Listing Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate Etsy listing title, description, and 13 tags with AI. SEO-optimized, story-driven. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Etsy Product Description Generator","description":"Generate SEO-optimized Etsy listing title, description, and 13 tags using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'etsy-product-description-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"eCommerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Etsy Product Description Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'etsy-product-description-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">
+      Etsy Product Description Generator
+    </h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">
+      Generate a full Etsy listing — keyword-rich title, story-driven description, and all 13 tags — optimized to rank in Etsy search and convert browsers to buyers.
+    </p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Title + description + 13 tags</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Etsy SEO optimized</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ecommerce' 'etsy-product-description-generator' %}"
+            hx-target="#etsy-output"
+            hx-swap="innerHTML"
+            hx-indicator="#etsy-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="product_name">Product Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="product_name" name="product_name" class="ai-tool-input"
+            placeholder="e.g. Personalized Oak Cutting Board, Macramé Wall Hanging, Custom Dog Portrait">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="product_type">Product Type / Category <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="product_type" name="product_type" class="ai-tool-input"
+              placeholder="e.g. kitchen gift, home decor, digital download">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="materials">Materials / Made From <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="materials" name="materials" class="ai-tool-input"
+              placeholder="e.g. solid oak, 100% cotton, recycled silver">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="target_buyer">Target Buyer <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="target_buyer" name="target_buyer" class="ai-tool-input"
+              placeholder="e.g. gift for mom, dog lovers, newlyweds">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="keywords">Keywords to Include <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="keywords" name="keywords" class="ai-tool-input"
+              placeholder="e.g. personalized gift, engraved, handmade">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Etsy Listing →</button>
+        <div id="etsy-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your Etsy listing…</span>
+        </div>
+      </form>
+    </div>
+    <div id="etsy-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Etsy Listing SEO Tips</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🏷️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Title: Front-load Keywords</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Etsy's algorithm weighs the first few words most. Put your primary keyword (what buyers actually search) at the start, followed by descriptors like material, occasion, and style.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🏷️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Use All 13 Tags</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Etsy gives you 13 tags — use every one. Mix broad terms (handmade gift), mid-tail (personalized cutting board), and long-tail (custom oak cutting board wedding gift). No repeats from title needed.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📖</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Description: Story First</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Only the first few lines show before "Read more." Hook buyers with the feeling or occasion — who it's for, what makes it special — before listing specs.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📷</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Photos Drive Conversions</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Use all 10 photo slots. Include lifestyle shots (product in use), scale reference, close-up of detail, and packaging. The first photo is your thumbnail — make it bright and clear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should an Etsy title be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Etsy allows up to 140 characters. Aim for 120–130 to ensure it's fully visible in search results. Front-load with your primary keyword, then add secondary keywords separated by commas or pipes.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I repeat keywords from my title in my tags?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No. Etsy's algorithm already combines your title and tag signals — repeating the same phrase wastes a tag slot. Use tags to cover different buyer intents, synonyms, and related searches you couldn't fit in the title.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What makes an Etsy description convert well?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Open with the emotional hook (who it's for, the occasion). Follow with key details: size, material, what's included. Then add production and shipping info. Close with a call to action (message me, check my shop). Use line breaks for readability.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ecommerce/product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Description Generator</a>
+      <a href="/tools/ecommerce/product-review-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Review Generator</a>
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Name Generator</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
