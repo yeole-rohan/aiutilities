@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ category.name }} — Free Online {{ category.name }} {% endblock %}
+{% block title %}{{ category.name }} — Free Online {{ category.name }} | AIUtilities{% endblock %}
 {% block description %}Free online {{ category.name|lower }}. {{ category.description }} No signup required.{% endblock %}
 
 {% block content %}
@@ -14,32 +14,76 @@
       <span style="margin:0 .5rem;">›</span>
       <a href="/tools/" style="color:#374151;text-decoration:none;">Tools</a>
       <span style="margin:0 .5rem;">›</span>
-      <span style="color:#0f172a;">{{ category.name }}</span>
+      <span style="color:#0f172a;font-weight:600;">{{ category.name }}</span>
     </nav>
 
-    <div style="margin-bottom:2.5rem;">
-      <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:.75rem;">
-        <span style="font-size:2.5rem;">{{ category.icon }}</span>
-        <h1 style="font-size:1.875rem;font-weight:800;color:#0f172a;">{{ category.name }}</h1>
-      </div>
-      <p style="font-size:1rem;color:#374151;max-width:48rem;">{{ category.description }}</p>
-    </div>
+    <div style="display:grid;grid-template-columns:1fr 16rem;gap:2rem;align-items:start;">
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(18rem,1fr));gap:1rem;">
-      {% for tool in category.tools %}
-      <a href="/tools/{{ category.slug }}/{{ tool.slug }}/" style="text-decoration:none;">
-        <div class="app-card" style="padding:1.25rem;transition:box-shadow .15s;">
-          <h2 style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.375rem;">{{ tool.name }}</h2>
-          <p style="font-size:.875rem;color:#374151;line-height:1.5;">{{ tool.description }}</p>
-          <span style="display:inline-flex;align-items:center;gap:.25rem;margin-top:.875rem;font-size:.8125rem;font-weight:600;color:#16a34a;">
-            Use tool
-            <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-          </span>
+      <!-- Main content -->
+      <div>
+        <div style="margin-bottom:2rem;">
+          <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:.5rem;">
+            <span style="font-size:2.5rem;">{{ category.icon }}</span>
+            <div>
+              <h1 style="font-size:1.875rem;font-weight:800;color:#0f172a;line-height:1.2;">{{ category.name }}</h1>
+              <p style="font-size:.875rem;color:#16a34a;font-weight:600;margin-top:.2rem;">{{ category.tools|length }} free tools</p>
+            </div>
+          </div>
+          <p style="font-size:1rem;color:#374151;max-width:48rem;">{{ category.description }}</p>
         </div>
-      </a>
-      {% endfor %}
-    </div>
 
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(18rem,1fr));gap:1rem;">
+          {% for tool in category.tools %}
+          <a href="/tools/{{ category.slug }}/{{ tool.slug }}/" style="text-decoration:none;">
+            <div class="app-card" style="padding:1.25rem;transition:box-shadow .15s,transform .15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+                <h2 style="font-size:.9375rem;font-weight:600;color:#0f172a;flex:1;margin:0;">{{ tool.name }}</h2>
+                {% if tool.ai %}<span style="font-size:.65rem;background:#f0fdf4;color:#15803d;font-weight:700;padding:.15rem .45rem;border-radius:999px;white-space:nowrap;flex-shrink:0;">🤖 AI</span>{% endif %}
+              </div>
+              <p style="font-size:.875rem;color:#374151;line-height:1.5;margin-bottom:.75rem;">{{ tool.description }}</p>
+              <span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.8125rem;font-weight:600;color:#16a34a;">
+                Use tool
+                <svg style="width:.75rem;height:.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Sidebar: other categories -->
+      <aside style="position:sticky;top:1.5rem;">
+        <div class="app-card" style="padding:1.25rem;">
+          <div style="font-size:.8125rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em;">Other Categories</div>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.25rem;">
+            {% for cat in categories %}{% if cat.slug != category.slug %}
+            <li>
+              <a href="/tools/{{ cat.slug }}/" style="display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:.375rem;text-decoration:none;color:#374151;font-size:.875rem;transition:background .1s;" onmouseover="this.style.background='#f0fdf4';this.style.color='#15803d'" onmouseout="this.style.background='';this.style.color='#374151'">
+                <span>{{ cat.icon }}</span>{{ cat.name }}
+              </a>
+            </li>
+            {% endif %}{% endfor %}
+          </ul>
+          <div style="margin-top:.875rem;border-top:1px solid #e2e8f0;padding-top:.875rem;">
+            <a href="/tools/" style="display:flex;align-items:center;gap:.375rem;font-size:.875rem;font-weight:600;color:#16a34a;text-decoration:none;">
+              <svg style="width:.875rem;height:.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+              All tools
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
   </div>
 </div>
+
+<!-- Mobile sidebar: show below on small screens -->
+<style>
+@media (max-width: 768px) {
+  div[style*="grid-template-columns:1fr 16rem"] {
+    grid-template-columns: 1fr !important;
+  }
+  aside { position: static !important; }
+}
+</style>
 {% endblock %}

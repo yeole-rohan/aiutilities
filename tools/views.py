@@ -1,11 +1,14 @@
 from django.http import Http404
 from django.shortcuts import render
 
-from .registry import CATEGORIES, get_category, get_tool
+from .registry import CATEGORIES, get_category, get_tool, get_total_tools
 
 
 def index(request):
-    return render(request, "tools/index.html", {"categories": CATEGORIES})
+    return render(request, "tools/index.html", {
+        "categories": CATEGORIES,
+        "total_tools": get_total_tools(),
+    })
 
 
 def category(request, category_slug):

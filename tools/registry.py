@@ -331,6 +331,10 @@ def get_all_tools():
     return result
 
 
+def get_total_tools():
+    return sum(len(cat["tools"]) for cat in CATEGORIES)
+
+
 def get_category(slug):
     return next((c for c in CATEGORIES if c["slug"] == slug), None)
 

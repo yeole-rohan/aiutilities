@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}AIUtilities — 600+ Free Online Tools{% endblock %}
-{% block description %}Free online tools for developers, designers, and everyday tasks. Calculators, PDF tools, image editors, converters, developer utilities, and more. No signup required.{% endblock %}
+{% block title %}AIUtilities — {{ total_tools }}+ Free Online Tools{% endblock %}
+{% block description %}Free online tools for developers, designers, and everyday tasks. Calculators, PDF tools, image editors, converters, AI writers, and more. No signup required.{% endblock %}
 
 {% block navbar %}
 <nav class="app-nav">
@@ -15,11 +15,13 @@
   </a>
   <div class="app-nav-links">
     <a href="/tools/">All Tools</a>
+    <a href="/tools/ai/">AI Tools</a>
     <a href="/tools/calculators/">Calculators</a>
-    <a href="/tools/converters/">Converters</a>
     <a href="/tools/pdf/">PDF</a>
     <a href="/tools/image/">Image</a>
     <a href="/tools/developer/">Developer</a>
+    <a href="/tools/resume/">Resume</a>
+    <a href="/tools/social-media/">Social Media</a>
   </div>
   <div class="app-nav-actions">
     {% if request.user.is_authenticated %}
@@ -29,39 +31,87 @@
 </nav>
 {% endblock %}
 
+{% block extra_head %}
+<style>
+#search-dropdown {
+  display:none;
+  position:absolute;
+  top:calc(100% + .375rem);
+  left:0;
+  right:0;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:.625rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  z-index:200;
+  overflow:hidden;
+  max-height:22rem;
+  overflow-y:auto;
+}
+#search-dropdown a {
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding:.625rem 1rem;
+  text-decoration:none;
+  color:#0f172a;
+  font-size:.875rem;
+  border-bottom:1px solid #f1f5f9;
+  transition:background .1s;
+}
+#search-dropdown a:last-child { border-bottom:none; }
+#search-dropdown a:hover { background:#f8fafc; }
+#search-dropdown .sd-cat { font-size:.75rem; color:#6b7280; }
+#search-dropdown .sd-icon { font-size:1.125rem; flex-shrink:0; }
+#search-dropdown .sd-empty { padding:.875rem 1rem; color:#6b7280; font-size:.875rem; }
+</style>
+{% endblock %}
+
 {% block content %}
+
+<!-- Tools data for search typeahead -->
+<script>
+const TOOLS_DATA = [{% for cat in categories %}{% for tool in cat.tools %}{"n":"{{ tool.name|escapejs }}","u":"/tools/{{ cat.slug }}/{{ tool.slug }}/","c":"{{ cat.name|escapejs }}","i":"{{ cat.icon }}"},{% endfor %}{% endfor %}];
+</script>
 
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
 <section style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:5rem 1rem 4rem;">
   <div style="max-width:48rem;margin:0 auto;text-align:center;">
     <div class="app-badge" style="margin-bottom:1.25rem;font-size:.75rem;">
-      600+ free tools · no signup required
+      {{ total_tools }}+ free tools · no signup required
     </div>
     <h1 style="font-size:clamp(2rem,5vw,3.25rem);font-weight:800;color:#ffffff;line-height:1.15;letter-spacing:-.025em;margin-bottom:1.25rem;">
       Every tool you need,<br>
       <span style="color:#4ade80;">completely free.</span>
     </h1>
     <p style="font-size:1.0625rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:2rem;max-width:34rem;margin-left:auto;margin-right:auto;">
-      Calculators, converters, PDF tools, image editors, developer utilities, and hundreds more.
+      Calculators, converters, PDF tools, image editors, AI writers, developer utilities, and more.
       All in one place. No ads, no limits.
     </p>
 
-    <!-- Search bar -->
-    <form action="/tools/" method="get" style="display:flex;gap:.5rem;max-width:32rem;margin:0 auto 2.5rem;">
-      <input
-        type="search"
-        name="q"
-        placeholder="Search tools… e.g. JSON formatter, age calculator"
-        style="flex:1;padding:.75rem 1rem;border-radius:.625rem;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.9375rem;outline:none;"
-      >
-      <button type="submit" class="app-btn app-btn-primary" style="padding:.75rem 1.25rem;white-space:nowrap;">
-        Search
-      </button>
-    </form>
+    <!-- Search bar with typeahead -->
+    <div id="search-wrapper" style="position:relative;max-width:32rem;margin:0 auto 2.5rem;">
+      <form action="/tools/" method="get" style="display:flex;gap:.5rem;" onsubmit="return true;" autocomplete="off">
+        <div style="position:relative;flex:1;">
+          <input
+            type="search"
+            id="home-search"
+            name="q"
+            placeholder="Search tools… e.g. JSON formatter, age calculator"
+            style="width:100%;padding:.75rem 1rem;border-radius:.625rem;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.9375rem;outline:none;box-sizing:border-box;"
+            autocomplete="off"
+          >
+          <div id="search-dropdown"></div>
+        </div>
+        <button type="submit" class="app-btn app-btn-primary" style="padding:.75rem 1.25rem;white-space:nowrap;flex-shrink:0;">
+          Search
+        </button>
+      </form>
+    </div>
 
-    <!-- Quick links -->
+    <!-- Quick category links — all categories -->
     <div style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;">
-      {% for cat in categories|slice:":8" %}
+      {% for cat in categories %}
       <a href="/tools/{{ cat.slug }}/"
          style="display:inline-flex;align-items:center;gap:.375rem;padding:.375rem .875rem;border-radius:2rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:.8125rem;font-weight:500;text-decoration:none;transition:background .15s;">
         {{ cat.icon }} {{ cat.name }}
@@ -75,13 +125,16 @@
 <section style="background:#16a34a;padding:1.25rem 1rem;">
   <div style="max-width:72rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:2rem;justify-content:center;align-items:center;">
     <div style="text-align:center;color:#fff;">
-      <div style="font-size:1.5rem;font-weight:800;line-height:1;">600+</div>
+      <div style="font-size:1.5rem;font-weight:800;line-height:1;">{{ total_tools }}+</div>
       <div style="font-size:.8125rem;opacity:.85;margin-top:.2rem;">Free Tools</div>
     </div>
-    <div style="width:1px;height:2rem;background:rgba(255,255,255,.3);display:none;" class="stat-divider"></div>
     <div style="text-align:center;color:#fff;">
       <div style="font-size:1.5rem;font-weight:800;line-height:1;">{{ categories|length }}</div>
       <div style="font-size:.8125rem;opacity:.85;margin-top:.2rem;">Categories</div>
+    </div>
+    <div style="text-align:center;color:#fff;">
+      <div style="font-size:1.5rem;font-weight:800;line-height:1;">40+</div>
+      <div style="font-size:.8125rem;opacity:.85;margin-top:.2rem;">AI-Powered</div>
     </div>
     <div style="text-align:center;color:#fff;">
       <div style="font-size:1.5rem;font-weight:800;line-height:1;">100%</div>
@@ -93,12 +146,10 @@
 <!-- ── Category Grid ─────────────────────────────────────────────────────── -->
 <section style="background:#f8fafc;padding:4rem 1rem;">
   <div style="max-width:72rem;margin:0 auto;">
-
     <div style="text-align:center;margin-bottom:2.5rem;">
       <h2 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.5rem;">Browse by category</h2>
-      <p style="font-size:.9375rem;color:#374151;">Pick a category or search above to find the exact tool you need.</p>
+      <p style="font-size:.9375rem;color:#374151;">{{ categories|length }} categories · {{ total_tools }}+ tools · pick one or search above.</p>
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:1rem;">
       {% for cat in categories %}
       <a href="/tools/{{ cat.slug }}/" style="text-decoration:none;">
@@ -112,76 +163,94 @@
       </a>
       {% endfor %}
     </div>
-
     <div style="text-align:center;margin-top:2.5rem;">
-      <a href="/tools/" class="app-btn app-btn-outline">View all tools</a>
+      <a href="/tools/" class="app-btn app-btn-outline">View all {{ total_tools }}+ tools</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI Tools Spotlight ──────────────────────────────────────────────────── -->
+<section style="background:#ffffff;padding:4rem 1rem;">
+  <div style="max-width:72rem;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <div style="display:inline-flex;align-items:center;gap:.5rem;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:999px;padding:.35rem .9rem;font-size:.8125rem;font-weight:600;color:#15803d;margin-bottom:.75rem;">
+        🤖 Powered by Groq AI · Llama 3.3 70B
+      </div>
+      <h2 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.5rem;">AI-powered tools</h2>
+      <p style="font-size:.9375rem;color:#374151;">40+ tools that write, generate, and create for you — instantly.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:1rem;">
+      {% for cat in categories %}{% for tool in cat.tools %}{% if tool.ai %}{% if forloop.counter <= 12 %}
+      <a href="/tools/{{ cat.slug }}/{{ tool.slug }}/" style="text-decoration:none;">
+        <div class="app-card" style="padding:1.125rem 1.25rem;border-left:3px solid #16a34a;">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+            <span style="font-size:1rem;">{{ cat.icon }}</span>
+            <span style="font-size:.7rem;background:#f0fdf4;color:#15803d;font-weight:600;padding:.15rem .5rem;border-radius:999px;">AI</span>
+            <span style="font-size:.75rem;color:#374151;font-weight:500;">{{ cat.name }}</span>
+          </div>
+          <div style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">{{ tool.name }}</div>
+          <div style="font-size:.8125rem;color:#374151;line-height:1.45;">{{ tool.description }}</div>
+        </div>
+      </a>
+      {% endif %}{% endif %}{% endfor %}{% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="/tools/ai/" class="app-btn app-btn-outline">View all AI tools →</a>
     </div>
   </div>
 </section>
 
 <!-- ── Popular Tools ──────────────────────────────────────────────────────── -->
-<section style="background:#ffffff;padding:4rem 1rem;">
+<section style="background:#f8fafc;padding:4rem 1rem;">
   <div style="max-width:72rem;margin:0 auto;">
-
     <div style="text-align:center;margin-bottom:2.5rem;">
       <h2 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.5rem;">Popular tools</h2>
-      <p style="font-size:.9375rem;color:#374151;">Most-used tools this week.</p>
+      <p style="font-size:.9375rem;color:#374151;">Most-used tools across all categories.</p>
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:1rem;">
-      {% for cat in categories %}
-        {% for tool in cat.tools|slice:":1" %}
-        <a href="/tools/{{ cat.slug }}/{{ tool.slug }}/" style="text-decoration:none;">
-          <div class="app-card" style="padding:1.125rem 1.25rem;">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
-              <span style="font-size:1.125rem;">{{ cat.icon }}</span>
-              <span style="font-size:.75rem;color:#374151;font-weight:500;">{{ cat.name }}</span>
-            </div>
-            <div style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">{{ tool.name }}</div>
-            <div style="font-size:.8125rem;color:#374151;line-height:1.45;">{{ tool.description }}</div>
+      {% for cat in categories %}{% for tool in cat.tools|slice:":1" %}
+      <a href="/tools/{{ cat.slug }}/{{ tool.slug }}/" style="text-decoration:none;">
+        <div class="app-card" style="padding:1.125rem 1.25rem;">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+            <span style="font-size:1.125rem;">{{ cat.icon }}</span>
+            <span style="font-size:.75rem;color:#374151;font-weight:500;">{{ cat.name }}</span>
           </div>
-        </a>
-        {% endfor %}
-      {% endfor %}
+          <div style="font-size:.9375rem;font-weight:600;color:#0f172a;margin-bottom:.25rem;">{{ tool.name }}</div>
+          <div style="font-size:.8125rem;color:#374151;line-height:1.45;">{{ tool.description }}</div>
+        </div>
+      </a>
+      {% endfor %}{% endfor %}
     </div>
-
   </div>
 </section>
 
 <!-- ── Why AIUtilities ────────────────────────────────────────────────────── -->
-<section style="background:#f8fafc;padding:4rem 1rem;">
+<section style="background:#ffffff;padding:4rem 1rem;">
   <div style="max-width:64rem;margin:0 auto;">
-
     <div style="text-align:center;margin-bottom:2.5rem;">
       <h2 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-.02em;margin-bottom:.5rem;">Why AIUtilities?</h2>
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:1.25rem;">
-
       <div class="app-card" style="padding:1.5rem;">
         <div style="font-size:1.75rem;margin-bottom:.75rem;">⚡</div>
         <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Instant, no signup</h3>
         <p style="font-size:.875rem;color:#374151;line-height:1.6;">Every tool works immediately in your browser. No account, no download, no waiting.</p>
       </div>
-
       <div class="app-card" style="padding:1.5rem;">
         <div style="font-size:1.75rem;margin-bottom:.75rem;">🔒</div>
         <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">Private by default</h3>
         <p style="font-size:.875rem;color:#374151;line-height:1.6;">Files processed locally where possible. We don't store your data or sell it to anyone.</p>
       </div>
-
       <div class="app-card" style="padding:1.5rem;">
         <div style="font-size:1.75rem;margin-bottom:.75rem;">🎯</div>
         <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">One tool, one job</h3>
         <p style="font-size:.875rem;color:#374151;line-height:1.6;">Each tool is focused and fast. No bloated interfaces, no upsells, no distractions.</p>
       </div>
-
       <div class="app-card" style="padding:1.5rem;">
         <div style="font-size:1.75rem;margin-bottom:.75rem;">🤖</div>
-        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">AI-powered variants</h3>
-        <p style="font-size:.875rem;color:#374151;line-height:1.6;">Every tool has an AI-powered mode that understands context and generates smarter output.</p>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.375rem;">AI-powered</h3>
+        <p style="font-size:.875rem;color:#374151;line-height:1.6;">40+ tools use Groq AI with Llama 3.3 70B to generate, write, and create in seconds.</p>
       </div>
-
     </div>
   </div>
 </section>
@@ -190,12 +259,54 @@
 <section style="background:#0f172a;padding:4rem 1rem;text-align:center;">
   <div style="max-width:36rem;margin:0 auto;">
     <h2 style="font-size:1.75rem;font-weight:800;color:#ffffff;letter-spacing:-.02em;margin-bottom:.75rem;">Ready to get started?</h2>
-    <p style="font-size:.9375rem;color:rgba(255,255,255,.65);margin-bottom:2rem;line-height:1.65;">Pick any tool above — or browse all 600+ free utilities.</p>
+    <p style="font-size:.9375rem;color:rgba(255,255,255,.65);margin-bottom:2rem;line-height:1.65;">Pick any tool above — or browse all {{ total_tools }}+ free utilities.</p>
     <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
       <a href="/tools/" class="app-btn app-btn-primary app-btn-lg">Browse all tools</a>
+      <a href="/tools/ai/" class="app-btn app-btn-outline app-btn-lg" style="color:#fff;border-color:rgba(255,255,255,.3);">Explore AI tools</a>
     </div>
   </div>
 </section>
+
+<!-- ── Typeahead JS ────────────────────────────────────────────────────────── -->
+<script>
+(function() {
+  var input = document.getElementById('home-search');
+  var dropdown = document.getElementById('search-dropdown');
+  if (!input || !dropdown) return;
+
+  function highlight(text, q) {
+    var i = text.toLowerCase().indexOf(q.toLowerCase());
+    if (i < 0) return text;
+    return text.slice(0, i) + '<strong>' + text.slice(i, i + q.length) + '</strong>' + text.slice(i + q.length);
+  }
+
+  input.addEventListener('input', function() {
+    var q = this.value.trim();
+    if (q.length < 2) { dropdown.style.display = 'none'; return; }
+    var ql = q.toLowerCase();
+    var matches = TOOLS_DATA.filter(function(t) {
+      return t.n.toLowerCase().indexOf(ql) >= 0 || t.c.toLowerCase().indexOf(ql) >= 0;
+    }).slice(0, 8);
+    if (!matches.length) {
+      dropdown.innerHTML = '<div class="sd-empty">No tools found for "' + q + '"</div>';
+      dropdown.style.display = 'block';
+      return;
+    }
+    dropdown.innerHTML = matches.map(function(t) {
+      return '<a href="' + t.u + '"><span class="sd-icon">' + t.i + '</span><div><div>' + highlight(t.n, q) + '</div><div class="sd-cat">' + t.c + '</div></div></a>';
+    }).join('');
+    dropdown.style.display = 'block';
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#search-wrapper')) dropdown.style.display = 'none';
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') dropdown.style.display = 'none';
+  });
+})();
+</script>
 
 {% endblock %}
 
@@ -204,39 +315,49 @@
   <div class="app-footer-inner">
     <div class="app-footer-col">
       <div style="font-size:1rem;font-weight:700;color:#ffffff;margin-bottom:.5rem;">AIUtilities</div>
-      <p class="app-footer-brand-desc">600+ free online tools for developers, designers, and everyday tasks.</p>
+      <p class="app-footer-brand-desc">{{ total_tools }}+ free online tools for developers, designers, writers, and everyday tasks. No signup, no limits.</p>
     </div>
     <div class="app-footer-col">
-      <div class="app-footer-col-heading">Popular Categories</div>
+      <div class="app-footer-col-heading">Utilities</div>
       <ul>
-        <li><a href="/tools/calculators/">Calculators</a></li>
-        <li><a href="/tools/converters/">Converters</a></li>
-        <li><a href="/tools/pdf/">PDF Tools</a></li>
-        <li><a href="/tools/image/">Image Tools</a></li>
-        <li><a href="/tools/developer/">Developer Tools</a></li>
-        <li><a href="/tools/security/">Security Tools</a></li>
+        <li><a href="/tools/calculators/">🧮 Calculators</a></li>
+        <li><a href="/tools/converters/">🔄 Converters</a></li>
+        <li><a href="/tools/pdf/">📄 PDF Tools</a></li>
+        <li><a href="/tools/image/">🖼️ Image Tools</a></li>
+        <li><a href="/tools/video/">🎬 Video Tools</a></li>
+        <li><a href="/tools/audio/">🎵 Audio Tools</a></li>
+        <li><a href="/tools/text/">📝 Text Tools</a></li>
+        <li><a href="/tools/random/">🎲 Random Generators</a></li>
+        <li><a href="/tools/date-time/">📅 Date & Time</a></li>
       </ul>
     </div>
     <div class="app-footer-col">
-      <div class="app-footer-col-heading">More Tools</div>
+      <div class="app-footer-col-heading">Developer & Design</div>
       <ul>
-        <li><a href="/tools/text/">Text Tools</a></li>
-        <li><a href="/tools/seo/">SEO Tools</a></li>
-        <li><a href="/tools/qr-barcode/">QR & Barcode</a></li>
-        <li><a href="/tools/color/">Color Tools</a></li>
-        <li><a href="/tools/ai/">AI Tools</a></li>
+        <li><a href="/tools/developer/">💻 Developer Tools</a></li>
+        <li><a href="/tools/security/">🔐 Security Tools</a></li>
+        <li><a href="/tools/network/">🌐 Network Tools</a></li>
+        <li><a href="/tools/seo/">📈 SEO Tools</a></li>
+        <li><a href="/tools/color/">🎨 Color Tools</a></li>
+        <li><a href="/tools/qr-barcode/">📱 QR & Barcode</a></li>
+      </ul>
+    </div>
+    <div class="app-footer-col">
+      <div class="app-footer-col-heading">AI & Content</div>
+      <ul>
+        <li><a href="/tools/ai/">🤖 AI Tools</a></li>
+        <li><a href="/tools/document/">📋 Document Generators</a></li>
+        <li><a href="/tools/resume/">👔 Resume & HR</a></li>
+        <li><a href="/tools/social-media/">📲 Social Media</a></li>
+        <li><a href="/tools/ecommerce/">🛒 eCommerce</a></li>
+        <li><a href="/tools/invoice/">🧾 Invoice & Receipt</a></li>
         <li><a href="/tools/">All Tools</a></li>
       </ul>
-    </div>
-    <div class="app-footer-col">
-      <div class="app-footer-col-heading">More Tools</div>
-      <ul>
-        <li><a href="/tools/security/">Security Tools</a></li>
-        <li><a href="/tools/seo/">SEO Tools</a></li>
-        <li><a href="/tools/ai/">AI Tools</a></li>
-        <li><a href="/privacy/">Privacy Policy</a></li>
-        <li><a href="/terms/">Terms</a></li>
-      </ul>
+      <div style="margin-top:.75rem;border-top:1px solid rgba(255,255,255,.1);padding-top:.75rem;">
+        <a href="/privacy/" style="font-size:.8125rem;color:rgba(255,255,255,.5);text-decoration:none;">Privacy</a>
+        &nbsp;·&nbsp;
+        <a href="/terms/" style="font-size:.8125rem;color:rgba(255,255,255,.5);text-decoration:none;">Terms</a>
+      </div>
     </div>
   </div>
   <div class="app-footer-legal">
