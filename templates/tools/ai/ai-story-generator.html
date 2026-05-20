@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Story Generator — Free Short Story Writer | AIUtilities{% endblock %}
+{% block description %}Generate compelling short stories in any genre with AI. Enter your genre, protagonist, and setting — get a complete story in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-story-generator' %}{% endblock %}
+{% block og_title %}AI Story Generator — Free Short Story Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate compelling short stories in any genre with AI. Enter your genre, protagonist, and setting — get a complete story in seconds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-story-generator' %}{% endblock %}
+{% block twitter_title %}AI Story Generator — Free Short Story Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate compelling short stories in any genre with AI. Genre, protagonist, setting — complete story. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Story Generator","description":"Generate compelling, original short stories in any genre using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-story-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Story Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-story-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Story Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a complete, original short story in seconds. Choose your genre, add a protagonist and setting — AI writes a story with a hook, rising tension, and satisfying ending.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any genre</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Complete story</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-story-generator' %}" hx-target="#story-output" hx-swap="innerHTML" hx-indicator="#story-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="genre">Genre <span style="color:#ef4444;">*</span></label>
+          <select id="genre" name="genre" class="ai-tool-select">
+            <option value="mystery">🔍 Mystery</option>
+            <option value="romance">💕 Romance</option>
+            <option value="sci-fi">🚀 Science Fiction</option>
+            <option value="fantasy">🧙 Fantasy</option>
+            <option value="horror">👻 Horror</option>
+            <option value="thriller">😰 Thriller</option>
+            <option value="adventure">⚔️ Adventure</option>
+            <option value="comedy">😄 Comedy</option>
+            <option value="drama">🎭 Drama</option>
+            <option value="historical fiction">📜 Historical Fiction</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="protagonist">Protagonist <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="protagonist" name="protagonist" class="ai-tool-input" placeholder="e.g. a retired detective, a young witch, an astronaut">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="setting">Setting <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="setting" name="setting" class="ai-tool-input" placeholder="e.g. 1920s Paris, a space station, a small coastal town">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="length">Story Length</label>
+          <select id="length" name="length" class="ai-tool-select">
+            <option value="short">Short (~500 words)</option>
+            <option value="medium">Medium (~800 words)</option>
+            <option value="long">Long (~1,400 words)</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Story →</button>
+        <div id="story-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your story…</span>
+        </div>
+      </form>
+    </div>
+    <div id="story-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Great Short Story?</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Hook in the first line</h3><p style="font-size:.8125rem;color:#374151;">The opening sentence must create immediate intrigue. A question, a shocking statement, or an action already in progress — anything but backstory or description.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">One central conflict</h3><p style="font-size:.8125rem;color:#374151;">Short stories only have space for one main problem. Every scene should relate to it. Resist the urge to add subplots — focus creates tension.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">A resonant ending</h3><p style="font-size:.8125rem;color:#374151;">The ending doesn't have to be happy, but it must feel earned and inevitable in hindsight. The best endings reframe what came before.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I publish or sell the story this tool generates?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The generated content is yours to use. However, AI-generated stories work best as first drafts — edit, add your voice, and refine before publishing. Most literary journals and writing competitions currently require human-authored work, so check submission guidelines before entering.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What genres work best with this tool?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">All genres produce strong results. Genre fiction (mystery, sci-fi, fantasy, thriller) tends to have clearer conventions for AI to follow. For literary or character-driven drama, give more specific protagonist details and setting context to get richer output.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-essay-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Essay Generator</a>
+      <a href="/tools/ai/ai-blog-intro-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Blog Introduction Generator</a>
+      <a href="/tools/ai/ai-paragraph-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Paragraph Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

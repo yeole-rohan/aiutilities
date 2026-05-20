@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Quiz Generator — Free Quiz Maker | AIUtilities{% endblock %}
+{% block description %}Generate multiple-choice or true/false quizzes on any topic with AI. Choose difficulty and number of questions — get a complete quiz instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-quiz-generator' %}{% endblock %}
+{% block og_title %}AI Quiz Generator — Free Quiz Maker | AIUtilities{% endblock %}
+{% block og_description %}Generate multiple-choice or true/false quizzes on any topic with AI. Choose difficulty and number of questions — get a complete quiz instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-quiz-generator' %}{% endblock %}
+{% block twitter_title %}AI Quiz Generator — Free Quiz Maker | AIUtilities{% endblock %}
+{% block twitter_description %}Generate multiple-choice or true/false quizzes on any topic. Choose difficulty and question count. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Quiz Generator","description":"Generate complete multiple-choice or true/false quizzes on any topic using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-quiz-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Quiz Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-quiz-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Quiz Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a complete quiz on any topic in seconds. Choose between multiple-choice or true/false, set the difficulty, and get questions with answer keys — ready to use or edit.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any topic</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Answer key included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-quiz-generator' %}" hx-target="#quiz-output" hx-swap="innerHTML" hx-indicator="#quiz-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Quiz Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input" placeholder="e.g. World War II, Python programming basics, human anatomy, the solar system, French cuisine">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="num_questions">Number of Questions</label>
+            <select id="num_questions" name="num_questions" class="ai-tool-select">
+              <option value="5">5 questions</option>
+              <option value="10" selected>10 questions</option>
+              <option value="15">15 questions</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="difficulty">Difficulty</label>
+            <select id="difficulty" name="difficulty" class="ai-tool-select">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="quiz_type">Question Type</label>
+          <select id="quiz_type" name="quiz_type" class="ai-tool-select">
+            <option value="multiple choice">Multiple Choice (4 options)</option>
+            <option value="true or false">True / False</option>
+            <option value="mixed">Mixed (multiple choice + true/false)</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Quiz →</button>
+        <div id="quiz-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating quiz…</span>
+        </div>
+      </form>
+    </div>
+    <div id="quiz-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Who Uses the AI Quiz Generator?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎓</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Teachers & educators</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Create class quizzes, revision tests, or exit tickets in minutes instead of hours. Customise difficulty to match your curriculum level.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📚</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Students studying</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Generate practice tests on any subject to self-test before exams. Active recall through quizzes is one of the most effective study methods.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🏢</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">L&D professionals</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Create knowledge-check quizzes for training modules, onboarding materials, or compliance assessments without specialist authoring tools.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎮</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Trivia & games</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Run pub quizzes, team-building games, or social media trivia with instantly generated questions on any theme or niche topic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Are the answers always correct?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI generates factually grounded content, but for high-stakes educational use (exams, certifications) always verify the answers against authoritative sources. For general knowledge, trivia, and revision practice the accuracy is very high — but a quick review before use is recommended, especially for niche or highly technical topics.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I export the quiz to Google Forms or Kahoot?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The quiz is generated as plain text that you can copy and paste into any platform — Google Forms, Kahoot, Quizlet, Typeform, or a Word document. The structured format (question, options A-D, answer) makes it easy to transfer to any quiz tool.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-paragraph-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Paragraph Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-essay-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Essay Generator</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

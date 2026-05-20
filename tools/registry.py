@@ -112,6 +112,7 @@ CATEGORIES = [
             {"slug": "paraphrasing-tool", "name": "Paraphrasing Tool", "description": "Rewrite any text in a different style while keeping the original meaning.", "ai": True},
             {"slug": "article-rewriter", "name": "Article Rewriter", "description": "Rewrite full articles to be unique and plagiarism-free with AI.", "ai": True},
             {"slug": "news-article-summarizer", "name": "News Article Summarizer", "description": "Summarize any news article into bullet points and a TL;DR with AI.", "ai": True},
+            {"slug": "sentence-rewriter", "name": "Sentence Rewriter", "description": "Rewrite any sentence 5 ways — vary structure, tone, and style with AI.", "ai": True},
         ],
     },
     {
@@ -254,6 +255,9 @@ CATEGORIES = [
             {"slug": "youtube-title-generator", "name": "YouTube Title Generator", "description": "Generate 10 click-worthy, SEO-optimized YouTube video titles with AI.", "ai": True},
             {"slug": "linkedin-summary-generator", "name": "LinkedIn Summary Generator", "description": "Write a compelling LinkedIn About section that attracts opportunities.", "ai": True},
             {"slug": "twitter-bio-generator", "name": "Twitter Bio Generator", "description": "Generate 5 punchy Twitter/X bios under 160 characters with AI.", "ai": True},
+            {"slug": "instagram-caption-generator", "name": "Instagram Caption Generator", "description": "Generate 3 engaging Instagram captions with hashtags and CTA with AI.", "ai": True},
+            {"slug": "tweet-generator", "name": "Tweet Generator", "description": "Generate 5 punchy tweets or a thread on any topic with AI.", "ai": True},
+            {"slug": "youtube-description-generator", "name": "YouTube Description Generator", "description": "Write SEO-optimised YouTube video descriptions that rank and convert.", "ai": True},
         ],
     },
     {
@@ -317,6 +321,12 @@ CATEGORIES = [
             {"slug": "salary-negotiation-email", "name": "Salary Negotiation Email Generator", "description": "Write a confident, professional salary negotiation email with AI.", "ai": True},
             {"slug": "thank-you-email-generator", "name": "Thank You Email Generator", "description": "Generate sincere, personalised thank-you emails for any context with AI.", "ai": True},
             {"slug": "tagline-generator", "name": "Tagline & Slogan Generator", "description": "Generate 10 memorable brand taglines and slogans with AI.", "ai": True},
+            {"slug": "ai-story-generator", "name": "AI Story Generator", "description": "Generate compelling short stories in any genre with AI.", "ai": True},
+            {"slug": "ai-paragraph-generator", "name": "AI Paragraph Generator", "description": "Generate 3 polished paragraph options on any topic with AI.", "ai": True},
+            {"slug": "ai-prompt-generator", "name": "AI Prompt Generator", "description": "Generate optimised prompts for ChatGPT, Midjourney, and other AI tools.", "ai": True},
+            {"slug": "chatgpt-prompt-generator", "name": "ChatGPT Prompt Generator", "description": "Generate highly effective ChatGPT prompts using prompt engineering best practices.", "ai": True},
+            {"slug": "ai-quiz-generator", "name": "AI Quiz Generator", "description": "Generate multiple choice, true/false, or open-ended quizzes on any topic with AI.", "ai": True},
+            {"slug": "ai-blog-intro-generator", "name": "AI Blog Introduction Generator", "description": "Generate 2 hook-driven blog introductions that keep readers reading.", "ai": True},
         ],
     },
 ]

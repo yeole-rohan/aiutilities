@@ -1403,6 +1403,325 @@ def tagline_generator(request):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Batch 5 — Tools 41–50
+# ─────────────────────────────────────────────────────────────────────────────
+
+@require_POST
+def ai_story_generator(request):
+    genre = request.POST.get("genre", "").strip()
+    protagonist = request.POST.get("protagonist", "").strip()
+    setting = request.POST.get("setting", "").strip()
+    length = request.POST.get("length", "short")
+
+    if not genre:
+        return HttpResponse(_error_html("Please enter a story genre."))
+
+    length_map = {"short": "400–600 words", "medium": "700–1000 words", "long": "1200–1600 words"}
+    word_count = length_map.get(length, "400–600 words")
+    protagonist_line = f"Main character: {protagonist}." if protagonist else ""
+    setting_line = f"Setting: {setting}." if setting else ""
+
+    system = (
+        "You are a skilled fiction author. Write compelling, original short stories with "
+        "vivid descriptions, natural dialogue, and satisfying story arcs. "
+        "Include an engaging hook, rising tension, and a clear ending. "
+        "Write in prose — no bullet points, no headers. Just the story."
+    )
+    user = (
+        f"Genre: {genre}\n"
+        f"{protagonist_line} {setting_line}\n"
+        f"Length: approximately {word_count}\n\n"
+        "Write the complete story."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1400, temperature=0.92)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "story-result"))
+
+
+@require_POST
+def ai_paragraph_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    tone = request.POST.get("tone", "informative")
+    length = request.POST.get("length", "medium")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic."))
+
+    length_map = {
+        "short": "3–4 sentences (50–70 words)",
+        "medium": "5–7 sentences (80–120 words)",
+        "long": "8–10 sentences (150–200 words)",
+    }
+    word_count = length_map.get(length, "5–7 sentences")
+
+    system = (
+        "You are an expert writer. Generate well-crafted paragraphs on any topic. "
+        "Each paragraph should have a clear topic sentence, supporting details, and a "
+        "closing sentence. Output 3 different paragraph options, each clearly labeled "
+        "Option 1, Option 2, Option 3. Vary the angle or emphasis in each option."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Tone: {tone}\n"
+        f"Length: {word_count}\n\n"
+        "Generate 3 paragraph options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.8)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "paragraph-result"))
+
+
+@require_POST
+def sentence_rewriter(request):
+    sentence = request.POST.get("sentence", "").strip()
+    style = request.POST.get("style", "clear and natural")
+    num_variations = request.POST.get("num_variations", "5")
+
+    if not sentence:
+        return HttpResponse(_error_html("Please enter a sentence to rewrite."))
+    if len(sentence) > 1000:
+        return HttpResponse(_error_html("Please keep the input under 1,000 characters."))
+
+    system = (
+        "You are an expert writing assistant. Rewrite sentences in different ways while "
+        "preserving the exact meaning. Each variation should feel distinct — vary sentence "
+        "structure, word choice, and emphasis. Never change the core meaning."
+    )
+    user = (
+        f"Style / tone goal: {style}\n"
+        f"Original sentence: {sentence}\n\n"
+        f"Write {num_variations} rewritten versions, numbered."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=600, temperature=0.82)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "sentence-rewriter-result"))
+
+
+@require_POST
+def ai_prompt_generator(request):
+    goal = request.POST.get("goal", "").strip()
+    ai_tool = request.POST.get("ai_tool", "ChatGPT")
+    output_format = request.POST.get("output_format", "")
+
+    if not goal:
+        return HttpResponse(_error_html("Please describe what you want to accomplish."))
+
+    format_line = f"Desired output format: {output_format}." if output_format else ""
+    system = (
+        "You are an expert prompt engineer. Write optimised prompts for AI tools that "
+        "are clear, specific, and get consistently great results. Use proven techniques: "
+        "role assignment, context, constraints, output format instructions. "
+        "Generate 5 prompt variations from simple to detailed. Number each one."
+    )
+    user = (
+        f"AI tool: {ai_tool}\n"
+        f"Goal / task: {goal}\n"
+        f"{format_line}\n\n"
+        "Generate 5 optimised prompt options, from brief to detailed."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.8)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "prompt-result"))
+
+
+@require_POST
+def chatgpt_prompt_generator(request):
+    goal = request.POST.get("goal", "").strip()
+    persona = request.POST.get("persona", "")
+    output_format = request.POST.get("output_format", "")
+    context = request.POST.get("context", "").strip()
+
+    if not goal:
+        return HttpResponse(_error_html("Please describe what you want ChatGPT to do."))
+
+    persona_line = f"Act as: {persona}." if persona else ""
+    format_line = f"Output format: {output_format}." if output_format else ""
+    context_line = f"Context / background: {context}." if context else ""
+    system = (
+        "You are a ChatGPT prompt engineering expert. Write highly effective ChatGPT prompts "
+        "that get detailed, accurate, high-quality responses. Use best practices: assign a role, "
+        "provide context, set constraints, specify format. Generate 3 prompt options: "
+        "Option 1 — concise, Option 2 — detailed, Option 3 — chain-of-thought approach."
+    )
+    user = (
+        f"Goal: {goal}\n"
+        f"{persona_line} {format_line} {context_line}\n\n"
+        "Write 3 ChatGPT prompt options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.78)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "chatgpt-prompt-result"))
+
+
+@require_POST
+def instagram_caption_generator(request):
+    post_topic = request.POST.get("post_topic", "").strip()
+    tone = request.POST.get("tone", "casual and engaging")
+    include_hashtags = request.POST.get("include_hashtags", "yes")
+    cta = request.POST.get("cta", "").strip()
+
+    if not post_topic:
+        return HttpResponse(_error_html("Please describe your post."))
+
+    hashtag_line = "Add 5–8 relevant hashtags at the end." if include_hashtags == "yes" else "Do not include hashtags."
+    cta_line = f"Include this call to action: {cta}." if cta else "Add a natural call to action."
+    system = (
+        "You are a social media copywriter specialising in Instagram. Write captions that "
+        "stop the scroll — hook in the first line, engaging body, and clear CTA. "
+        "Use line breaks for readability. Include emojis naturally. "
+        "Generate 3 caption options labeled Option 1, Option 2, Option 3. "
+        "Vary the opening angle and length."
+    )
+    user = (
+        f"Post topic / description: {post_topic}\n"
+        f"Tone: {tone}\n"
+        f"{cta_line} {hashtag_line}\n\n"
+        "Write 3 Instagram caption options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.88)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "ig-caption-result"))
+
+
+@require_POST
+def ai_quiz_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    num_questions = request.POST.get("num_questions", "5")
+    difficulty = request.POST.get("difficulty", "medium")
+    quiz_type = request.POST.get("quiz_type", "multiple choice")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a quiz topic."))
+
+    system = (
+        "You are an expert educator and quiz designer. Create engaging, accurate quizzes. "
+        "For multiple choice: provide question, 4 options (A/B/C/D), and mark the correct answer. "
+        "For true/false: provide question and answer. "
+        "For open-ended: provide question and a model answer. "
+        "Number each question. Make questions clear, unambiguous, and educational."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Number of questions: {num_questions}\n"
+        f"Difficulty: {difficulty}\n"
+        f"Quiz type: {quiz_type}\n\n"
+        f"Generate {num_questions} quiz questions with answers."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.5)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "quiz-result"))
+
+
+@require_POST
+def ai_blog_intro_generator(request):
+    blog_title = request.POST.get("blog_title", "").strip()
+    audience = request.POST.get("audience", "").strip()
+    tone = request.POST.get("tone", "informative and engaging")
+    keyword = request.POST.get("keyword", "").strip()
+
+    if not blog_title:
+        return HttpResponse(_error_html("Please enter your blog title or topic."))
+
+    audience_line = f"Target audience: {audience}." if audience else ""
+    keyword_line = f"Include the keyword '{keyword}' naturally in the intro." if keyword else ""
+    system = (
+        "You are an expert blog writer and content strategist. Write blog introductions that "
+        "hook readers immediately and keep them reading. Use proven techniques: "
+        "start with a question, surprising stat, bold claim, or relatable scenario. "
+        "Each intro should be 80–120 words and end by previewing what the article covers. "
+        "Generate 2 introduction options."
+    )
+    user = (
+        f"Blog title / topic: {blog_title}\n"
+        f"Tone: {tone}\n"
+        f"{audience_line} {keyword_line}\n\n"
+        "Write 2 blog introduction options."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.82)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "blog-intro-result"))
+
+
+@require_POST
+def tweet_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    tone = request.POST.get("tone", "informative")
+    include_hashtags = request.POST.get("include_hashtags", "yes")
+    tweet_type = request.POST.get("tweet_type", "single tweet")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter what the tweet is about."))
+
+    hashtag_line = "End with 1–2 relevant hashtags." if include_hashtags == "yes" else "No hashtags."
+    thread_line = "Write as a 5-tweet thread (number each tweet 1/5, 2/5 etc.)." if tweet_type == "thread" else "Write 5 single tweet options."
+    system = (
+        "You are a Twitter/X copywriter who creates viral, engaging tweets. "
+        "Each tweet must be under 280 characters. Lead with a hook. "
+        "Make every word count — no filler. Use active voice. "
+        f"{thread_line}"
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Tone: {tone}\n"
+        f"{hashtag_line}\n\n"
+        "Generate the tweets."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=500, temperature=0.88)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "tweet-result"))
+
+
+@require_POST
+def youtube_description_generator(request):
+    video_title = request.POST.get("video_title", "").strip()
+    summary = request.POST.get("summary", "").strip()
+    keywords = request.POST.get("keywords", "").strip()
+    include_timestamps = request.POST.get("include_timestamps", "no")
+
+    if not video_title:
+        return HttpResponse(_error_html("Please enter your video title."))
+
+    keywords_line = f"Target keywords to include: {keywords}." if keywords else ""
+    timestamps_line = "Include a sample timestamps section (00:00 Intro, etc.)." if include_timestamps == "yes" else ""
+    system = (
+        "You are a YouTube SEO expert. Write YouTube video descriptions that rank in search "
+        "and keep viewers engaged. Structure: hook paragraph (2–3 sentences), expanded "
+        "description (what viewers will learn), chapters/timestamps if requested, "
+        "social links placeholder, keywords naturally in the text. "
+        "Aim for 200–300 words total. SEO-optimised but natural to read."
+    )
+    user = (
+        f"Video title: {video_title}\n"
+        f"Video summary: {summary or 'not provided — infer from title'}\n"
+        f"{keywords_line} {timestamps_line}\n\n"
+        "Write the complete YouTube description."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=600, temperature=0.7)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "yt-desc-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Dispatcher map (tool_slug → handler)
 # ─────────────────────────────────────────────────────────────────────────────
 AI_HANDLERS = {
@@ -1441,6 +1760,17 @@ AI_HANDLERS = {
     "youtube-title-generator": youtube_title_generator,
     # Batch 4
     "etsy-product-description-generator": etsy_product_description_generator,
+    # Batch 5
+    "ai-story-generator": ai_story_generator,
+    "ai-paragraph-generator": ai_paragraph_generator,
+    "sentence-rewriter": sentence_rewriter,
+    "ai-prompt-generator": ai_prompt_generator,
+    "chatgpt-prompt-generator": chatgpt_prompt_generator,
+    "instagram-caption-generator": instagram_caption_generator,
+    "ai-quiz-generator": ai_quiz_generator,
+    "ai-blog-intro-generator": ai_blog_intro_generator,
+    "tweet-generator": tweet_generator,
+    "youtube-description-generator": youtube_description_generator,
     "news-article-summarizer": news_article_summarizer,
     "product-review-generator": product_review_generator,
     "ai-business-plan-generator": ai_business_plan_generator,

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Paragraph Generator — Free Paragraph Writer | AIUtilities{% endblock %}
+{% block description %}Generate 3 polished paragraphs on any topic with AI. Enter your topic, tone, and length — get ready-to-use paragraph options instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-paragraph-generator' %}{% endblock %}
+{% block og_title %}AI Paragraph Generator — Free Paragraph Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 3 polished paragraphs on any topic with AI. Enter your topic, tone, and length — get ready-to-use paragraph options instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-paragraph-generator' %}{% endblock %}
+{% block twitter_title %}AI Paragraph Generator — Free Paragraph Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 3 polished paragraphs on any topic with AI. Topic, tone, length — instant results. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Paragraph Generator","description":"Generate 3 polished paragraph options on any topic using AI — with tone and length controls.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-paragraph-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Paragraph Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-paragraph-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Paragraph Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate 3 well-crafted paragraphs on any topic in seconds. Choose your tone and length — pick the option that fits best.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 paragraph options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Tone & length control</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-paragraph-generator' %}" hx-target="#paragraph-output" hx-swap="innerHTML" hx-indicator="#paragraph-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic or Subject <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input" placeholder="e.g. the benefits of meditation, climate change solutions, how to build habits">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="informative">Informative</option>
+              <option value="persuasive">Persuasive</option>
+              <option value="conversational">Conversational</option>
+              <option value="formal and academic">Formal / Academic</option>
+              <option value="creative and vivid">Creative & Vivid</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="length">Paragraph Length</label>
+            <select id="length" name="length" class="ai-tool-select">
+              <option value="short">Short (3–4 sentences)</option>
+              <option value="medium" selected>Medium (5–7 sentences)</option>
+              <option value="long">Long (8–10 sentences)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Paragraphs →</button>
+        <div id="paragraph-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating paragraphs…</span>
+        </div>
+      </form>
+    </div>
+    <div id="paragraph-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">When to Use Each Tone</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📖</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Informative</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Best for explainers, knowledge articles, and educational content. States facts clearly without opinion or persuasion.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Persuasive</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Best for essays, opinion pieces, sales copy, and pitches. Builds argument and calls the reader to a specific view or action.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💬</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Conversational</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Best for blog posts, emails, and social copy. Feels like talking to a smart friend — approachable and direct.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎓</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Formal / Academic</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Best for research papers, reports, and professional documents. Precise language, third-person voice, objective stance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between this and the AI Content Generator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI Content Generator writes full articles (600–2,000 words) with multiple sections and subheadings. This tool writes a single paragraph — ideal when you need a standalone piece of text, an intro, a body section, or filler content you'll place within your own structure.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use the output in my essays or assignments?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Use this to get a starting point, then rewrite in your own voice. Submitting AI-generated text as your own work may violate your institution's academic integrity policy. This tool is great for overcoming writer's block, understanding how to structure a paragraph, or drafting content you'll then edit.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/text/sentence-rewriter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Sentence Rewriter</a>
+      <a href="/tools/ai/ai-blog-intro-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Blog Introduction Generator</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

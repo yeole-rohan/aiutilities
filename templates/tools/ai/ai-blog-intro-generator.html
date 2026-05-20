@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Blog Introduction Generator — Free AI Blog Intro Writer | AIUtilities{% endblock %}
+{% block description %}Generate 2 compelling blog post introductions with AI. Enter your title, audience, and tone — get hook-driven intros that keep readers reading. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-blog-intro-generator' %}{% endblock %}
+{% block og_title %}Blog Introduction Generator — Free AI Blog Intro Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 2 compelling blog post introductions with AI. Enter your title, audience, and tone — get hook-driven intros that keep readers reading. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-blog-intro-generator' %}{% endblock %}
+{% block twitter_title %}Blog Introduction Generator — Free AI Blog Intro Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 2 compelling blog intros with AI. Hook-driven, audience-targeted. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Blog Introduction Generator","description":"Generate 2 compelling, hook-driven blog post introductions for any topic using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-blog-intro-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"Blog Introduction Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-blog-intro-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Blog Introduction Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Stop losing readers in the first paragraph. Generate 2 hook-driven blog introductions that grab attention, speak to your audience's pain point, and make them want to keep reading.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 2 intro options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hook-driven</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-blog-intro-generator' %}" hx-target="#blog-intro-output" hx-swap="innerHTML" hx-indicator="#blog-intro-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="blog_title">Blog Post Title <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="blog_title" name="blog_title" class="ai-tool-input" placeholder="e.g. 10 Time Management Habits That Changed My Life, How to Start Investing With $100, The Beginner's Guide to SEO">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input" placeholder="e.g. busy professionals, first-time investors, small business owners">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="conversational">Conversational</option>
+              <option value="authoritative">Authoritative</option>
+              <option value="inspirational">Inspirational</option>
+              <option value="analytical">Analytical</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="keyword">Target Keyword <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="keyword" name="keyword" class="ai-tool-input" placeholder="e.g. time management tips, how to invest, SEO for beginners">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Introductions →</button>
+        <div id="blog-intro-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing introductions…</span>
+        </div>
+      </form>
+    </div>
+    <div id="blog-intro-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Anatomy of a Great Blog Introduction</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">The hook</h3><p style="font-size:.8125rem;color:#374151;">The first sentence must stop the reader. Use a bold claim, a surprising statistic, a relatable frustration, or a provocative question. Never start with "In today's world…" or a dictionary definition.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Agitate the problem</h3><p style="font-size:.8125rem;color:#374151;">Briefly describe the problem your reader is facing in terms they'd use themselves. This creates an "they get me" moment that builds trust and keeps them reading.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">The promise</h3><p style="font-size:.8125rem;color:#374151;">Tell the reader exactly what they'll get by reading to the end. A specific, concrete outcome ("by the end of this post you'll have a 3-step system") is far more compelling than a vague teaser.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How long should a blog introduction be?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Aim for 100–200 words. Long enough to hook the reader and state your promise, short enough to get to the actual content quickly. Readers decide in the first few lines whether to keep reading — every word in the intro must earn its place. This tool generates introductions in that optimal range.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I include my target keyword in the introduction?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — including your primary keyword naturally in the first 100 words is a standard SEO best practice. It signals to search engines what the page is about. When you add a keyword in the form above, the tool weaves it in naturally rather than force-fitting it. Avoid stuffing — one natural mention is enough.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-paragraph-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Paragraph Generator</a>
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+      <a href="/tools/ai/ai-essay-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Essay Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

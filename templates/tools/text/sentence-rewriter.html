@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sentence Rewriter — Free AI Sentence Rewriting Tool | AIUtilities{% endblock %}
+{% block description %}Rewrite any sentence 5 different ways with AI. Vary the structure, tone, and style while keeping the exact meaning. Free, instant, no signup.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'sentence-rewriter' %}{% endblock %}
+{% block og_title %}Sentence Rewriter — Free AI Sentence Rewriting Tool | AIUtilities{% endblock %}
+{% block og_description %}Rewrite any sentence 5 different ways with AI. Vary the structure, tone, and style while keeping the exact meaning. Free, instant, no signup.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'sentence-rewriter' %}{% endblock %}
+{% block twitter_title %}Sentence Rewriter — Free AI Sentence Rewriter | AIUtilities{% endblock %}
+{% block twitter_description %}Rewrite any sentence 5 different ways with AI. Same meaning, fresh wording. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Sentence Rewriter","description":"Rewrite any sentence 5 different ways with AI — varying structure, tone, and style while preserving meaning.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'sentence-rewriter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Sentence Rewriter","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'sentence-rewriter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Sentence Rewriter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste any sentence and get 5 rewritten variations instantly. Same meaning, different structure — ideal for avoiding repetition, improving clarity, or changing register.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 variations</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Meaning preserved</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'text' 'sentence-rewriter' %}" hx-target="#sentence-output" hx-swap="innerHTML" hx-indicator="#sentence-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="sentence">Sentence to Rewrite <span style="color:#ef4444;">*</span></label>
+          <textarea id="sentence" name="sentence" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. The meeting was cancelled because not enough people confirmed their attendance."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="style">Style Goal</label>
+            <select id="style" name="style" class="ai-tool-select">
+              <option value="clear and natural">Clear & Natural</option>
+              <option value="formal and professional">Formal & Professional</option>
+              <option value="simple and concise">Simple & Concise</option>
+              <option value="engaging and vivid">Engaging & Vivid</option>
+              <option value="academic">Academic</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="num_variations">Number of Variations</label>
+            <select id="num_variations" name="num_variations" class="ai-tool-select">
+              <option value="3">3 variations</option>
+              <option value="5" selected>5 variations</option>
+              <option value="7">7 variations</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Rewrite Sentence →</button>
+        <div id="sentence-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Rewriting…</span>
+        </div>
+      </form>
+    </div>
+    <div id="sentence-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Rewrite Sentences?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔄</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Avoid repetition</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">If you've used the same sentence structure three times in a paragraph, rewriting one or two breaks the monotony and improves readability.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Change register</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Turn a casual sentence formal (or vice versa) to match your audience — academic papers, client emails, blog posts, and social captions all need different registers.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">✂️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Cut word count</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A rewrite can often say the same thing in half the words. The "simple and concise" style strips filler and passive constructions.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Improve non-native English</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">If English isn't your first language, rewriting a sentence you're not sure about shows you native-sounding alternatives you can model in future writing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between this and the Paraphrasing Tool?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The Paraphrasing Tool rewrites entire paragraphs or passages and focuses on producing one polished version. This Sentence Rewriter works at the individual sentence level and gives you multiple structural variations — useful for comparing options and understanding how sentence structure affects meaning and tone.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can it rewrite sentences in other languages?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The tool is optimised for English. It can attempt rewrites in other languages (French, Spanish, German, Portuguese) with reasonable results, but quality will vary. For English it performs at a high level across all style options.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/text/paraphrasing-tool/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Paraphrasing Tool</a>
+      <a href="/tools/text/article-rewriter/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Article Rewriter</a>
+      <a href="/tools/ai/ai-paragraph-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Paragraph Generator</a>
+      <a href="/tools/ai/ai-grammar-checker/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Grammar Checker</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

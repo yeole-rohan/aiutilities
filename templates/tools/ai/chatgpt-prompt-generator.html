@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ChatGPT Prompt Generator — Free AI Prompt Writer | AIUtilities{% endblock %}
+{% block description %}Generate highly effective ChatGPT prompts using prompt engineering best practices. Enter your goal and get 3 prompt options — concise, detailed, and chain-of-thought. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'chatgpt-prompt-generator' %}{% endblock %}
+{% block og_title %}ChatGPT Prompt Generator — Free AI Prompt Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate highly effective ChatGPT prompts using prompt engineering best practices. Concise, detailed, and chain-of-thought options. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'chatgpt-prompt-generator' %}{% endblock %}
+{% block twitter_title %}ChatGPT Prompt Generator — Free AI Prompt Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate effective ChatGPT prompts — concise, detailed, and chain-of-thought options. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"ChatGPT Prompt Generator","description":"Generate highly effective ChatGPT prompts using prompt engineering best practices — with concise, detailed, and chain-of-thought options.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'chatgpt-prompt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"ChatGPT Prompt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'chatgpt-prompt-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">ChatGPT Prompt Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Get better outputs from ChatGPT by using better prompts. Enter your goal and get 3 expertly engineered prompt options — from a quick ask to a detailed chain-of-thought prompt.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 prompt styles</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Chain-of-thought option</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'chatgpt-prompt-generator' %}" hx-target="#chatgpt-prompt-output" hx-swap="innerHTML" hx-indicator="#chatgpt-prompt-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="goal">What do you want ChatGPT to do? <span style="color:#ef4444;">*</span></label>
+          <textarea id="goal" name="goal" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. Help me write a business proposal for a mobile app startup targeting restaurant owners, explain the difference between ML and AI, debug this Python function…"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="persona">Persona / Role <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="persona" name="persona" class="ai-tool-input" placeholder="e.g. expert marketing strategist, senior Python developer, Socratic tutor">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="output_format">Output Format <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="output_format" name="output_format" class="ai-tool-input" placeholder="e.g. bullet points, table, step-by-step, 3 options">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="context">Context / Background <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="context" name="context" class="ai-tool-input" placeholder="e.g. I'm a first-time founder, the audience is non-technical, this is for a Series A pitch deck">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate ChatGPT Prompts →</button>
+        <div id="chatgpt-prompt-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating prompts…</span>
+        </div>
+      </form>
+    </div>
+    <div id="chatgpt-prompt-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">3 Types of Prompts You'll Get</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Concise prompt</h3><p style="font-size:.8125rem;color:#374151;">A short, direct instruction — best when you need a quick answer and ChatGPT's general knowledge is sufficient. Works for well-defined, simple tasks.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Detailed prompt</h3><p style="font-size:.8125rem;color:#374151;">Includes role, context, constraints, and output format. Gets significantly more specific and useful responses for complex tasks where nuance matters.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Chain-of-thought prompt</h3><p style="font-size:.8125rem;color:#374151;">Asks ChatGPT to think through the problem step by step before answering. Dramatically improves accuracy for reasoning, analysis, math, and decision-making tasks.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do these prompts work with GPT-4 and GPT-4o?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes. These prompts work with all ChatGPT versions (3.5, 4, 4o). Chain-of-thought prompts benefit more from GPT-4 and GPT-4o since they have stronger reasoning capabilities. For GPT-3.5, the concise and detailed options are more reliable.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use these prompts with Claude or Gemini?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the prompting techniques (role assignment, context, chain-of-thought) apply universally to all large language models. For Claude and Gemini, the detailed and chain-of-thought prompts work especially well. See the AI Prompt Generator tool for prompts tuned to specific models.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-prompt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Prompt Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

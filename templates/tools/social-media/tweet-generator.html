@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tweet Generator — Free AI Tweet Writer | AIUtilities{% endblock %}
+{% block description %}Generate 5 engaging tweets or a Twitter thread on any topic with AI. Choose tone and format — get post-ready tweets in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'tweet-generator' %}{% endblock %}
+{% block og_title %}Tweet Generator — Free AI Tweet Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate 5 engaging tweets or a Twitter thread on any topic with AI. Choose tone and format — get post-ready tweets in seconds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'tweet-generator' %}{% endblock %}
+{% block twitter_title %}Tweet Generator — Free AI Tweet Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate 5 tweets or a thread on any topic. Choose tone and format. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Tweet Generator","description":"Generate 5 engaging tweets or a Twitter thread on any topic using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'tweet-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"Tweet Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'tweet-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Tweet Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate 5 ready-to-post tweets or a full Twitter thread on any topic. Pick your tone — witty, thought-provoking, or bold — and get tweet ideas that drive engagement.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 tweet options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Thread format option</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'social-media' 'tweet-generator' %}" hx-target="#tweet-output" hx-swap="innerHTML" hx-indicator="#tweet-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic or Idea <span style="color:#ef4444;">*</span></label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. why remote work is better for productivity, my hot take on AI replacing jobs, tips for building a morning routine, announcing a new product launch"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="thought-provoking">Thought-provoking</option>
+              <option value="witty and humorous">Witty & Humorous</option>
+              <option value="bold and confident">Bold & Confident</option>
+              <option value="informative">Informative</option>
+              <option value="casual and conversational">Casual & Conversational</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tweet_type">Format</label>
+            <select id="tweet_type" name="tweet_type" class="ai-tool-select">
+              <option value="standalone tweets">5 Standalone Tweets</option>
+              <option value="twitter thread">Twitter Thread (5 tweets)</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="include_hashtags">Hashtags</label>
+          <select id="include_hashtags" name="include_hashtags" class="ai-tool-select">
+            <option value="yes">Include hashtags</option>
+            <option value="no">No hashtags</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Tweets →</button>
+        <div id="tweet-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing tweets…</span>
+        </div>
+      </form>
+    </div>
+    <div id="tweet-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Drives Tweet Engagement</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Bold opening</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Twitter's feed is brutal — you have 0.3 seconds to stop a scroll. Start with a strong opinion, counterintuitive claim, or surprising stat.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💬</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Ask a question</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Tweets ending in a genuine question drive far more replies. Replies boost the tweet in the algorithm more than likes do.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🧵</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Thread for depth</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Threads outperform single tweets for complex ideas. Hook on tweet 1, deliver value through the thread, close with a CTA or summary.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⏰</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Timing matters</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Peak X/Twitter engagement is typically 8–10 AM and 6–9 PM in your audience's time zone on weekdays. Schedule accordingly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does this tool stay within X's 280 character limit?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the AI is instructed to keep each tweet under 280 characters. Occasionally a tweet may run slightly long if the topic requires it — simply trim before posting. Thread tweets are also kept within the limit per tweet.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use these for LinkedIn posts too?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The standalone tweet options (especially thought-provoking and informative tones) adapt well to LinkedIn with minor edits. For LinkedIn-specific content, try the Social Media Post Generator which is optimised for LinkedIn's longer format and professional audience.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/social-media/twitter-bio-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Twitter Bio Generator</a>
+      <a href="/tools/social-media/instagram-caption-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Instagram Caption Generator</a>
+      <a href="/tools/social-media/hashtag-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hashtag Generator</a>
+      <a href="/tools/social-media/social-media-post-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fasc;">Social Media Post Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

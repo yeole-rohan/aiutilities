@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Prompt Generator — Free Prompt Engineering Tool | AIUtilities{% endblock %}
+{% block description %}Generate optimised prompts for ChatGPT, Midjourney, Gemini, and other AI tools. Enter your goal and get 5 prompt options from simple to detailed. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-prompt-generator' %}{% endblock %}
+{% block og_title %}AI Prompt Generator — Free Prompt Engineering Tool | AIUtilities{% endblock %}
+{% block og_description %}Generate optimised prompts for ChatGPT, Midjourney, Gemini, and other AI tools. Enter your goal and get 5 prompt options from simple to detailed. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-prompt-generator' %}{% endblock %}
+{% block twitter_title %}AI Prompt Generator — Free Prompt Engineering Tool | AIUtilities{% endblock %}
+{% block twitter_description %}Generate optimised prompts for ChatGPT, Midjourney, and more. Goal + AI tool = 5 prompt options. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Prompt Generator","description":"Generate optimised prompts for ChatGPT, Midjourney, and other AI tools using prompt engineering best practices.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-prompt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Prompt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-prompt-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Prompt Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate highly effective prompts for any AI tool. Tell us your goal and which AI you're using — get 5 optimised prompt options using proven prompt engineering techniques.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 prompt options</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any AI tool</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-prompt-generator' %}" hx-target="#prompt-output" hx-swap="innerHTML" hx-indicator="#prompt-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="goal">What do you want to accomplish? <span style="color:#ef4444;">*</span></label>
+          <textarea id="goal" name="goal" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. Write a product launch email for a SaaS tool targeting small business owners, generate a logo concept for a coffee brand, explain quantum computing to a 10-year-old"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="ai_tool">AI Tool</label>
+            <select id="ai_tool" name="ai_tool" class="ai-tool-select">
+              <option value="ChatGPT">ChatGPT</option>
+              <option value="Claude">Claude (Anthropic)</option>
+              <option value="Gemini">Gemini (Google)</option>
+              <option value="Midjourney">Midjourney (image)</option>
+              <option value="DALL-E">DALL-E (image)</option>
+              <option value="Stable Diffusion">Stable Diffusion (image)</option>
+              <option value="any AI assistant">Any AI assistant</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="output_format">Desired Output Format <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="output_format" name="output_format" class="ai-tool-input" placeholder="e.g. bullet list, table, email, JSON, 3 options">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Prompts →</button>
+        <div id="prompt-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating prompts…</span>
+        </div>
+      </form>
+    </div>
+    <div id="prompt-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Prompt Engineering Techniques Used</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Role assignment</h3><p style="font-size:.8125rem;color:#374151;">"Act as a senior marketing strategist..." — assigning a persona sets expertise level and response style.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Context + constraints</h3><p style="font-size:.8125rem;color:#374151;">Providing background ("for a SaaS startup with 50 users") and constraints ("under 150 words") dramatically narrows the output to what you actually need.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Output format specification</h3><p style="font-size:.8125rem;color:#374151;">Telling the AI exactly how to format the response ("in a numbered list with one-line rationale per item") prevents vague prose and ensures structured, usable output.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between this and the ChatGPT Prompt Generator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">This tool generates prompts for any AI tool — including image generators like Midjourney and DALL-E, coding assistants, and general assistants. The ChatGPT Prompt Generator is specifically optimised for ChatGPT's conversation format, with persona, chain-of-thought, and structured reasoning approaches.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Do I need to use every prompt element the tool generates?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">No. The tool gives you 5 options from simple to detailed — use whichever fits your situation. Sometimes a shorter, simpler prompt works better. Start with the shorter options and add detail only if the output isn't specific enough.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/chatgpt-prompt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">ChatGPT Prompt Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
