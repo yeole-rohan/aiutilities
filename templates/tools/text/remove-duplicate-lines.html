@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Remove Duplicate Lines — Free Online Deduplicator | AIUtilities{% endblock %}
+{% block description %}Remove duplicate lines from any text instantly. Sort, trim whitespace, and ignore case. Paste and clean your list in one click. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}{% endblock %}
+{% block og_title %}Remove Duplicate Lines — Free Online Deduplicator | AIUtilities{% endblock %}
+{% block og_description %}Remove duplicate lines from text instantly. Sort, trim, ignore case. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}{% endblock %}
+{% block twitter_title %}Remove Duplicate Lines | AIUtilities{% endblock %}
+{% block twitter_description %}Remove duplicate lines from any text instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Remove Duplicate Lines","description":"Remove duplicate lines from any text instantly, with options to sort, trim whitespace, and ignore case.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Remove Duplicate Lines","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📝 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Remove Duplicate Lines</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste your list or text below, choose your options, and remove all duplicate lines instantly. Great for cleaning up keyword lists, email lists, and logs.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Sort result</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Ignore case</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Trim whitespace</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="rdl-input">Input (one item per line)</label>
+        <textarea id="rdl-input" class="ai-tool-input" rows="8" style="resize:vertical;font-family:monospace;" placeholder="apple&#10;banana&#10;apple&#10;cherry&#10;banana&#10;date"></textarea>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;margin-bottom:1.25rem;">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="rdl-sort"> Sort alphabetically
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="rdl-ignore-case"> Ignore case
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="rdl-trim" checked> Trim whitespace
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="rdl-remove-empty" checked> Remove empty lines
+        </label>
+      </div>
+
+      <button type="button" onclick="removeDuplicates()" class="ai-tool-btn">Remove Duplicates →</button>
+
+      <div id="rdl-output-wrap" style="display:none;margin-top:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <label class="ai-tool-label" style="margin:0;">Result <span id="rdl-stats" style="font-weight:400;color:#6b7280;"></span></label>
+          <button type="button" id="rdl-copy-btn" onclick="copyRdl()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+        <textarea id="rdl-output" class="ai-tool-input" rows="8" style="resize:vertical;font-family:monospace;background:#f0fdf4;border-color:#bbf7d0;" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Remove Duplicate Lines</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your lines</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste a list of items — one item per line — into the input box.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set options</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose whether to ignore case, trim whitespace, or sort the result alphabetically.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Click Remove Duplicates</strong><br><span style="font-size:.875rem;color:#6b7280;">The cleaned list appears instantly. Copy it with the Copy button.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it preserve order? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — by default the first occurrence of each line is kept and later duplicates are removed, preserving the original order.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does "ignore case" do? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">When enabled, "Apple", "APPLE", and "apple" are treated as the same value and only the first occurrence is kept.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I use it to deduplicate email lists? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — paste one email address per line and it will remove duplicate rows instantly.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Frequency Analyzer</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function removeDuplicates() {
+  var input = document.getElementById('rdl-input').value;
+  var sort = document.getElementById('rdl-sort').checked;
+  var ignoreCase = document.getElementById('rdl-ignore-case').checked;
+  var trim = document.getElementById('rdl-trim').checked;
+  var removeEmpty = document.getElementById('rdl-remove-empty').checked;
+
+  var lines = input.split('\n');
+  if (trim) lines = lines.map(function(l){ return l.trim(); });
+  if (removeEmpty) lines = lines.filter(function(l){ return l.length > 0; });
+
+  var seen = {};
+  var unique = lines.filter(function(line) {
+    var key = ignoreCase ? line.toLowerCase() : line;
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+
+  var removed = lines.length - unique.length;
+  if (sort) unique.sort(function(a,b){ return a.localeCompare(b); });
+
+  document.getElementById('rdl-output').value = unique.join('\n');
+  document.getElementById('rdl-stats').textContent = '— ' + unique.length + ' unique, ' + removed + ' removed';
+  document.getElementById('rdl-output-wrap').style.display = 'block';
+  document.getElementById('rdl-copy-btn').textContent = 'Copy';
+}
+function copyRdl() {
+  navigator.clipboard.writeText(document.getElementById('rdl-output').value).then(function(){
+    document.getElementById('rdl-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('rdl-copy-btn').textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+{% endblock %}

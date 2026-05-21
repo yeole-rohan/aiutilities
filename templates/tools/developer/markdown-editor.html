@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Markdown Editor — Free Live Preview Editor | AIUtilities{% endblock %}
+{% block description %}Write and preview Markdown with live rendering. Split-pane editor shows formatted output in real time. Free online Markdown editor.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'markdown-editor' %}{% endblock %}
+{% block og_title %}Markdown Editor — Live Preview | AIUtilities{% endblock %}
+{% block og_description %}Write Markdown with live HTML preview. Free online editor.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'markdown-editor' %}{% endblock %}
+{% block twitter_title %}Markdown Editor | AIUtilities{% endblock %}
+{% block twitter_description %}Write Markdown with live preview. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Markdown Editor","description":"Write and preview Markdown with live rendering in a split-pane editor.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'markdown-editor' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Markdown Editor","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'markdown-editor' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero" style="padding:2rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Live preview · No signup · Free</div>
+    <h1 style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;margin-bottom:.5rem;line-height:1.2;">Markdown Editor</h1>
+    <p style="font-size:1rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto;">Write Markdown on the left, see live formatted preview on the right.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:1rem;">
+  <div style="max-width:100%;margin:0 auto;">
+    <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:center;">
+      <button onclick="insertMd('**','**')" class="md-tb-btn" title="Bold"><b>B</b></button>
+      <button onclick="insertMd('*','*')" class="md-tb-btn" title="Italic"><i>I</i></button>
+      <button onclick="insertMd('`','`')" class="md-tb-btn" title="Code" style="font-family:monospace;">code</button>
+      <button onclick="insertMd('```\n','\n```')" class="md-tb-btn" title="Code block" style="font-family:monospace;font-size:.7rem;">```</button>
+      <button onclick="insertLine('# ')" class="md-tb-btn">H1</button>
+      <button onclick="insertLine('## ')" class="md-tb-btn">H2</button>
+      <button onclick="insertLine('### ')" class="md-tb-btn">H3</button>
+      <button onclick="insertLine('- ')" class="md-tb-btn">• List</button>
+      <button onclick="insertLine('1. ')" class="md-tb-btn">1. List</button>
+      <button onclick="insertLine('> ')" class="md-tb-btn">Quote</button>
+      <button onclick="insertMd('[','](url)')" class="md-tb-btn">Link</button>
+      <button onclick="insertMd('![alt](',')')" class="md-tb-btn">Image</button>
+      <span style="margin-left:auto;display:flex;gap:.5rem;">
+        <button onclick="copyHtml()" style="padding:.3rem .75rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Copy HTML</button>
+        <button onclick="document.getElementById('md-input').value='';renderMd();" style="padding:.3rem .75rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Clear</button>
+      </span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;height:calc(100vh - 18rem);min-height:28rem;">
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:.75rem;color:#6b7280;font-weight:600;margin-bottom:.25rem;padding:.25rem .5rem;background:#e2e8f0;border-radius:.375rem .375rem 0 0;">MARKDOWN</div>
+        <textarea id="md-input" style="flex:1;border:1px solid #d1d5db;border-top:none;border-radius:0 0 .5rem .5rem;padding:.75rem;font-family:monospace;font-size:.875rem;resize:none;outline:none;background:#fff;" oninput="renderMd()" placeholder="# Hello World&#10;&#10;Write your **Markdown** here.&#10;&#10;- Item one&#10;- Item two&#10;&#10;> A blockquote&#10;&#10;`code` or code blocks."></textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:.75rem;color:#6b7280;font-weight:600;margin-bottom:.25rem;padding:.25rem .5rem;background:#e2e8f0;border-radius:.375rem .375rem 0 0;">PREVIEW</div>
+        <div id="md-preview" style="flex:1;border:1px solid #d1d5db;border-top:none;border-radius:0 0 .5rem .5rem;padding:.75rem 1rem;overflow-y:auto;background:#fff;font-size:.9375rem;line-height:1.7;color:#0f172a;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Markdown Editor</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Write Markdown on the left</strong><br><span style="font-size:.875rem;color:#6b7280;">Type in the left pane. Use the toolbar buttons for bold, italic, headings, lists, links, and images.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">See live preview on the right</strong><br><span style="font-size:.875rem;color:#6b7280;">The formatted output renders in real time as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the HTML</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Copy HTML" to copy the rendered HTML source to your clipboard.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is Markdown? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Markdown is a lightweight markup language — you write plain text with simple symbols (*, #, &gt;, `) and it is rendered as formatted HTML. It is used on GitHub, Reddit, Discord, and many CMSes.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I make a heading? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Start a line with # for H1, ## for H2, ### for H3. Example: ## My Section Title</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I add a link? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use [link text](https://example.com) syntax. You can also use the Link toolbar button to wrap selected text automatically.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it support tables? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — use | to separate columns and --- for the header separator row. Example: | Col1 | Col2 |</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'ai' 'ai-readme-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI README Generator</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.md-tb-btn{padding:.3rem .6rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.md-tb-btn:hover{background:#f1f5f9;}
+#md-preview h1{font-size:1.75rem;font-weight:800;border-bottom:2px solid #e2e8f0;padding-bottom:.5rem;margin:1rem 0 .5rem;}
+#md-preview h2{font-size:1.375rem;font-weight:700;border-bottom:1px solid #e2e8f0;padding-bottom:.35rem;margin:.9rem 0 .4rem;}
+#md-preview h3{font-size:1.1rem;font-weight:700;margin:.8rem 0 .3rem;}
+#md-preview p{margin:.5rem 0;}
+#md-preview code{background:#f1f5f9;border-radius:.25rem;padding:.1em .35em;font-family:monospace;font-size:.875em;}
+#md-preview pre{background:#1e293b;color:#e2e8f0;border-radius:.5rem;padding:1rem;overflow-x:auto;margin:.75rem 0;}
+#md-preview pre code{background:none;color:inherit;padding:0;}
+#md-preview blockquote{border-left:4px solid #6366f1;margin:.5rem 0;padding:.25rem 1rem;color:#6b7280;background:#f8fafc;}
+#md-preview ul,#md-preview ol{padding-left:1.5rem;margin:.5rem 0;}
+#md-preview li{margin:.2rem 0;}
+#md-preview a{color:#6366f1;text-decoration:underline;}
+#md-preview hr{border:none;border-top:2px solid #e2e8f0;margin:1rem 0;}
+#md-preview table{border-collapse:collapse;width:100%;margin:.5rem 0;}
+#md-preview th,#md-preview td{border:1px solid #e2e8f0;padding:.4rem .75rem;text-align:left;}
+#md-preview th{background:#f8fafc;font-weight:700;}
+</style>
+<script>
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderMd(){
+  var md=document.getElementById('md-input').value;
+  var html=md
+    .replace(/```([\w]*)\n([\s\S]*?)```/g,function(m,lang,code){return '<pre><code>'+esc(code.trim())+'</code></pre>';})
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^#{6}\s(.+)$/gm,'<h6>$1</h6>')
+    .replace(/^#{5}\s(.+)$/gm,'<h5>$1</h5>')
+    .replace(/^#{4}\s(.+)$/gm,'<h4>$1</h4>')
+    .replace(/^###\s(.+)$/gm,'<h3>$1</h3>')
+    .replace(/^##\s(.+)$/gm,'<h2>$1</h2>')
+    .replace(/^#\s(.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/~~(.+?)~~/g,'<del>$1</del>')
+    .replace(/^>\s?(.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^---+$/gm,'<hr>')
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" style="max-width:100%;">')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/^(\d+)\.\s(.+)$/gm,'<li>$2</li>')
+    .replace(/^[-*]\s(.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,function(m){return '<ul>'+m+'</ul>';})
+    .replace(/<\/ul>\s*<ul>/g,'')
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+  document.getElementById('md-preview').innerHTML='<p>'+html+'</p>';
+}
+function insertMd(pre,post){
+  var ta=document.getElementById('md-input');
+  var s=ta.selectionStart,e=ta.selectionEnd;
+  var sel=ta.value.slice(s,e);
+  ta.setRangeText(pre+sel+post,s,e,'end');
+  ta.focus();renderMd();
+}
+function insertLine(prefix){
+  var ta=document.getElementById('md-input');
+  var s=ta.selectionStart;
+  var lineStart=ta.value.lastIndexOf('\n',s-1)+1;
+  ta.setRangeText('\n'+prefix,s,s,'end');
+  ta.focus();renderMd();
+}
+function copyHtml(){
+  navigator.clipboard.writeText(document.getElementById('md-preview').innerHTML).then(function(){alert('HTML copied!');});
+}
+renderMd();
+</script>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Color Picker — HEX, RGB, HSL Color Tool | AIUtilities{% endblock %}
+{% block description %}Pick any color and instantly get its HEX, RGB, and HSL values. Generate tints, shades, and complementary colors. Free online color picker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-picker' %}{% endblock %}
+{% block og_title %}Color Picker — HEX, RGB, HSL | AIUtilities{% endblock %}
+{% block og_description %}Pick a color and get HEX, RGB, HSL values. Generate tints and shades. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-picker' %}{% endblock %}
+{% block twitter_title %}Color Picker | AIUtilities{% endblock %}
+{% block twitter_description %}Pick colors and get HEX, RGB, HSL instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Color Picker","description":"Pick any color and get HEX, RGB, and HSL values with tints, shades, and complementary colors.","url":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-picker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Color Tools","item":"{{ SITE_URL }}/tools/color/"},{"@type":"ListItem","position":3,"name":"Color Picker","item":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-picker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎨 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Color Picker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Pick any color and get HEX, RGB, HSL, and CSS values instantly. Explore tints, shades, and complementary color palettes.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ HEX / RGB / HSL</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Tints & shades</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Complementary palette</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;">
+        <!-- Big picker -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem;">
+          <input type="color" id="cp-picker" value="#6366f1" oninput="onPickerChange()" style="width:7rem;height:7rem;border:none;border-radius:1rem;cursor:pointer;padding:0;background:none;">
+          <div id="cp-preview" style="width:7rem;height:3rem;border-radius:.5rem;border:1px solid #e2e8f0;"></div>
+        </div>
+        <!-- Values -->
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">HEX</label>
+            <div style="display:flex;gap:.5rem;">
+              <input type="text" id="cp-hex" class="ai-tool-input" value="#6366f1" style="font-family:monospace;font-weight:700;" oninput="onHexInput()">
+              <button onclick="copyVal('cp-hex','cp-hex-btn')" id="cp-hex-btn" class="cp-copy-btn">Copy</button>
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">RGB</label>
+            <div style="display:flex;gap:.5rem;">
+              <input type="text" id="cp-rgb" class="ai-tool-input" readonly style="font-family:monospace;">
+              <button onclick="copyVal('cp-rgb','cp-rgb-btn')" id="cp-rgb-btn" class="cp-copy-btn">Copy</button>
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">HSL</label>
+            <div style="display:flex;gap:.5rem;">
+              <input type="text" id="cp-hsl" class="ai-tool-input" readonly style="font-family:monospace;">
+              <button onclick="copyVal('cp-hsl','cp-hsl-btn')" id="cp-hsl-btn" class="cp-copy-btn">Copy</button>
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">CSS Variable</label>
+            <div style="display:flex;gap:.5rem;">
+              <input type="text" id="cp-css" class="ai-tool-input" readonly style="font-family:monospace;font-size:.8125rem;">
+              <button onclick="copyVal('cp-css','cp-css-btn')" id="cp-css-btn" class="cp-copy-btn">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RGB sliders -->
+      <div style="margin-top:1.5rem;display:grid;gap:.75rem;">
+        <div style="display:grid;grid-template-columns:2rem 1fr 3rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:700;color:#ef4444;">R</span>
+          <input type="range" id="sl-r" min="0" max="255" value="99" oninput="onSliderChange()" style="accent-color:#ef4444;">
+          <input type="number" id="num-r" min="0" max="255" value="99" oninput="onNumberChange()" class="ai-tool-input" style="padding:.2rem .4rem;font-size:.8125rem;text-align:center;">
+        </div>
+        <div style="display:grid;grid-template-columns:2rem 1fr 3rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:700;color:#22c55e;">G</span>
+          <input type="range" id="sl-g" min="0" max="255" value="102" oninput="onSliderChange()" style="accent-color:#22c55e;">
+          <input type="number" id="num-g" min="0" max="255" value="102" oninput="onNumberChange()" class="ai-tool-input" style="padding:.2rem .4rem;font-size:.8125rem;text-align:center;">
+        </div>
+        <div style="display:grid;grid-template-columns:2rem 1fr 3rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:700;color:#6366f1;">B</span>
+          <input type="range" id="sl-b" min="0" max="255" value="241" oninput="onSliderChange()" style="accent-color:#6366f1;">
+          <input type="number" id="num-b" min="0" max="255" value="241" oninput="onNumberChange()" class="ai-tool-input" style="padding:.2rem .4rem;font-size:.8125rem;text-align:center;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tints & shades -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Tints &amp; Shades</h2>
+      <div id="cp-tints" style="display:flex;gap:.25rem;flex-wrap:wrap;"></div>
+      <div id="cp-shades" style="display:flex;gap:.25rem;flex-wrap:wrap;margin-top:.5rem;"></div>
+    </div>
+
+    <!-- Palette -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Color Harmonies</h2>
+      <div style="display:grid;gap:.75rem;">
+        <div>
+          <div style="font-size:.8125rem;font-weight:600;color:#6b7280;margin-bottom:.4rem;">Complementary</div>
+          <div id="cp-complementary" style="display:flex;gap:.5rem;"></div>
+        </div>
+        <div>
+          <div style="font-size:.8125rem;font-weight:600;color:#6b7280;margin-bottom:.4rem;">Triadic</div>
+          <div id="cp-triadic" style="display:flex;gap:.5rem;"></div>
+        </div>
+        <div>
+          <div style="font-size:.8125rem;font-weight:600;color:#6b7280;margin-bottom:.4rem;">Analogous</div>
+          <div id="cp-analogous" style="display:flex;gap:.5rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Color Picker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Pick a color</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the color swatch to open your browser native color picker, or type a HEX value directly in the field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Fine-tune with RGB sliders</strong><br><span style="font-size:.875rem;color:#6b7280;">Drag the Red, Green, and Blue sliders to adjust the colour precisely.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy in your preferred format</strong><br><span style="font-size:.875rem;color:#6b7280;">HEX, RGB, HSL, and CSS variable formats are all shown with individual Copy buttons.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">4</div>
+        <div><strong style="color:#0f172a;">Explore palettes</strong><br><span style="font-size:.875rem;color:#6b7280;">Scroll down to see automatically generated tints, shades, complementary, triadic, and analogous colour harmonies.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between HEX, RGB, and HSL? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">HEX (#6366f1) is the web standard for CSS colours. RGB(99, 102, 241) defines colours by red, green, and blue intensity. HSL(239, 83%, 66%) defines by hue, saturation, and lightness — more intuitive for designers.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What are tints and shades? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Tints are progressively lighter versions of a colour (mixed with white). Shades are progressively darker versions (mixed with black). They are used to build colour scales in design systems.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a complementary colour? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The complementary colour sits directly opposite on the colour wheel (hue + 180 degrees). Complementary pairs create high contrast and vibrant visuals.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a triadic colour scheme? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Triadic colours are three colours evenly spaced around the colour wheel (120 degrees apart). They create a balanced, vibrant palette.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'unit-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Unit Converter</a>
+      <a href="{% url 'tools:tool' 'developer' 'css-minifier' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">CSS Minifier</a>
+      <a href="{% url 'tools:tool' 'developer' 'html-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTML Encoder</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.cp-copy-btn{white-space:nowrap;padding:.4rem .75rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.8125rem;cursor:pointer;}
+.cp-copy-btn:hover{background:#4f46e5;}
+.cp-swatch{width:2.5rem;height:2.5rem;border-radius:.375rem;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s;flex-shrink:0;}
+.cp-swatch:hover{transform:scale(1.15);border-color:#0f172a;}
+</style>
+<script>
+function hexToRgb(hex){hex=hex.replace(/^#/,'');if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');var n=parseInt(hex,16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255};}
+function rgbToHex(r,g,b){return '#'+[r,g,b].map(function(v){return Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');}).join('');}
+function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;var max=Math.max(r,g,b),min=Math.min(r,g,b),h,s,l=(max+min)/2;if(max===min){h=s=0;}else{var d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
+function hslToRgb(h,s,l){s/=100;l/=100;var k=function(n){return(n+h/30)%12;};var a=s*Math.min(l,1-l);var f=function(n){return l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));};return{r:Math.round(f(0)*255),g:Math.round(f(8)*255),b:Math.round(f(4)*255)};}
+function hslHex(h,s,l){var rgb=hslToRgb(h,s,l);return rgbToHex(rgb.r,rgb.g,rgb.b);}
+function contrastColor(r,g,b){return(0.299*r+0.587*g+0.114*b)>128?'#0f172a':'#ffffff';}
+
+function updateAll(hex){
+  var rgb=hexToRgb(hex);
+  var hsl=rgbToHsl(rgb.r,rgb.g,rgb.b);
+  document.getElementById('cp-picker').value=hex;
+  document.getElementById('cp-preview').style.background=hex;
+  document.getElementById('cp-hex').value=hex;
+  document.getElementById('cp-rgb').value='rgb('+rgb.r+', '+rgb.g+', '+rgb.b+')';
+  document.getElementById('cp-hsl').value='hsl('+hsl.h+', '+hsl.s+'%, '+hsl.l+'%)';
+  document.getElementById('cp-css').value='--color-primary: '+hex+';';
+  document.getElementById('sl-r').value=rgb.r;document.getElementById('num-r').value=rgb.r;
+  document.getElementById('sl-g').value=rgb.g;document.getElementById('num-g').value=rgb.g;
+  document.getElementById('sl-b').value=rgb.b;document.getElementById('num-b').value=rgb.b;
+
+  var tintsEl=document.getElementById('cp-tints');
+  var shadesEl=document.getElementById('cp-shades');
+  tintsEl.innerHTML='<span style="font-size:.7rem;color:#9ca3af;width:100%;margin-bottom:.2rem;">Tints →</span>';
+  shadesEl.innerHTML='<span style="font-size:.7rem;color:#9ca3af;width:100%;margin-bottom:.2rem;">Shades →</span>';
+  for(var i=9;i>=1;i--){
+    var tl=Math.round(hsl.l+(100-hsl.l)*(i/10));
+    var th=hslHex(hsl.h,hsl.s,tl);
+    var sw=makeSwatch(th);tintsEl.appendChild(sw);
+  }
+  for(var i=1;i<=9;i++){
+    var sl2=Math.round(hsl.l*(1-i/10));
+    var sh=hslHex(hsl.h,hsl.s,sl2);
+    var sw=makeSwatch(sh);shadesEl.appendChild(sw);
+  }
+
+  var compHex=hslHex((hsl.h+180)%360,hsl.s,hsl.l);
+  document.getElementById('cp-complementary').innerHTML='';
+  [hex,compHex].forEach(function(c){document.getElementById('cp-complementary').appendChild(makeSwatchLg(c));});
+  document.getElementById('cp-triadic').innerHTML='';
+  [hex,hslHex((hsl.h+120)%360,hsl.s,hsl.l),hslHex((hsl.h+240)%360,hsl.s,hsl.l)].forEach(function(c){document.getElementById('cp-triadic').appendChild(makeSwatchLg(c));});
+  document.getElementById('cp-analogous').innerHTML='';
+  [hslHex((hsl.h-30+360)%360,hsl.s,hsl.l),hex,hslHex((hsl.h+30)%360,hsl.s,hsl.l)].forEach(function(c){document.getElementById('cp-analogous').appendChild(makeSwatchLg(c));});
+}
+function makeSwatch(hex){
+  var sw=document.createElement('div');
+  sw.className='cp-swatch';sw.style.background=hex;sw.title=hex;
+  sw.onclick=function(){updateAll(hex);};return sw;
+}
+function makeSwatchLg(hex){
+  var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:.25rem;';
+  var sw=document.createElement('div');sw.style.cssText='width:3.5rem;height:3.5rem;border-radius:.5rem;cursor:pointer;border:1px solid #e2e8f0;';
+  sw.style.background=hex;sw.title=hex;sw.onclick=function(){updateAll(hex);};
+  var lbl=document.createElement('span');lbl.style.cssText='font-size:.65rem;font-family:monospace;color:#6b7280;';lbl.textContent=hex;
+  wrap.appendChild(sw);wrap.appendChild(lbl);return wrap;
+}
+function onPickerChange(){updateAll(document.getElementById('cp-picker').value);}
+function onHexInput(){
+  var val=document.getElementById('cp-hex').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(val)||/^#[0-9a-fA-F]{3}$/.test(val)){updateAll(val);}
+}
+function onSliderChange(){
+  var r=+document.getElementById('sl-r').value,g=+document.getElementById('sl-g').value,b=+document.getElementById('sl-b').value;
+  document.getElementById('num-r').value=r;document.getElementById('num-g').value=g;document.getElementById('num-b').value=b;
+  updateAll(rgbToHex(r,g,b));
+}
+function onNumberChange(){
+  var r=Math.max(0,Math.min(255,+document.getElementById('num-r').value||0));
+  var g=Math.max(0,Math.min(255,+document.getElementById('num-g').value||0));
+  var b=Math.max(0,Math.min(255,+document.getElementById('num-b').value||0));
+  updateAll(rgbToHex(r,g,b));
+}
+function copyVal(inputId,btnId){
+  navigator.clipboard.writeText(document.getElementById(inputId).value).then(function(){
+    var btn=document.getElementById(btnId);btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);
+  });
+}
+updateAll('#6366f1');
+</script>
+{% endblock %}

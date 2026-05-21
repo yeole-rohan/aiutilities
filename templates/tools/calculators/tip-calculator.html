@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tip Calculator — Calculate Tip & Split the Bill | AIUtilities{% endblock %}
+{% block description %}Calculate tip amount and split the bill between any number of people. Choose tip percentage or enter a custom amount. Free online tip calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'tip-calculator' %}{% endblock %}
+{% block og_title %}Tip Calculator — Tip Amount & Bill Splitter | AIUtilities{% endblock %}
+{% block og_description %}Calculate tip and split bills instantly. Any % and any number of people. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'tip-calculator' %}{% endblock %}
+{% block twitter_title %}Tip Calculator — Tip & Bill Splitter | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate tip and split the bill. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Tip Calculator","description":"Calculate tip amount and split the bill between multiple people.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'tip-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Tip Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'tip-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Tip Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Enter the bill amount, choose your tip percentage, and instantly see the tip, total, and how much each person owes when splitting.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom tip %</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Split between people</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="tc-bill">Bill Amount ($)</label>
+        <input type="number" id="tc-bill" class="ai-tool-input" placeholder="85.50" min="0" step="0.01" oninput="calcTip()">
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label">Tip Percentage</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem;">
+          <button type="button" class="tc-pct-btn" onclick="setPct(10)">10%</button>
+          <button type="button" class="tc-pct-btn" onclick="setPct(15)">15%</button>
+          <button type="button" class="tc-pct-btn tc-pct-active" onclick="setPct(18)">18%</button>
+          <button type="button" class="tc-pct-btn" onclick="setPct(20)">20%</button>
+          <button type="button" class="tc-pct-btn" onclick="setPct(25)">25%</button>
+        </div>
+        <input type="number" id="tc-pct" class="ai-tool-input" value="18" placeholder="Custom %" min="0" max="100" step="0.5" oninput="calcTip(); clearActive()">
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <label class="ai-tool-label" for="tc-people">Number of People</label>
+        <input type="number" id="tc-people" class="ai-tool-input" value="1" min="1" max="100" oninput="calcTip()">
+      </div>
+
+      <div id="tc-result" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="tc-tip" style="font-size:1.75rem;font-weight:800;color:#6366f1;"></div>
+            <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Tip</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="tc-total" style="font-size:1.75rem;font-weight:800;color:#6366f1;"></div>
+            <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Total</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="tc-per-person" style="font-size:1.75rem;font-weight:800;color:#22c55e;"></div>
+            <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Per Person</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Tip Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter the bill total</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the total amount from your receipt before tip.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select a tip percentage</strong><br><span style="font-size:.875rem;color:#6b7280;">Click a preset button (10%, 15%, 18%, 20%, 25%) or enter a custom percentage.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Set number of people</strong><br><span style="font-size:.875rem;color:#6b7280;">Adjust the split count to divide the total evenly among diners.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a standard tip percentage? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">15–20% is standard in the US for sit-down restaurants. 18–20% is the current norm. 25%+ for exceptional service. 10% for counter service or buffets.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Should I tip before or after tax? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Etiquette varies — most diners tip on the pre-tax subtotal, but tipping on the full amount including tax is also common.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I split unequally? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The calculator splits evenly. For custom splits, adjust each person's share manually after calculating the total tip.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.tc-pct-btn { padding:.4rem .9rem; border:1px solid #d1d5db; border-radius:.375rem; background:#fff; color:#374151; font-size:.875rem; cursor:pointer; }
+.tc-pct-active { background:#6366f1; color:#fff; border-color:#6366f1; }
+</style>
+<script>
+function setPct(p) {
+  document.getElementById('tc-pct').value = p;
+  document.querySelectorAll('.tc-pct-btn').forEach(function(b){ b.classList.remove('tc-pct-active'); });
+  event.target.classList.add('tc-pct-active');
+  calcTip();
+}
+function clearActive() {
+  document.querySelectorAll('.tc-pct-btn').forEach(function(b){ b.classList.remove('tc-pct-active'); });
+}
+function fmt(n) { return '$' + n.toFixed(2); }
+function calcTip() {
+  var bill = parseFloat(document.getElementById('tc-bill').value);
+  var pct = parseFloat(document.getElementById('tc-pct').value);
+  var people = parseInt(document.getElementById('tc-people').value) || 1;
+  if (isNaN(bill) || isNaN(pct)) { document.getElementById('tc-result').style.display = 'none'; return; }
+  var tip = bill * (pct / 100);
+  var total = bill + tip;
+  var perPerson = total / people;
+  document.getElementById('tc-tip').textContent = fmt(tip);
+  document.getElementById('tc-total').textContent = fmt(total);
+  document.getElementById('tc-per-person').textContent = fmt(perPerson);
+  document.getElementById('tc-result').style.display = 'block';
+}
+calcTip();
+</script>
+{% endblock %}

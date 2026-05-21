@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Base64 Encoder / Decoder — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Encode text or decode Base64 strings instantly in your browser. No data is sent to a server. Free Base64 encoder and decoder.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'base64-encoder' %}{% endblock %}
+{% block og_title %}Base64 Encoder / Decoder | AIUtilities{% endblock %}
+{% block og_description %}Encode and decode Base64 strings instantly in your browser. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'base64-encoder' %}{% endblock %}
+{% block twitter_title %}Base64 Encoder / Decoder | AIUtilities{% endblock %}
+{% block twitter_description %}Encode and decode Base64 strings. Runs in your browser. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Base64 Encoder / Decoder","description":"Encode text to Base64 or decode Base64 strings instantly in the browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'base64-encoder' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Base64 Encoder / Decoder","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'base64-encoder' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Runs in browser · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Base64 Encoder / Decoder</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Encode any text to Base64 or decode Base64 strings back to plain text. Everything runs in your browser — no data is sent to any server.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Encode & decode</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Runs in browser</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Private</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Input</label>
+          </div>
+          <textarea id="b64-input" class="ai-tool-input" rows="10" style="resize:vertical;font-family:monospace;font-size:.8125rem;" placeholder="Enter text to encode, or Base64 to decode…"></textarea>
+          <div id="b64-error" style="display:none;margin-top:.5rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Output</label>
+            <button type="button" id="b64-copy-btn" onclick="copyB64()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.25rem .625rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <textarea id="b64-output" class="ai-tool-input" rows="10" style="resize:vertical;font-family:monospace;font-size:.8125rem;background:#f0fdf4;border-color:#bbf7d0;" readonly placeholder="Output appears here…"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;">
+        <button type="button" onclick="doEncode()" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Encode → Base64</button>
+        <button type="button" onclick="doDecode()" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Decode ← Base64</button>
+        <button type="button" onclick="document.getElementById('b64-input').value='';document.getElementById('b64-output').value='';document.getElementById('b64-error').style.display='none';" style="padding:.5rem 1rem;font-size:.875rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.5rem;cursor:pointer;">Clear</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">What is Base64?</h2>
+    <p style="color:#374151;line-height:1.7;margin-bottom:1rem;">Base64 is an encoding scheme that converts binary data into ASCII text using 64 printable characters (A–Z, a–z, 0–9, +, /). It's used to safely transmit data through systems that only handle text — such as email, JSON payloads, HTML attributes, and HTTP headers.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#f8fafc;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Common uses</h3>
+        <ul style="margin:0;padding-left:1.25rem;font-size:.8125rem;color:#374151;line-height:1.8;">
+          <li>Embedding images in HTML/CSS (data URIs)</li>
+          <li>Encoding credentials in HTTP Basic Auth</li>
+          <li>JWT token payloads</li>
+          <li>Email attachments (MIME)</li>
+        </ul>
+      </div>
+      <div style="padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;background:#f8fafc;">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Important to know</h3>
+        <ul style="margin:0;padding-left:1.25rem;font-size:.8125rem;color:#374151;line-height:1.8;">
+          <li>Base64 is encoding, not encryption</li>
+          <li>Anyone can decode it — it's not secure</li>
+          <li>Output is ~33% larger than input</li>
+          <li>Use URL-safe Base64 for URLs (- instead of +)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Base64 Encoder / Decoder</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste or type the string you want to encode or decode.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click Encode or Decode</strong><br><span style="font-size:.875rem;color:#6b7280;">Use Encode to convert text to Base64, or Decode to convert Base64 back to plain text.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The output appears instantly. Click Copy to grab it.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is Base64 used for? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Base64 is used to encode binary data (images, files, keys) as ASCII text so it can be safely transmitted in emails, HTML, JSON, or URLs without corruption.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is Base64 the same as encryption? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — Base64 is encoding, not encryption. Anyone can decode a Base64 string instantly. Never use it to hide sensitive data.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does Base64 end with == or =? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Base64 encodes 3 bytes into 4 characters. If the input is not a multiple of 3 bytes, padding characters (=) are added to make the output a multiple of 4.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'url-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">URL Encoder / Decoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'security' 'password-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Password Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function doEncode() {
+  var input = document.getElementById('b64-input').value;
+  document.getElementById('b64-error').style.display = 'none';
+  try {
+    var encoded = btoa(unescape(encodeURIComponent(input)));
+    document.getElementById('b64-output').value = encoded;
+    document.getElementById('b64-copy-btn').textContent = 'Copy';
+  } catch(e) {
+    document.getElementById('b64-error').textContent = 'Encoding error: ' + e.message;
+    document.getElementById('b64-error').style.display = 'block';
+  }
+}
+function doDecode() {
+  var input = document.getElementById('b64-input').value.trim();
+  document.getElementById('b64-error').style.display = 'none';
+  try {
+    var decoded = decodeURIComponent(escape(atob(input)));
+    document.getElementById('b64-output').value = decoded;
+    document.getElementById('b64-copy-btn').textContent = 'Copy';
+  } catch(e) {
+    document.getElementById('b64-error').textContent = 'Invalid Base64 string. Make sure the input is properly encoded.';
+    document.getElementById('b64-error').style.display = 'block';
+  }
+}
+function copyB64() {
+  navigator.clipboard.writeText(document.getElementById('b64-output').value).then(function(){
+    document.getElementById('b64-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('b64-copy-btn').textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+{% endblock %}

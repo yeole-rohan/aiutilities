@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}JavaScript Minifier — Free Online JS Compressor | AIUtilities{% endblock %}
+{% block description %}Minify JavaScript code online instantly. Removes comments and unnecessary whitespace to reduce file size. Free online JS minifier.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'javascript-minifier' %}{% endblock %}
+{% block og_title %}JavaScript Minifier — Free JS Compressor | AIUtilities{% endblock %}
+{% block og_description %}Minify JavaScript instantly — strip comments and whitespace. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'javascript-minifier' %}{% endblock %}
+{% block twitter_title %}JavaScript Minifier | AIUtilities{% endblock %}
+{% block twitter_description %}Minify JavaScript code online. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"JavaScript Minifier","description":"Minify JavaScript by removing comments and whitespace to reduce file size.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'javascript-minifier' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"JavaScript Minifier","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'javascript-minifier' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">JavaScript Minifier</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste your JavaScript and compress it instantly. Removes single-line and block comments, collapses whitespace, and shows how much size you saved.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Strip comments</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Size reduction %</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Input JS <span id="js-in-size" style="color:#6b7280;font-weight:400;font-size:.8125rem;"></span></label>
+          </div>
+          <textarea id="js-input" class="ai-tool-input" rows="16" style="resize:vertical;font-family:monospace;font-size:.8125rem;" placeholder="// Your JavaScript here&#10;function greet(name) {&#10;  // Say hello&#10;  console.log('Hello, ' + name + '!');&#10;}" oninput="updateJsInSize()"></textarea>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Minified JS <span id="js-out-size" style="color:#6b7280;font-weight:400;font-size:.8125rem;"></span></label>
+            <button type="button" id="js-copy-btn" onclick="copyJs()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.25rem .625rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <textarea id="js-output" class="ai-tool-input" rows="16" style="resize:vertical;font-family:monospace;font-size:.8125rem;background:#f0fdf4;border-color:#bbf7d0;" readonly placeholder="Minified output appears here…"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1rem;align-items:center;">
+        <button type="button" onclick="minifyJs()" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Minify →</button>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" id="js-keep-license" checked> Keep license comments (/*! ... */)</label>
+        <span id="js-savings" style="font-size:.875rem;color:#22c55e;font-weight:600;"></span>
+      </div>
+      <div style="margin-top:.75rem;padding:.75rem;background:#fffbeb;border:1px solid #fde68a;border-radius:.5rem;font-size:.8125rem;color:#92400e;">For production use, consider build tools like Terser, esbuild, or webpack which perform full AST-based minification with variable renaming.</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the JavaScript Minifier</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your JavaScript</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy your JS from any source and paste it into the left input panel.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click Minify</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool strips // line comments, /* block comments */ (preserving /*! license comments if the checkbox is ticked), and collapses whitespace.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the output</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy to grab the minified code.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between minification and uglification? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Minification removes whitespace and comments. Uglification (mangling) also renames variables to single letters — this is what Terser and webpack do for maximum compression.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will this minifier rename my variables? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — this is a whitespace-and-comment stripper, not a full AST-based minifier. Variable names are preserved. Use Terser or esbuild for production builds.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What are license comments? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Comments starting with /*! are conventionally used for licence notices (e.g. MIT licence headers). Tools like UglifyJS and this minifier preserve them even when stripping other comments.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'css-minifier' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">CSS Minifier</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmtSize(b){return b<1024?b+' B':(b/1024).toFixed(1)+' KB';}
+function updateJsInSize(){
+  var s=new TextEncoder().encode(document.getElementById('js-input').value).length;
+  document.getElementById('js-in-size').textContent='('+fmtSize(s)+')';
+}
+function minifyJs(){
+  var input=document.getElementById('js-input').value;
+  var keepLicense=document.getElementById('js-keep-license').checked;
+  var result=input;
+  var licenses=[];
+  if(keepLicense){
+    result=result.replace(/\/\*![\s\S]*?\*\//g,function(m){licenses.push(m);return '/*LICENSE'+licenses.length+'*/';});
+  }
+  result=result
+    .replace(/\/\/[^\n]*/g,'')
+    .replace(/\/\*[\s\S]*?\*\//g,'')
+    .replace(/[ \t]+/g,' ')
+    .replace(/\n\s*\n/g,'\n')
+    .replace(/\n/g,' ')
+    .replace(/\s*([=+\-*/<>&|!?,;:{}()\[\]])\s*/g,'$1')
+    .replace(/\s+/g,' ')
+    .trim();
+  if(keepLicense){
+    licenses.forEach(function(l,i){result=result.replace('/*LICENSE'+(i+1)+'*/',l+'\n');});
+  }
+  document.getElementById('js-output').value=result;
+  var inSize=new TextEncoder().encode(input).length;
+  var outSize=new TextEncoder().encode(result).length;
+  document.getElementById('js-out-size').textContent='('+fmtSize(outSize)+')';
+  if(inSize>0){document.getElementById('js-savings').textContent='Saved '+((1-outSize/inSize)*100).toFixed(1)+'%';}
+  document.getElementById('js-copy-btn').textContent='Copy';
+}
+function copyJs(){
+  navigator.clipboard.writeText(document.getElementById('js-output').value).then(function(){
+    document.getElementById('js-copy-btn').textContent='Copied!';
+    setTimeout(function(){document.getElementById('js-copy-btn').textContent='Copy';},1500);
+  });
+}
+</script>
+{% endblock %}

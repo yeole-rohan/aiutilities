@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Loan Calculator — Monthly Payment & Amortisation | AIUtilities{% endblock %}
+{% block description %}Calculate monthly loan payments, total interest, and view the full amortisation schedule. Works for personal loans, car loans, and more. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'loan-calculator' %}{% endblock %}
+{% block og_title %}Loan Calculator — Monthly Payment & Amortisation | AIUtilities{% endblock %}
+{% block og_description %}Calculate monthly payments and total interest with full amortisation schedule. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'loan-calculator' %}{% endblock %}
+{% block twitter_title %}Loan Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate loan payments and amortisation. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Loan Calculator","description":"Calculate monthly loan payments, total interest, and full amortisation schedule.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'loan-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Loan Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'loan-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Loan Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Enter loan amount, interest rate, and term to get your monthly payment, total interest, and a full amortisation schedule showing every payment.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Monthly payment</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Amortisation schedule</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div><label class="ai-tool-label" for="lc-amount">Loan Amount ($)</label><input type="number" id="lc-amount" class="ai-tool-input" placeholder="25000" value="25000" oninput="calcLoan()"></div>
+        <div><label class="ai-tool-label" for="lc-rate">Annual Rate (%)</label><input type="number" id="lc-rate" class="ai-tool-input" placeholder="6.5" value="6.5" step="0.1" oninput="calcLoan()"></div>
+        <div><label class="ai-tool-label" for="lc-term">Term (months)</label><input type="number" id="lc-term" class="ai-tool-input" placeholder="60" value="60" oninput="calcLoan()"></div>
+      </div>
+
+      <div id="lc-summary" style="display:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div id="lc-monthly" style="font-size:1.75rem;font-weight:800;color:#6366f1;"></div>
+          <div style="font-size:.8125rem;color:#6b7280;">Monthly Payment</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div id="lc-total-interest" style="font-size:1.75rem;font-weight:800;color:#ef4444;"></div>
+          <div style="font-size:.8125rem;color:#6b7280;">Total Interest</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div id="lc-total-cost" style="font-size:1.75rem;font-weight:800;color:#374151;"></div>
+          <div style="font-size:.8125rem;color:#6b7280;">Total Cost</div>
+        </div>
+      </div>
+
+      <div id="lc-table-wrap" style="display:none;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;max-height:22rem;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+          <thead style="position:sticky;top:0;background:#f8fafc;">
+            <tr><th style="padding:.5rem .75rem;text-align:left;color:#0f172a;">Month</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Payment</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Principal</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Interest</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Balance</th></tr>
+          </thead>
+          <tbody id="lc-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Loan Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter loan amount</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the total loan amount (principal) you are borrowing.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter interest rate and term</strong><br><span style="font-size:.875rem;color:#6b7280;">Set the annual interest rate (%) and loan term in months.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">View payment and schedule</strong><br><span style="font-size:.875rem;color:#6b7280;">See your monthly payment, total interest paid, and the full month-by-month amortisation table.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is an amortisation schedule? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">An amortisation schedule shows each monthly payment broken down into principal (reducing the balance) and interest. Early payments are mostly interest; later ones are mostly principal.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What formula is used for monthly payment? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">PMT = P × r × (1+r)^n / ((1+r)^n − 1), where P is principal, r is monthly rate, and n is number of payments.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I use this for car loans? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — enter the car price minus any down payment as the principal, your loan APR as the rate, and your term in months.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Mortgage Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compound Interest Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function calcLoan(){
+  var P=parseFloat(document.getElementById('lc-amount').value)||0;
+  var annual=parseFloat(document.getElementById('lc-rate').value)||0;
+  var n=parseInt(document.getElementById('lc-term').value)||0;
+  if(!P||!n)return;
+  var r=annual/100/12;
+  var pmt=r===0?P/n:P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  var bal=P,rows='',totalInt=0;
+  for(var i=1;i<=n;i++){
+    var int=bal*r,prin=pmt-int;
+    if(i===n){prin=bal;pmt=prin+int;}
+    bal-=prin;totalInt+=int;
+    if(bal<0.01)bal=0;
+    rows+='<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.35rem .75rem;color:#6b7280;">'+i+'</td><td style="padding:.35rem .75rem;text-align:right;">'+fmt(pmt)+'</td><td style="padding:.35rem .75rem;text-align:right;color:#6366f1;">'+fmt(prin)+'</td><td style="padding:.35rem .75rem;text-align:right;color:#ef4444;">'+fmt(int)+'</td><td style="padding:.35rem .75rem;text-align:right;">'+fmt(bal)+'</td></tr>';
+  }
+  document.getElementById('lc-monthly').textContent=fmt(P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1));
+  document.getElementById('lc-total-interest').textContent=fmt(totalInt);
+  document.getElementById('lc-total-cost').textContent=fmt(P+totalInt);
+  document.getElementById('lc-table').innerHTML=rows;
+  document.getElementById('lc-summary').style.display='grid';
+  document.getElementById('lc-table-wrap').style.display='block';
+}
+calcLoan();
+</script>
+{% endblock %}

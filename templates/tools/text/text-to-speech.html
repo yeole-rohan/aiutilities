@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Text to Speech — Free Online TTS Tool | AIUtilities{% endblock %}
+{% block description %}Convert text to speech instantly using your browser's built-in voices. Choose voice, rate, and pitch. No signup required. Free online TTS.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-to-speech' %}{% endblock %}
+{% block og_title %}Text to Speech | AIUtilities{% endblock %}
+{% block og_description %}Convert text to speech with browser voices. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-to-speech' %}{% endblock %}
+{% block twitter_title %}Text to Speech | AIUtilities{% endblock %}
+{% block twitter_description %}Free online text to speech tool. No signup.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Text to Speech","description":"Convert text to speech using the browser's built-in Web Speech API with voice, rate, and pitch controls.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-to-speech' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Text to Speech","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-to-speech' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔊 Browser-native · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Text to Speech</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Type or paste text and hear it spoken aloud using your browser's built-in voices. Adjust voice, speed, and pitch.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple voices</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Speed & pitch control</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No server needed</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+
+    <div id="tts-unsupported" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:.5rem;padding:1rem;margin-bottom:1rem;font-size:.875rem;color:#dc2626;">
+      Your browser does not support the Web Speech API. Try Chrome, Edge, or Safari.
+    </div>
+
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="tts-input">Text</label>
+        <textarea id="tts-input" class="ai-tool-input" rows="6" placeholder="Type or paste your text here…">The quick brown fox jumps over the lazy dog.</textarea>
+        <div id="tts-char-count" style="text-align:right;font-size:.75rem;color:#9ca3af;margin-top:.25rem;">0 characters</div>
+      </div>
+
+      <!-- Voice selector -->
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="tts-voice">Voice</label>
+        <select id="tts-voice" class="ai-tool-select">
+          <option value="">Loading voices…</option>
+        </select>
+      </div>
+
+      <!-- Sliders -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div>
+          <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">Rate <span id="tts-rate-val" style="color:#6366f1;font-weight:700;">1.0×</span></label>
+          <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1" oninput="updateSliders()" style="width:100%;">
+          <div style="display:flex;justify-content:space-between;font-size:.7rem;color:#9ca3af;"><span>0.5×</span><span>2×</span></div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">Pitch <span id="tts-pitch-val" style="color:#6366f1;font-weight:700;">1.0</span></label>
+          <input type="range" id="tts-pitch" min="0" max="2" step="0.1" value="1" oninput="updateSliders()" style="width:100%;">
+          <div style="display:flex;justify-content:space-between;font-size:.7rem;color:#9ca3af;"><span>Low</span><span>High</span></div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.8125rem;margin-bottom:.3rem;">Volume <span id="tts-vol-val" style="color:#6366f1;font-weight:700;">100%</span></label>
+          <input type="range" id="tts-volume" min="0" max="1" step="0.05" value="1" oninput="updateSliders()" style="width:100%;">
+          <div style="display:flex;justify-content:space-between;font-size:.7rem;color:#9ca3af;"><span>0%</span><span>100%</span></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;">
+        <button onclick="ttsSpeak()" id="tts-play-btn" class="ai-tool-btn" style="padding:.6rem 1.5rem;font-size:.9375rem;">▶ Speak</button>
+        <button onclick="ttsPause()" id="tts-pause-btn" style="padding:.6rem 1.25rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.5rem;font-size:.9375rem;cursor:pointer;display:none;">⏸ Pause</button>
+        <button onclick="ttsResume()" id="tts-resume-btn" style="padding:.6rem 1.25rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.5rem;font-size:.9375rem;cursor:pointer;display:none;">▶ Resume</button>
+        <button onclick="ttsStop()" id="tts-stop-btn" style="padding:.6rem 1.25rem;background:#fff;border:1px solid #fca5a5;color:#dc2626;border-radius:.5rem;font-size:.9375rem;cursor:pointer;display:none;">⏹ Stop</button>
+        <div id="tts-status" style="font-size:.8125rem;color:#6b7280;margin-left:auto;"></div>
+      </div>
+
+      <!-- Progress bar -->
+      <div style="margin-top:1rem;height:.35rem;background:#e2e8f0;border-radius:999px;overflow:hidden;">
+        <div id="tts-progress" style="height:100%;background:#6366f1;border-radius:999px;width:0%;transition:width .3s;"></div>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Sample Texts</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button class="tts-sample" onclick="setSample('The quick brown fox jumps over the lazy dog.')">Pangram</button>
+        <button class="tts-sample" onclick="setSample('To be, or not to be, that is the question.')">Shakespeare</button>
+        <button class="tts-sample" onclick="setSample('In the beginning God created the heavens and the earth.')">Genesis</button>
+        <button class="tts-sample" onclick="setSample('Houston, we have a problem.')">Apollo 13</button>
+        <button class="tts-sample" onclick="setSample('Elementary, my dear Watson.')">Holmes</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Text to Speech</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Type or paste your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter any text in the input field. Use the sample buttons for quick demos.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select a voice</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose from the voices available on your device — browsers typically offer 10 to 50+ voices across multiple languages.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Adjust speed, pitch, and volume</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the sliders to customise playback: rate 0.5x (slow) to 2x (fast), pitch low to high, and volume up to 100%.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">4</div>
+        <div><strong style="color:#0f172a;">Click Speak</strong><br><span style="font-size:.875rem;color:#6b7280;">Press the Speak button. Use Pause, Resume, and Stop to control playback.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which browsers support this tool? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Chrome, Edge, Safari, and Firefox all support the Web Speech API. Chrome and Edge have the most voices. Firefox support may vary by OS.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are the voices stored on my device? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the voices are provided by your operating system and browser. No audio is sent to any server.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I change the language? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — select a voice labelled with a language code like en-GB, fr-FR, or es-ES to hear text spoken in that language.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+      <a href="{% url 'tools:tool' 'text' 'lorem-ipsum-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Lorem Ipsum Generator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.tts-sample{padding:.3rem .75rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.tts-sample:hover{background:#f1f5f9;border-color:#6366f1;color:#6366f1;}
+</style>
+<script>
+var synth=window.speechSynthesis;
+var voices=[];
+var utterance=null;
+var charLen=0;
+
+if(!synth){document.getElementById('tts-unsupported').style.display='block';}
+
+function loadVoices(){
+  voices=synth.getVoices();
+  var sel=document.getElementById('tts-voice');
+  sel.innerHTML='';
+  if(!voices.length){sel.innerHTML='<option>No voices found</option>';return;}
+  voices.forEach(function(v,i){
+    var opt=document.createElement('option');
+    opt.value=i;
+    opt.textContent=v.name+' ('+v.lang+')';
+    if(v.default)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+if(synth){
+  loadVoices();
+  if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;
+}
+
+document.getElementById('tts-input').addEventListener('input',function(){
+  charLen=this.value.length;
+  document.getElementById('tts-char-count').textContent=charLen+' character'+(charLen!==1?'s':'');
+});
+document.getElementById('tts-input').dispatchEvent(new Event('input'));
+
+function updateSliders(){
+  document.getElementById('tts-rate-val').textContent=parseFloat(document.getElementById('tts-rate').value).toFixed(1)+'×';
+  document.getElementById('tts-pitch-val').textContent=parseFloat(document.getElementById('tts-pitch').value).toFixed(1);
+  document.getElementById('tts-vol-val').textContent=Math.round(document.getElementById('tts-volume').value*100)+'%';
+}
+
+function ttsSpeak(){
+  if(!synth)return;
+  synth.cancel();
+  var text=document.getElementById('tts-input').value.trim();
+  if(!text)return;
+  utterance=new SpeechSynthesisUtterance(text);
+  var voiceIdx=document.getElementById('tts-voice').value;
+  if(voices[voiceIdx])utterance.voice=voices[voiceIdx];
+  utterance.rate=parseFloat(document.getElementById('tts-rate').value);
+  utterance.pitch=parseFloat(document.getElementById('tts-pitch').value);
+  utterance.volume=parseFloat(document.getElementById('tts-volume').value);
+  utterance.onstart=function(){setControls('playing');};
+  utterance.onpause=function(){setControls('paused');};
+  utterance.onresume=function(){setControls('playing');};
+  utterance.onend=function(){setControls('idle');document.getElementById('tts-progress').style.width='100%';setTimeout(function(){document.getElementById('tts-progress').style.width='0%';},800);};
+  utterance.onerror=function(e){setControls('idle');document.getElementById('tts-status').textContent='Error: '+e.error;};
+  utterance.onboundary=function(e){
+    if(e.name==='word'&&text.length>0){document.getElementById('tts-progress').style.width=((e.charIndex/text.length)*100).toFixed(1)+'%';}
+  };
+  synth.speak(utterance);
+}
+function ttsPause(){if(synth)synth.pause();}
+function ttsResume(){if(synth)synth.resume();}
+function ttsStop(){if(synth){synth.cancel();setControls('idle');document.getElementById('tts-progress').style.width='0%';}}
+function setControls(state){
+  document.getElementById('tts-play-btn').style.display=state==='idle'?'':'none';
+  document.getElementById('tts-pause-btn').style.display=state==='playing'?'':'none';
+  document.getElementById('tts-resume-btn').style.display=state==='paused'?'':'none';
+  document.getElementById('tts-stop-btn').style.display=state!=='idle'?'':'none';
+  var labels={idle:'',playing:'Speaking…',paused:'Paused'};
+  document.getElementById('tts-status').textContent=labels[state]||'';
+}
+function setSample(text){document.getElementById('tts-input').value=text;document.getElementById('tts-input').dispatchEvent(new Event('input'));}
+</script>
+{% endblock %}

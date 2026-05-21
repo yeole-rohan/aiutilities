@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Slug Generator — Free URL Slug Creator | AIUtilities{% endblock %}
+{% block description %}Generate clean, SEO-friendly URL slugs from any text instantly. Converts spaces to hyphens, removes special characters, lowercases everything. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'slug-generator' %}{% endblock %}
+{% block og_title %}Slug Generator — Free URL Slug Creator | AIUtilities{% endblock %}
+{% block og_description %}Generate SEO-friendly URL slugs from any text instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'slug-generator' %}{% endblock %}
+{% block twitter_title %}Slug Generator — URL Slug Creator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate clean URL slugs from any text instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Slug Generator","description":"Generate clean, SEO-friendly URL slugs from any text instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'slug-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Slug Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'slug-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📝 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Slug Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Type or paste a title or phrase and get a clean, SEO-friendly URL slug instantly. Converts spaces to hyphens, removes special characters, and lowercases everything.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time preview</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="sg-input">Title or Phrase</label>
+        <input type="text" id="sg-input" class="ai-tool-input" placeholder="e.g. How to Build a REST API with Django" oninput="updateSlug()">
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;margin-bottom:1.25rem;">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="sg-separator-hyphen" checked onchange="updateSlug()"> Hyphens (-)
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="sg-separator-underscore" onchange="updateSlug()"> Underscores (_)
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.874rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="sg-remove-stopwords" onchange="updateSlug()"> Remove stopwords (a, the, of…)
+        </label>
+      </div>
+
+      <div id="sg-output-wrap" style="display:none;">
+        <label class="ai-tool-label">Generated Slug</label>
+        <div style="position:relative;">
+          <input type="text" id="sg-output" class="ai-tool-input" style="background:#f0fdf4;border-color:#bbf7d0;font-family:monospace;padding-right:5rem;" readonly>
+          <button type="button" id="sg-copy-btn" onclick="copySlug()" style="position:absolute;top:50%;right:.5rem;transform:translateY(-50%);background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Good URL Slug?</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Keep it short and descriptive</h3><p style="font-size:.8125rem;color:#374151;">3–5 words is ideal. Include the main keyword. Google truncates URLs in results after about 70 characters, so shorter slugs are more readable in SERPs.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Use hyphens, not underscores</h3><p style="font-size:.8125rem;color:#374151;">Google treats hyphens as word separators. Underscores join words together — "blue_sky" is read as one word "bluesky" in crawlers.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Avoid special characters</h3><p style="font-size:.8125rem;color:#374151;">Special characters (?, &amp;, %, #) need to be URL-encoded, making URLs ugly and hard to share. Only letters, numbers, and hyphens.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Slug Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Type your title or phrase</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter a blog post title, page name, or any phrase in the input field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose separator</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick hyphen (-) or underscore (_) as the word separator.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the slug</strong><br><span style="font-size:.875rem;color:#6b7280;">The URL-safe slug is generated instantly. Click Copy to use it in your CMS, route, or filename.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a URL slug? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A URL slug is the human-readable, URL-safe portion of a web address — e.g. in /blog/how-to-make-coffee, the slug is how-to-make-coffee.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why use hyphens instead of underscores? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Google treats hyphens as word separators in URLs, making them better for SEO. Underscores join words as one term. Use hyphens for public-facing URLs.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What characters are removed from the slug? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Accents are normalised (e-acute becomes e), then all characters that are not letters, numbers, or the chosen separator are removed.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+      <a href="{% url 'tools:tool' 'developer' 'url-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">URL Encoder / Decoder</a>
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var STOPWORDS = new Set(['a','an','the','and','or','but','in','on','at','to','for','of','with','by','from','is','it','be','as','at','this','that','its']);
+
+function toSlug(text, useUnderscore, removeStopwords) {
+  var sep = useUnderscore ? '_' : '-';
+  var words = text.toLowerCase()
+    .replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i')
+    .replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[ñ]/g,'n')
+    .replace(/[^a-z0-9\s-]/g,'')
+    .trim().split(/\s+/).filter(function(w){ return w.length > 0; });
+  if (removeStopwords) words = words.filter(function(w){ return !STOPWORDS.has(w); });
+  return words.join(sep);
+}
+
+function updateSlug() {
+  var text = document.getElementById('sg-input').value;
+  var useUnderscore = document.getElementById('sg-separator-underscore').checked;
+  var removeStopwords = document.getElementById('sg-remove-stopwords').checked;
+  var slug = toSlug(text, useUnderscore, removeStopwords);
+  document.getElementById('sg-output').value = slug;
+  document.getElementById('sg-output-wrap').style.display = text.trim() ? 'block' : 'none';
+  document.getElementById('sg-copy-btn').textContent = 'Copy';
+}
+
+function copySlug() {
+  navigator.clipboard.writeText(document.getElementById('sg-output').value).then(function(){
+    document.getElementById('sg-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('sg-copy-btn').textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+{% endblock %}

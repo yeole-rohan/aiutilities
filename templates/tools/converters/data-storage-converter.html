@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Data Storage Converter — KB, MB, GB, TB, PB | AIUtilities{% endblock %}
+{% block description %}Convert between bytes, kilobytes, megabytes, gigabytes, terabytes, and petabytes instantly. Type any value to see all conversions. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'data-storage-converter' %}{% endblock %}
+{% block og_title %}Data Storage Converter — KB MB GB TB | AIUtilities{% endblock %}
+{% block og_description %}Convert data storage units instantly — bytes, KB, MB, GB, TB, PB. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'data-storage-converter' %}{% endblock %}
+{% block twitter_title %}Data Storage Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert KB, MB, GB, TB instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Data Storage Converter","description":"Convert between bytes, kilobytes, megabytes, gigabytes, terabytes, and petabytes.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'data-storage-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Data Storage Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'data-storage-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Data Storage Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between bytes, kilobytes, megabytes, gigabytes, terabytes, and petabytes instantly. Type in any field and all units update.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Decimal (1000) & Binary (1024)</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+        <button type="button" id="ds-dec-btn" onclick="switchBase(1000)" class="ai-tool-btn" style="flex:1;padding:.5rem;font-size:.875rem;">Decimal (KB=1000)</button>
+        <button type="button" id="ds-bin-btn" onclick="switchBase(1024)" style="flex:1;padding:.5rem;font-size:.875rem;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;cursor:pointer;">Binary (KiB=1024)</button>
+      </div>
+      <div id="ds-fields" style="display:grid;gap:1rem;"></div>
+      <button type="button" onclick="resetDs()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+
+    <div style="margin-top:1.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;">
+      <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Reference: Common File Sizes</h3>
+      <div style="display:grid;gap:.4rem;font-size:.8125rem;">
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">MP3 song (4 min)</span><span style="font-family:monospace;color:#6b7280;">~4 MB</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">HD photo (DSLR)</span><span style="font-family:monospace;color:#6b7280;">~10–25 MB</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">1080p movie (2 hr)</span><span style="font-family:monospace;color:#6b7280;">~8–15 GB</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;"><span style="color:#374151;">4K movie (2 hr)</span><span style="font-family:monospace;color:#6b7280;">~50–100 GB</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Data Storage Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose decimal or binary mode</strong><br><span style="font-size:.875rem;color:#6b7280;">Decimal uses powers of 1000 (KB, MB, GB). Binary uses powers of 1024 (KiB, MiB, GiB) — the traditional computer standard.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter a value in any unit</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a size in bytes, KB, MB, GB, or TB and all other units update instantly.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between GB and GiB? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 GB (gigabyte) = 1,000,000,000 bytes (decimal). 1 GiB (gibibyte) = 1,073,741,824 bytes (binary). Hard drive manufacturers use decimal GB, while operating systems have traditionally used binary GiB.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does my 1 TB hard drive show less space in Windows? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Windows historically reports storage in GiB but labels them GB. A 1 TB (1,000 GB) drive shows roughly 931 GiB in Windows.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many bytes in a terabyte? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 TB = 1,000,000,000,000 bytes (10 to the 12th) in decimal. 1 TiB = 1,099,511,627,776 bytes (2 to the 40th) in binary.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'weight-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Weight Converter</a>
+      <a href="{% url 'tools:tool' 'developer' 'binary-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Binary Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var currentBase=1000;
+var UNITS_DEC=[
+  {id:'ds-b',label:'Bytes (B)',factor:1},
+  {id:'ds-kb',label:'Kilobytes (KB)',factor:1e3},
+  {id:'ds-mb',label:'Megabytes (MB)',factor:1e6},
+  {id:'ds-gb',label:'Gigabytes (GB)',factor:1e9},
+  {id:'ds-tb',label:'Terabytes (TB)',factor:1e12},
+  {id:'ds-pb',label:'Petabytes (PB)',factor:1e15},
+];
+var UNITS_BIN=[
+  {id:'ds-b',label:'Bytes (B)',factor:1},
+  {id:'ds-kb',label:'Kibibytes (KiB)',factor:1024},
+  {id:'ds-mb',label:'Mebibytes (MiB)',factor:Math.pow(1024,2)},
+  {id:'ds-gb',label:'Gibibytes (GiB)',factor:Math.pow(1024,3)},
+  {id:'ds-tb',label:'Tebibytes (TiB)',factor:Math.pow(1024,4)},
+  {id:'ds-pb',label:'Pebibytes (PiB)',factor:Math.pow(1024,5)},
+];
+var updating=false;
+function buildFields(units){
+  var c=document.getElementById('ds-fields');c.innerHTML='';
+  units.forEach(function(u){
+    var d=document.createElement('div');
+    d.innerHTML='<label class="ai-tool-label" for="'+u.id+'" style="font-size:.875rem;">'+u.label+'</label><input type="number" id="'+u.id+'" class="ai-tool-input" step="any" placeholder="0" oninput="convertDs(\''+u.id+'\')">';
+    c.appendChild(d);
+  });
+}
+function switchBase(base){
+  currentBase=base;
+  var isDec=base===1000;
+  document.getElementById('ds-dec-btn').className=isDec?'ai-tool-btn':'';
+  document.getElementById('ds-dec-btn').style=isDec?'flex:1;padding:.5rem;font-size:.875rem;':'flex:1;padding:.5rem;font-size:.875rem;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;cursor:pointer;';
+  document.getElementById('ds-bin-btn').className=!isDec?'ai-tool-btn':'';
+  document.getElementById('ds-bin-btn').style=!isDec?'flex:1;padding:.5rem;font-size:.875rem;':'flex:1;padding:.5rem;font-size:.875rem;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;cursor:pointer;';
+  buildFields(isDec?UNITS_DEC:UNITS_BIN);
+}
+function convertDs(fromId){
+  if(updating)return;
+  updating=true;
+  var units=currentBase===1000?UNITS_DEC:UNITS_BIN;
+  var fromUnit=units.find(function(u){return u.id===fromId;});
+  var val=parseFloat(document.getElementById(fromId).value);
+  if(isNaN(val)){updating=false;return;}
+  var bytes=val*fromUnit.factor;
+  units.forEach(function(u){
+    if(u.id!==fromId)document.getElementById(u.id).value=parseFloat((bytes/u.factor).toPrecision(8));
+  });
+  updating=false;
+}
+function resetDs(){
+  var units=currentBase===1000?UNITS_DEC:UNITS_BIN;
+  units.forEach(function(u){var el=document.getElementById(u.id);if(el)el.value='';});
+}
+buildFields(UNITS_DEC);
+</script>
+{% endblock %}

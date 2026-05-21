@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Temperature Converter — Celsius, Fahrenheit, Kelvin | AIUtilities{% endblock %}
+{% block description %}Convert temperatures between Celsius, Fahrenheit, and Kelvin instantly. Type a value in any field and all units update in real time. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'temperature-converter' %}{% endblock %}
+{% block og_title %}Temperature Converter — C, F, K | AIUtilities{% endblock %}
+{% block og_description %}Convert Celsius, Fahrenheit, and Kelvin instantly. Type to convert. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'temperature-converter' %}{% endblock %}
+{% block twitter_title %}Temperature Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert Celsius, Fahrenheit, and Kelvin instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Temperature Converter","description":"Convert temperatures between Celsius, Fahrenheit, and Kelvin instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'temperature-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Temperature Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'temperature-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Temperature Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between Celsius, Fahrenheit, and Kelvin instantly. Type a value in any field and all three update automatically.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time conversion</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ C, F, and K</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1rem;">
+        <div>
+          <label class="ai-tool-label" for="tc-c">Celsius (°C)</label>
+          <input type="number" id="tc-c" class="ai-tool-input" placeholder="0" step="any" oninput="convertFrom('c')">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="tc-f">Fahrenheit (°F)</label>
+          <input type="number" id="tc-f" class="ai-tool-input" placeholder="32" step="any" oninput="convertFrom('f')">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="tc-k">Kelvin (K)</label>
+          <input type="number" id="tc-k" class="ai-tool-input" placeholder="273.15" step="any" oninput="convertFrom('k')">
+        </div>
+      </div>
+      <button type="button" onclick="resetTemp()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+
+    <div style="margin-top:1.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;">
+      <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Common Reference Points</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+        <thead><tr style="border-bottom:1px solid #e2e8f0;"><th style="text-align:left;padding:.5rem;color:#6b7280;">Description</th><th style="text-align:right;padding:.5rem;color:#6b7280;">°C</th><th style="text-align:right;padding:.5rem;color:#6b7280;">°F</th><th style="text-align:right;padding:.5rem;color:#6b7280;">K</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem;color:#374151;">Absolute zero</td><td style="padding:.5rem;text-align:right;">−273.15</td><td style="padding:.5rem;text-align:right;">−459.67</td><td style="padding:.5rem;text-align:right;">0</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem;color:#374151;">Water freezes</td><td style="padding:.5rem;text-align:right;">0</td><td style="padding:.5rem;text-align:right;">32</td><td style="padding:.5rem;text-align:right;">273.15</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem;color:#374151;">Human body</td><td style="padding:.5rem;text-align:right;">37</td><td style="padding:.5rem;text-align:right;">98.6</td><td style="padding:.5rem;text-align:right;">310.15</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem;color:#374151;">Water boils</td><td style="padding:.5rem;text-align:right;">100</td><td style="padding:.5rem;text-align:right;">212</td><td style="padding:.5rem;text-align:right;">373.15</td></tr>
+          <tr><td style="padding:.5rem;color:#374151;">Room temperature</td><td style="padding:.5rem;text-align:right;">22</td><td style="padding:.5rem;text-align:right;">71.6</td><td style="padding:.5rem;text-align:right;">295.15</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Temperature Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Type in any field</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter a temperature in Celsius, Fahrenheit, or Kelvin — the other two fields update automatically.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Use the result</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy the converted temperature from whichever field you need.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the formula to convert Celsius to Fahrenheit? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">F = (C × 9/5) + 32. For example, 100°C = 212°F, which is the boiling point of water at sea level.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is absolute zero? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Absolute zero — the coldest possible temperature — is −273.15°C, 0 Kelvin, or −459.67°F.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is normal body temperature? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Normal body temperature is 37°C (98.6°F). A fever is generally considered above 38°C (100.4°F).</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'weight-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Weight Converter</a>
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var updating = false;
+function round(n, d) { return parseFloat(n.toFixed(d)); }
+function convertFrom(unit) {
+  if (updating) return;
+  updating = true;
+  var c = document.getElementById('tc-c');
+  var f = document.getElementById('tc-f');
+  var k = document.getElementById('tc-k');
+  var v = parseFloat(unit === 'c' ? c.value : unit === 'f' ? f.value : k.value);
+  if (isNaN(v)) { updating = false; return; }
+  var celsius;
+  if (unit === 'c') celsius = v;
+  else if (unit === 'f') celsius = (v - 32) * 5 / 9;
+  else celsius = v - 273.15;
+  if (unit !== 'c') c.value = round(celsius, 4);
+  if (unit !== 'f') f.value = round(celsius * 9 / 5 + 32, 4);
+  if (unit !== 'k') k.value = round(celsius + 273.15, 4);
+  updating = false;
+}
+function resetTemp() {
+  document.getElementById('tc-c').value = '';
+  document.getElementById('tc-f').value = '';
+  document.getElementById('tc-k').value = '';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Scientific Calculator — Free Online Calculator | AIUtilities{% endblock %}
+{% block description %}Full-featured scientific calculator with trig, logarithms, exponents, and constants. Works on any device. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'scientific-calculator' %}{% endblock %}
+{% block og_title %}Scientific Calculator | AIUtilities{% endblock %}
+{% block og_description %}Full scientific calculator — trig, log, exponents, constants. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'scientific-calculator' %}{% endblock %}
+{% block twitter_title %}Scientific Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Full scientific calculator online. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Scientific Calculator","description":"Full scientific calculator with trig, logarithms, exponents, and constants.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'scientific-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Scientific Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'scientific-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Scientific Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">A full-featured scientific calculator supporting trigonometry, logarithms, powers, roots, constants (π, e), and more.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:28rem;margin:0 auto;">
+    <div style="background:#1e293b;border-radius:1rem;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.2);">
+      <!-- Display -->
+      <div style="padding:1rem 1.25rem;text-align:right;">
+        <div id="sc-expr" style="font-size:.8125rem;color:#94a3b8;min-height:1.2em;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+        <div id="sc-display" style="font-size:2rem;font-weight:700;color:#f1f5f9;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">0</div>
+      </div>
+      <!-- Mode toggle -->
+      <div style="display:flex;gap:.5rem;padding:.25rem 1rem .5rem;justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:.25rem;">
+          <button onclick="setAngle('deg')" id="sc-deg" style="font-size:.75rem;padding:.2rem .6rem;border-radius:.25rem;background:#6366f1;color:#fff;border:none;cursor:pointer;">DEG</button>
+          <button onclick="setAngle('rad')" id="sc-rad" style="font-size:.75rem;padding:.2rem .6rem;border-radius:.25rem;background:#334155;color:#94a3b8;border:none;cursor:pointer;">RAD</button>
+        </div>
+        <div id="sc-ans-display" style="font-size:.75rem;color:#64748b;font-family:monospace;">ANS: 0</div>
+      </div>
+      <!-- Buttons -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#0f172a;">
+        <!-- Row 1 -->
+        <button class="sc-btn sc-fn" onclick="scFn('sin')">sin</button>
+        <button class="sc-btn sc-fn" onclick="scFn('cos')">cos</button>
+        <button class="sc-btn sc-fn" onclick="scFn('tan')">tan</button>
+        <button class="sc-btn sc-fn" onclick="scFn('log')">log</button>
+        <button class="sc-btn sc-fn" onclick="scFn('ln')">ln</button>
+        <!-- Row 2 -->
+        <button class="sc-btn sc-fn" onclick="scFn('asin')">sin⁻¹</button>
+        <button class="sc-btn sc-fn" onclick="scFn('acos')">cos⁻¹</button>
+        <button class="sc-btn sc-fn" onclick="scFn('atan')">tan⁻¹</button>
+        <button class="sc-btn sc-fn" onclick="scFn('sqrt')">√</button>
+        <button class="sc-btn sc-fn" onclick="scFn('cbrt')" style="font-size:.75rem;">∛</button>
+        <!-- Row 3 -->
+        <button class="sc-btn sc-fn" onclick="scConst('pi')">π</button>
+        <button class="sc-btn sc-fn" onclick="scConst('e')">e</button>
+        <button class="sc-btn sc-fn" onclick="scPow(2)">x²</button>
+        <button class="sc-btn sc-fn" onclick="scPow(3)">x³</button>
+        <button class="sc-btn sc-fn" onclick="scPow('n')">xⁿ</button>
+        <!-- Row 4 -->
+        <button class="sc-btn sc-fn" onclick="scFn('abs')">|x|</button>
+        <button class="sc-btn sc-fn" onclick="scFn('fact')">n!</button>
+        <button class="sc-btn sc-op" onclick="scInput('(')">(</button>
+        <button class="sc-btn sc-op" onclick="scInput(')')">)</button>
+        <button class="sc-btn sc-op" onclick="scInput('%')">%</button>
+        <!-- Row 5 -->
+        <button class="sc-btn sc-num" onclick="scInput('7')">7</button>
+        <button class="sc-btn sc-num" onclick="scInput('8')">8</button>
+        <button class="sc-btn sc-num" onclick="scInput('9')">9</button>
+        <button class="sc-btn sc-clear" onclick="scClear()">C</button>
+        <button class="sc-btn sc-op" onclick="scBackspace()">⌫</button>
+        <!-- Row 6 -->
+        <button class="sc-btn sc-num" onclick="scInput('4')">4</button>
+        <button class="sc-btn sc-num" onclick="scInput('5')">5</button>
+        <button class="sc-btn sc-num" onclick="scInput('6')">6</button>
+        <button class="sc-btn sc-op" onclick="scInput('×')">×</button>
+        <button class="sc-btn sc-op" onclick="scInput('÷')">÷</button>
+        <!-- Row 7 -->
+        <button class="sc-btn sc-num" onclick="scInput('1')">1</button>
+        <button class="sc-btn sc-num" onclick="scInput('2')">2</button>
+        <button class="sc-btn sc-num" onclick="scInput('3')">3</button>
+        <button class="sc-btn sc-op" onclick="scInput('+')">+</button>
+        <button class="sc-btn sc-op" onclick="scInput('-')">−</button>
+        <!-- Row 8 -->
+        <button class="sc-btn sc-num" onclick="scInput('0')" style="grid-column:span 2;">0</button>
+        <button class="sc-btn sc-num" onclick="scInput('.')">.</button>
+        <button class="sc-btn sc-op" onclick="scReciprocal()">1/x</button>
+        <button class="sc-btn sc-equals" onclick="scEquals()">=</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Scientific Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter numbers and operators</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the number pad or type on your keyboard. Use the operator buttons for +, −, ×, ÷.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Use scientific functions</strong><br><span style="font-size:.875rem;color:#6b7280;">Click sin, cos, tan, log, ln, sqrt, or other function buttons to apply them to the current value.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Press = or Enter</strong><br><span style="font-size:.875rem;color:#6b7280;">Evaluate your expression. The result is stored as ANS and can be used in the next calculation.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between DEG and RAD? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">DEG (degrees) and RAD (radians) are two ways to measure angles. Most everyday users should use DEG. RAD is standard in mathematics and physics.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I use the ANS button? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">ANS stores the last calculated result. After pressing =, type a new operation and the previous answer is used automatically.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What are the keyboard shortcuts? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Press Enter to evaluate an expression, Backspace to delete the last character, and Escape to clear.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compound Interest Calculator</a>
+      <a href="{% url 'tools:tool' 'developer' 'binary-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Binary Converter</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.sc-btn{padding:.7rem .4rem;font-size:.9375rem;border:none;cursor:pointer;transition:opacity .1s;font-family:inherit;}
+.sc-btn:hover{opacity:.85;}
+.sc-num{background:#1e293b;color:#f1f5f9;}
+.sc-op{background:#334155;color:#e2e8f0;}
+.sc-fn{background:#1e3a5f;color:#93c5fd;font-size:.8125rem;}
+.sc-clear{background:#7f1d1d;color:#fca5a5;}
+.sc-equals{background:#6366f1;color:#fff;font-size:1.25rem;}
+</style>
+<script>
+var expr='',ans=0,angleMode='deg';
+function setAngle(m){
+  angleMode=m;
+  document.getElementById('sc-deg').style.background=m==='deg'?'#6366f1':'#334155';
+  document.getElementById('sc-deg').style.color=m==='deg'?'#fff':'#94a3b8';
+  document.getElementById('sc-rad').style.background=m==='rad'?'#6366f1':'#334155';
+  document.getElementById('sc-rad').style.color=m==='rad'?'#fff':'#94a3b8';
+}
+function toRad(x){return angleMode==='deg'?x*Math.PI/180:x;}
+function scInput(v){expr+=v;document.getElementById('sc-display').textContent=expr;}
+function scClear(){expr='';document.getElementById('sc-display').textContent='0';document.getElementById('sc-expr').textContent='';}
+function scBackspace(){expr=expr.slice(0,-1);document.getElementById('sc-display').textContent=expr||'0';}
+function scFn(fn){
+  var val=parseFloat(expr)||ans;
+  var res;
+  switch(fn){
+    case 'sin':res=Math.sin(toRad(val));break;
+    case 'cos':res=Math.cos(toRad(val));break;
+    case 'tan':res=Math.tan(toRad(val));break;
+    case 'asin':res=angleMode==='deg'?Math.asin(val)*180/Math.PI:Math.asin(val);break;
+    case 'acos':res=angleMode==='deg'?Math.acos(val)*180/Math.PI:Math.acos(val);break;
+    case 'atan':res=angleMode==='deg'?Math.atan(val)*180/Math.PI:Math.atan(val);break;
+    case 'log':res=Math.log10(val);break;
+    case 'ln':res=Math.log(val);break;
+    case 'sqrt':res=Math.sqrt(val);break;
+    case 'cbrt':res=Math.cbrt(val);break;
+    case 'abs':res=Math.abs(val);break;
+    case 'fact':res=factorial(Math.round(val));break;
+  }
+  setResult(fn+'('+val+')',res);
+}
+function factorial(n){if(n<0)return NaN;if(n===0||n===1)return 1;var r=1;for(var i=2;i<=n;i++)r*=i;return r;}
+function scConst(c){
+  if(c==='pi')scInput(String(Math.PI));
+  else scInput(String(Math.E));
+}
+function scPow(p){
+  var val=parseFloat(expr)||ans;
+  if(p==='n'){var n=parseFloat(prompt('Enter exponent:'));if(!isNaN(n))setResult(val+'^'+n,Math.pow(val,n));}
+  else setResult(val+'^'+p,Math.pow(val,p));
+}
+function scReciprocal(){var val=parseFloat(expr)||ans;setResult('1/'+val,1/val);}
+function setResult(ex,res){
+  document.getElementById('sc-expr').textContent=ex+' =';
+  var r=parseFloat(res.toFixed(10));
+  ans=r;
+  document.getElementById('sc-display').textContent=r;
+  document.getElementById('sc-ans-display').textContent='ANS: '+r;
+  expr='';
+}
+function scEquals(){
+  try{
+    var safe=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+    var res=Function('"use strict";return ('+safe+')')();
+    setResult(expr,res);
+  }catch(e){document.getElementById('sc-display').textContent='Error';}
+}
+document.addEventListener('keydown',function(e){
+  if(/[0-9\+\-\*\/\.\(\)]/.test(e.key))scInput(e.key);
+  else if(e.key==='Enter')scEquals();
+  else if(e.key==='Backspace')scBackspace();
+  else if(e.key==='Escape')scClear();
+});
+</script>
+{% endblock %}

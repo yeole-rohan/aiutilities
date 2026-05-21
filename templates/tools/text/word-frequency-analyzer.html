@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Word Frequency Analyzer — See Which Words Appear Most | AIUtilities{% endblock %}
+{% block description %}Analyze word frequency in any text instantly. See the most used words, count occurrences, and export the results. Filter stopwords. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}{% endblock %}
+{% block og_title %}Word Frequency Analyzer | AIUtilities{% endblock %}
+{% block og_description %}See how often each word appears in your text. Filter stopwords, sort by count. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}{% endblock %}
+{% block twitter_title %}Word Frequency Analyzer | AIUtilities{% endblock %}
+{% block twitter_description %}Analyze word frequency in any text instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Word Frequency Analyzer","description":"Analyze how often each word appears in text, with stopword filtering and sortable results.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Word Frequency Analyzer","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📝 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Word Frequency Analyzer</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste your text and see exactly how often each word appears. Useful for SEO keyword density analysis, content audits, academic writing, and spotting overused words.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Frequency count</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Filter stopwords</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Sort by count or A–Z</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="wf-input">Your Text</label>
+        <textarea id="wf-input" class="ai-tool-input" rows="8" style="resize:vertical;font-family:inherit;" placeholder="Paste your article, blog post, or any text here…"></textarea>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;margin-bottom:1.25rem;">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="wf-stopwords" checked> Remove common stopwords
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="wf-case" checked> Case-insensitive
+        </label>
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;">
+          Show top:
+          <select id="wf-limit" style="border:1px solid #d1d5db;border-radius:.375rem;padding:.25rem .5rem;font-size:.875rem;">
+            <option value="20">20</option>
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+            <option value="0">All</option>
+          </select>
+          words
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button type="button" onclick="analyzeFreq()" class="ai-tool-btn">Analyze →</button>
+        <button type="button" onclick="sortBy('count')" id="wf-sort-count" style="padding:.5rem 1rem;font-size:.875rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;cursor:pointer;">Sort by Count</button>
+        <button type="button" onclick="sortBy('alpha')" id="wf-sort-alpha" style="padding:.5rem 1rem;font-size:.875rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.5rem;cursor:pointer;">Sort A–Z</button>
+      </div>
+
+      <div id="wf-result" style="display:none;margin-top:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+          <div id="wf-stats" style="font-size:.875rem;color:#6b7280;"></div>
+          <button type="button" onclick="exportCsv()" style="background:#22c55e;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Export CSV</button>
+        </div>
+        <div id="wf-table-wrap" style="max-height:28rem;overflow-y:auto;border:1px solid #e2e8f0;border-radius:.5rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Word Frequency Analyzer</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy and paste any article, essay, or document into the text area.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click Analyze</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool counts every word, removes common stopwords, and ranks the remaining words by frequency.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the results</strong><br><span style="font-size:.875rem;color:#6b7280;">A bar-chart table shows each word, its count, and its percentage of total words. Use Export CSV to download the data.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What are stopwords? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Stopwords are common words like "the", "a", "is", and "and" that are filtered out because they carry no meaningful content. The tool uses a 150+ word English stopword list.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I use this to find keywords in my content? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — after filtering stopwords, the most frequent words are your document's main topics. This is useful for SEO keyword density analysis.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is the analysis case-sensitive? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — "Apple" and "apple" are counted as the same word. All text is lowercased before analysis.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Remove Duplicate Lines</a>
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+      <a href="{% url 'tools:tool' 'ai' 'ai-summarizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var STOPWORDS = new Set(['a','an','the','and','or','but','in','on','at','to','for','of','with','by','from','is','it','be','as','at','this','that','its','was','are','were','been','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','not','no','nor','so','yet','both','either','neither','each','few','more','most','other','some','such','than','then','thus','also','just','all','any','been','our','their','they','there','these','those','what','which','who','how','when','where','if','up','out','about','into','after','before','over','under','again','s','t','re','ve','ll','d','m']);
+
+var lastData = [];
+var lastSort = 'count';
+
+function analyzeFreq() {
+  var text = document.getElementById('wf-input').value;
+  var ignoreCase = document.getElementById('wf-case').checked;
+  var removeStop = document.getElementById('wf-stopwords').checked;
+  var limit = parseInt(document.getElementById('wf-limit').value);
+
+  var raw = ignoreCase ? text.toLowerCase() : text;
+  var words = raw.replace(/[^a-zA-ZÀ-ɏ''-]/g,' ').split(/\s+/).filter(function(w){ return w.length > 1; });
+
+  if (removeStop) words = words.filter(function(w){ return !STOPWORDS.has(w.toLowerCase()); });
+
+  var freq = {};
+  words.forEach(function(w){ freq[w] = (freq[w]||0)+1; });
+
+  lastData = Object.entries(freq).map(function(e){ return {word:e[0],count:e[1]}; });
+  lastSort = 'count';
+  renderTable(limit);
+}
+
+function renderTable(limit) {
+  var sorted = lastData.slice();
+  if (lastSort === 'count') sorted.sort(function(a,b){ return b.count-a.count || a.word.localeCompare(b.word); });
+  else sorted.sort(function(a,b){ return a.word.localeCompare(b.word); });
+
+  var limitVal = parseInt(document.getElementById('wf-limit').value);
+  var shown = limitVal > 0 ? sorted.slice(0, limitVal) : sorted;
+  var total = sorted.reduce(function(s,r){ return s+r.count; }, 0);
+  var maxCount = shown.length > 0 ? shown[0].count : 1;
+
+  document.getElementById('wf-stats').textContent = shown.length + ' unique words shown · ' + total + ' total word occurrences';
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:.875rem;">';
+  html += '<thead><tr style="border-bottom:2px solid #e2e8f0;background:#f8fafc;"><th style="text-align:left;padding:.6rem 1rem;color:#0f172a;">#</th><th style="text-align:left;padding:.6rem 1rem;color:#0f172a;">Word</th><th style="text-align:right;padding:.6rem 1rem;color:#0f172a;">Count</th><th style="text-align:right;padding:.6rem 1rem;color:#0f172a;">%</th><th style="padding:.6rem 1rem;color:#0f172a;min-width:6rem;"></th></tr></thead><tbody>';
+
+  shown.forEach(function(row, i) {
+    var pct = (row.count / total * 100).toFixed(1);
+    var barW = (row.count / (lastSort==='count' ? shown[0].count : Math.max.apply(null, shown.map(function(r){ return r.count; }))) * 100).toFixed(0);
+    html += '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem 1rem;color:#6b7280;">' + (i+1) + '</td><td style="padding:.4rem 1rem;color:#0f172a;font-weight:600;">' + row.word + '</td><td style="padding:.4rem 1rem;text-align:right;color:#374151;">' + row.count + '</td><td style="padding:.4rem 1rem;text-align:right;color:#6b7280;">' + pct + '%</td><td style="padding:.4rem 1rem;"><div style="background:#e2e8f0;border-radius:999px;height:.4rem;"><div style="background:#6366f1;border-radius:999px;height:.4rem;width:' + barW + '%;"></div></div></td></tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('wf-table-wrap').innerHTML = html;
+  document.getElementById('wf-result').style.display = 'block';
+}
+
+function sortBy(type) {
+  lastSort = type;
+  document.getElementById('wf-sort-count').style.background = type==='count' ? '#6366f1' : '#fff';
+  document.getElementById('wf-sort-count').style.color = type==='count' ? '#fff' : '#374151';
+  document.getElementById('wf-sort-count').style.border = type==='count' ? 'none' : '1px solid #d1d5db';
+  document.getElementById('wf-sort-alpha').style.background = type==='alpha' ? '#6366f1' : '#fff';
+  document.getElementById('wf-sort-alpha').style.color = type==='alpha' ? '#fff' : '#374151';
+  document.getElementById('wf-sort-alpha').style.border = type==='alpha' ? 'none' : '1px solid #d1d5db';
+  if (lastData.length) renderTable(parseInt(document.getElementById('wf-limit').value));
+}
+
+function exportCsv() {
+  var rows = [['Word','Count','Percentage']];
+  var total = lastData.reduce(function(s,r){ return s+r.count; }, 0);
+  lastData.forEach(function(r){ rows.push([r.word, r.count, (r.count/total*100).toFixed(2)+'%']); });
+  var csv = rows.map(function(r){ return r.join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'word-frequency.csv';
+  a.click();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}JWT Decoder — Decode & Inspect JSON Web Tokens | AIUtilities{% endblock %}
+{% block description %}Decode JWT tokens and inspect the header, payload, and signature. Verify expiry, claims, and algorithm. All processing in your browser. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'jwt-decoder' %}{% endblock %}
+{% block og_title %}JWT Decoder — JSON Web Token Inspector | AIUtilities{% endblock %}
+{% block og_description %}Decode and inspect JWT header, payload, and claims. Browser-only. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'jwt-decoder' %}{% endblock %}
+{% block twitter_title %}JWT Decoder | AIUtilities{% endblock %}
+{% block twitter_description %}Decode and inspect JSON Web Tokens. Browser-only. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"JWT Decoder","description":"Decode and inspect JSON Web Token header, payload, and signature.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'jwt-decoder' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"JWT Decoder","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'jwt-decoder' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Browser-only · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">JWT Decoder</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste a JSON Web Token to decode and inspect the header, payload, and expiry. Everything runs in your browser — your token is never sent to a server.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Header & payload</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Expiry check</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Never leaves browser</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="jwt-input">JWT Token</label>
+        <textarea id="jwt-input" class="ai-tool-input" rows="4" style="font-family:monospace;font-size:.8125rem;resize:vertical;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" oninput="decodeJwt()"></textarea>
+        <div id="jwt-error" style="display:none;margin-top:.5rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      </div>
+
+      <div id="jwt-result" style="display:none;display:grid;gap:1rem;">
+        <!-- Header -->
+        <div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+            <div style="width:.75rem;height:.75rem;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div>
+            <span style="font-weight:700;color:#0f172a;font-size:.9375rem;">Header</span>
+          </div>
+          <pre id="jwt-header" style="background:#1e293b;color:#fde68a;border-radius:.5rem;padding:.75rem 1rem;font-size:.8125rem;overflow-x:auto;margin:0;"></pre>
+        </div>
+        <!-- Payload -->
+        <div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+            <div style="width:.75rem;height:.75rem;border-radius:50%;background:#6366f1;flex-shrink:0;"></div>
+            <span style="font-weight:700;color:#0f172a;font-size:.9375rem;">Payload</span>
+          </div>
+          <pre id="jwt-payload" style="background:#1e293b;color:#a5b4fc;border-radius:.5rem;padding:.75rem 1rem;font-size:.8125rem;overflow-x:auto;margin:0;"></pre>
+        </div>
+        <!-- Signature -->
+        <div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+            <div style="width:.75rem;height:.75rem;border-radius:50%;background:#22c55e;flex-shrink:0;"></div>
+            <span style="font-weight:700;color:#0f172a;font-size:.9375rem;">Signature</span>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem 1rem;font-size:.8125rem;color:#6b7280;font-family:monospace;" id="jwt-sig"></div>
+        </div>
+        <!-- Claims summary -->
+        <div id="jwt-claims" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:1rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">Common JWT Claims</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+      <thead><tr style="border-bottom:2px solid #e2e8f0;"><th style="text-align:left;padding:.6rem 1rem;color:#0f172a;font-family:monospace;">Claim</th><th style="text-align:left;padding:.6rem 1rem;color:#0f172a;">Meaning</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">sub</td><td style="padding:.5rem 1rem;color:#374151;">Subject — who the token is about (usually user ID)</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">iss</td><td style="padding:.5rem 1rem;color:#374151;">Issuer — who created and signed the token</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">aud</td><td style="padding:.5rem 1rem;color:#374151;">Audience — intended recipients of the token</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">exp</td><td style="padding:.5rem 1rem;color:#374151;">Expiry — Unix timestamp when token expires</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">iat</td><td style="padding:.5rem 1rem;color:#374151;">Issued At — Unix timestamp when token was issued</td></tr>
+        <tr><td style="padding:.5rem 1rem;font-family:monospace;color:#6366f1;">jti</td><td style="padding:.5rem 1rem;color:#374151;">JWT ID — unique identifier for this token</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the JWT Decoder</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your JWT</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy a JSON Web Token (the eyJ... string) and paste it into the input field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Inspect header and payload</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool decodes and pretty-prints the header and payload JSON. Key claims like expiry, subject, and issuer are shown in a summary.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Check expiry</strong><br><span style="font-size:.875rem;color:#6b7280;">If the token has an exp claim, the tool tells you whether it is still valid or has expired.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is it safe to paste a JWT into this tool? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the tool runs entirely in your browser. The token is never sent to a server. That said, avoid pasting live production tokens for sensitive services.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can this tool verify the signature? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — signature verification requires the secret key or public key. This tool only decodes (base64url-decodes) the header and payload; it does not validate the signature.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a JWT used for? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">JWTs are used for authentication and authorisation. A server issues a signed token; the client sends it with every request; the server verifies the signature to trust the claims inside.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does every JWT start with eyJ? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The header is a Base64url-encoded JSON object. {"alg":"HS256","typ":"JWT"} always encodes to a string starting with eyJ.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'security' 'uuid-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">UUID Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function b64urlDecode(str){
+  str=str.replace(/-/g,'+').replace(/_/g,'/');
+  while(str.length%4)str+='=';
+  try{return atob(str);}catch(e){return null;}
+}
+function decodeJwt(){
+  var token=document.getElementById('jwt-input').value.trim();
+  var errEl=document.getElementById('jwt-error');
+  errEl.style.display='none';
+  document.getElementById('jwt-result').style.display='none';
+  if(!token)return;
+  var parts=token.split('.');
+  if(parts.length!==3){errEl.textContent='Invalid JWT: must have 3 parts separated by dots.';errEl.style.display='block';return;}
+  var headerRaw=b64urlDecode(parts[0]);
+  var payloadRaw=b64urlDecode(parts[1]);
+  if(!headerRaw||!payloadRaw){errEl.textContent='Invalid JWT: could not decode base64url segments.';errEl.style.display='block';return;}
+  try{
+    var header=JSON.parse(headerRaw);
+    var payload=JSON.parse(payloadRaw);
+    document.getElementById('jwt-header').textContent=JSON.stringify(header,null,2);
+    document.getElementById('jwt-payload').textContent=JSON.stringify(payload,null,2);
+    document.getElementById('jwt-sig').textContent=parts[2];
+    var claimsHtml='<div style="font-size:.875rem;color:#374151;display:grid;gap:.4rem;">';
+    if(payload.sub)claimsHtml+='<div><strong>Subject:</strong> '+payload.sub+'</div>';
+    if(payload.iss)claimsHtml+='<div><strong>Issuer:</strong> '+payload.iss+'</div>';
+    if(payload.aud)claimsHtml+='<div><strong>Audience:</strong> '+(Array.isArray(payload.aud)?payload.aud.join(', '):payload.aud)+'</div>';
+    var now=Math.floor(Date.now()/1000);
+    if(payload.iat)claimsHtml+='<div><strong>Issued at:</strong> '+new Date(payload.iat*1000).toUTCString()+'</div>';
+    if(payload.exp){
+      var expired=now>payload.exp;
+      claimsHtml+='<div><strong>Expires:</strong> '+new Date(payload.exp*1000).toUTCString()+' — <span style="color:'+(expired?'#dc2626':'#16a34a');
+      claimsHtml+=';font-weight:700;">'+(expired?'EXPIRED':'Valid')+'</span></div>';
+    }
+    claimsHtml+='</div>';
+    document.getElementById('jwt-claims').innerHTML=claimsHtml;
+    document.getElementById('jwt-result').style.display='grid';
+  }catch(e){errEl.textContent='Error parsing JWT: '+e.message;errEl.style.display='block';}
+}
+</script>
+{% endblock %}

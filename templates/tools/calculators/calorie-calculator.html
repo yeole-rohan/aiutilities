@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Calorie Calculator — Daily Calorie Needs (TDEE) | AIUtilities{% endblock %}
+{% block description %}Calculate your daily calorie needs (TDEE) based on age, weight, height, sex, and activity level. See calorie targets for weight loss and gain. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'calorie-calculator' %}{% endblock %}
+{% block og_title %}Calorie Calculator — Daily Calorie Needs | AIUtilities{% endblock %}
+{% block og_description %}Calculate your TDEE and calorie targets for weight loss, maintenance, and gain. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'calorie-calculator' %}{% endblock %}
+{% block twitter_title %}Calorie Calculator — TDEE | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate daily calorie needs based on activity level. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Calorie Calculator","description":"Calculate daily calorie needs (TDEE) based on age, weight, height, and activity level.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'calorie-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Calorie Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'calorie-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Calorie Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate your Total Daily Energy Expenditure (TDEE) — the calories you need to maintain, lose, or gain weight based on your body and activity level.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Mifflin-St Jeor formula</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 activity levels</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Metric & imperial</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+        <button type="button" id="cal-metric-btn" onclick="switchCalUnit('metric')" class="ai-tool-btn" style="flex:1;padding:.5rem;">Metric</button>
+        <button type="button" id="cal-imperial-btn" onclick="switchCalUnit('imperial')" style="flex:1;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;padding:.5rem;cursor:pointer;">Imperial</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="cal-age">Age</label><input type="number" id="cal-age" class="ai-tool-input" placeholder="30" value="30" min="10" max="100"></div>
+        <div>
+          <label class="ai-tool-label">Sex</label>
+          <select id="cal-sex" class="ai-tool-select">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="cal-metric-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="cal-height-cm">Height (cm)</label><input type="number" id="cal-height-cm" class="ai-tool-input" placeholder="175" value="175"></div>
+        <div><label class="ai-tool-label" for="cal-weight-kg">Weight (kg)</label><input type="number" id="cal-weight-kg" class="ai-tool-input" placeholder="70" value="70"></div>
+      </div>
+      <div id="cal-imperial-fields" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="cal-height-ft">Height (ft)</label><input type="number" id="cal-height-ft" class="ai-tool-input" placeholder="5"></div>
+        <div><label class="ai-tool-label" for="cal-height-in">Height (in)</label><input type="number" id="cal-height-in" class="ai-tool-input" placeholder="9"></div>
+        <div><label class="ai-tool-label" for="cal-weight-lbs">Weight (lbs)</label><input type="number" id="cal-weight-lbs" class="ai-tool-input" placeholder="154"></div>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <label class="ai-tool-label" for="cal-activity">Activity Level</label>
+        <select id="cal-activity" class="ai-tool-select">
+          <option value="1.2">Sedentary (little to no exercise)</option>
+          <option value="1.375">Lightly active (1–3 days/week)</option>
+          <option value="1.55" selected>Moderately active (3–5 days/week)</option>
+          <option value="1.725">Very active (6–7 days/week)</option>
+          <option value="1.9">Extra active (physical job + exercise)</option>
+        </select>
+      </div>
+
+      <button type="button" onclick="calcCalories()" class="ai-tool-btn">Calculate Calories →</button>
+
+      <div id="cal-result" style="display:none;margin-top:1.5rem;">
+        <div style="display:grid;gap:.75rem;">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:700;color:#0f172a;font-size:.9375rem;">Maintain Weight</div><div style="font-size:.8125rem;color:#6b7280;">Your TDEE</div></div>
+            <div id="cal-maintain" style="font-size:1.75rem;font-weight:800;color:#6366f1;"></div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:.75rem;padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:700;color:#0f172a;font-size:.9375rem;">Mild Weight Loss</div><div style="font-size:.8125rem;color:#6b7280;">−250 cal/day (−0.5 lb/week)</div></div>
+            <div id="cal-mild" style="font-size:1.75rem;font-weight:800;color:#ef4444;"></div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:.75rem;padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:700;color:#0f172a;font-size:.9375rem;">Weight Loss</div><div style="font-size:.8125rem;color:#6b7280;">−500 cal/day (−1 lb/week)</div></div>
+            <div id="cal-loss" style="font-size:1.75rem;font-weight:800;color:#ef4444;"></div>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.75rem;padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-weight:700;color:#0f172a;font-size:.9375rem;">Weight Gain</div><div style="font-size:.8125rem;color:#6b7280;">+500 cal/day (+1 lb/week)</div></div>
+            <div id="cal-gain" style="font-size:1.75rem;font-weight:800;color:#22c55e;"></div>
+          </div>
+        </div>
+        <div style="margin-top:.75rem;padding:.75rem;background:#fffbeb;border:1px solid #fde68a;border-radius:.5rem;font-size:.8125rem;color:#92400e;">These are estimates based on the Mifflin-St Jeor equation. Consult a healthcare professional before making significant dietary changes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Calorie Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your personal data</strong><br><span style="font-size:.875rem;color:#6b7280;">Fill in your age, sex, weight, and height.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose your activity level</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick the activity multiplier that best matches your typical week.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read your TDEE targets</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool shows your BMR plus four daily calorie targets: maintenance, mild loss, loss, and gain.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is BMR? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Basal Metabolic Rate (BMR) is the number of calories your body burns at complete rest — just to maintain basic functions like breathing and circulation.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is TDEE? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Total Daily Energy Expenditure (TDEE) is your BMR multiplied by an activity factor. It represents how many calories you burn per day in real life.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What formula is used? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The Mifflin-St Jeor equation: Men = 10W + 6.25H − 5A + 5; Women = 10W + 6.25H − 5A − 161. Then multiplied by an activity factor of 1.2 to 1.9.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many calories should I cut to lose weight? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A deficit of 500 calories per day leads to roughly 0.5 kg (1 lb) per week of weight loss — a safe and sustainable pace for most people.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var calUnit='metric';
+function switchCalUnit(u){
+  calUnit=u;
+  document.getElementById('cal-metric-fields').style.display=u==='metric'?'grid':'none';
+  document.getElementById('cal-imperial-fields').style.display=u==='imperial'?'grid':'none';
+  document.getElementById('cal-metric-btn').className=u==='metric'?'ai-tool-btn':'';
+  document.getElementById('cal-metric-btn').style=u==='metric'?'flex:1;padding:.5rem;':'flex:1;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;padding:.5rem;cursor:pointer;';
+  document.getElementById('cal-imperial-btn').className=u==='imperial'?'ai-tool-btn':'';
+  document.getElementById('cal-imperial-btn').style=u==='imperial'?'flex:1;padding:.5rem;':'flex:1;background:#e2e8f0;color:#374151;border:none;border-radius:.5rem;padding:.5rem;cursor:pointer;';
+}
+function calcCalories(){
+  var age=parseInt(document.getElementById('cal-age').value)||0;
+  var sex=document.getElementById('cal-sex').value;
+  var act=parseFloat(document.getElementById('cal-activity').value);
+  var weightKg,heightCm;
+  if(calUnit==='metric'){
+    weightKg=parseFloat(document.getElementById('cal-weight-kg').value)||0;
+    heightCm=parseFloat(document.getElementById('cal-height-cm').value)||0;
+  } else {
+    var ft=parseFloat(document.getElementById('cal-height-ft').value)||0;
+    var inch=parseFloat(document.getElementById('cal-height-in').value)||0;
+    var lbs=parseFloat(document.getElementById('cal-weight-lbs').value)||0;
+    heightCm=(ft*12+inch)*2.54;
+    weightKg=lbs*0.453592;
+  }
+  if(!weightKg||!heightCm||!age)return;
+  var bmr=sex==='male'
+    ?(10*weightKg)+(6.25*heightCm)-(5*age)+5
+    :(10*weightKg)+(6.25*heightCm)-(5*age)-161;
+  var tdee=bmr*act;
+  document.getElementById('cal-maintain').textContent=Math.round(tdee)+' cal';
+  document.getElementById('cal-mild').textContent=Math.round(tdee-250)+' cal';
+  document.getElementById('cal-loss').textContent=Math.round(tdee-500)+' cal';
+  document.getElementById('cal-gain').textContent=Math.round(tdee+500)+' cal';
+  document.getElementById('cal-result').style.display='block';
+}
+</script>
+{% endblock %}

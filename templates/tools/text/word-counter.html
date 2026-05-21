@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Word Counter — Free Online Word Count Tool | AIUtilities{% endblock %}
+{% block description %}Count words, characters, sentences, paragraphs, and reading time instantly. Paste or type your text — results update in real time. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-counter' %}{% endblock %}
+{% block og_title %}Word Counter — Free Online Word Count Tool | AIUtilities{% endblock %}
+{% block og_description %}Count words, characters, sentences, and paragraphs instantly. Free real-time word counter.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-counter' %}{% endblock %}
+{% block twitter_title %}Word Counter — Free Online Word Count Tool | AIUtilities{% endblock %}
+{% block twitter_description %}Count words, characters, sentences, and paragraphs in real time. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Word Counter","description":"Count words, characters, sentences, paragraphs, and reading time instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-counter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Word Counter","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'word-counter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📝 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Word Counter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste or type your text below. Word count, character count, sentences, paragraphs, and reading time update instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Reading time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No signup</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1.25rem;">
+        <label class="ai-tool-label" for="wc-input">Your Text</label>
+        <textarea id="wc-input" class="ai-tool-input" rows="10" style="resize:vertical;font-family:inherit;" placeholder="Start typing or paste your text here…"></textarea>
+      </div>
+      <button type="button" onclick="document.getElementById('wc-input').value=''; updateWordCount();" style="background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Clear</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-top:1.25rem;">
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-words" style="font-size:2rem;font-weight:800;color:#6366f1;">0</div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Words</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-chars" style="font-size:2rem;font-weight:800;color:#6366f1;">0</div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Characters</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-chars-no-space" style="font-size:2rem;font-weight:800;color:#6366f1;">0</div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Chars (no spaces)</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-sentences" style="font-size:2rem;font-weight:800;color:#6366f1;">0</div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Sentences</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-paragraphs" style="font-size:2rem;font-weight:800;color:#6366f1;">0</div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Paragraphs</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div id="wc-read-time" style="font-size:2rem;font-weight:800;color:#6366f1;">0<span style="font-size:1rem;font-weight:600"> min</span></div>
+        <div style="font-size:.8125rem;color:#6b7280;margin-top:.25rem;">Reading Time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Word Count Guidelines</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">📧</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Email</h3><p style="font-size:.8125rem;color:#374151;">50–200 words for most business emails. Keep it scannable.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">📰</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Blog post</h3><p style="font-size:.8125rem;color:#374151;">1,500–2,500 words for SEO. Long-form: 3,000–5,000 words.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">📄</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Resume</h3><p style="font-size:.8125rem;color:#374151;">400–800 words for a one-page resume. Brevity signals clarity.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Word Counter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste or type your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Click into the text area and paste or type any content — articles, essays, emails, or social posts.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read the live stats</strong><br><span style="font-size:.875rem;color:#6b7280;">Word count, characters, sentences, paragraphs, and estimated reading time update instantly with every keystroke.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy or clear</strong><br><span style="font-size:.875rem;color:#6b7280;">Use your browser copy shortcut to grab the text, or clear the box to start fresh.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How does the word counter count words? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">It splits your text on whitespace (spaces, tabs, newlines) and counts non-empty segments. Hyphenated words like step-by-step are counted as one word.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it count characters with or without spaces? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Both — the tool shows characters with spaces and characters without spaces as separate stats.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the reading time estimate based on? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">It assumes an average reading speed of 200 words per minute, which is typical for an adult reader skimming online content.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is there a maximum text length? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No server limit — everything runs in your browser, so it handles very large documents as fast as your device allows.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+      <a href="{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Remove Duplicate Lines</a>
+      <a href="{% url 'tools:tool' 'text' 'word-frequency-analyzer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Frequency Analyzer</a>
+      <a href="{% url 'tools:tool' 'text' 'slug-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Slug Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function updateWordCount() {
+  var text = document.getElementById('wc-input').value;
+  var words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  var chars = text.length;
+  var charsNoSpace = text.replace(/\s/g, '').length;
+  var sentences = text.trim() === '' ? 0 : (text.match(/[^.!?]*[.!?]+/g) || []).length;
+  var paragraphs = text.trim() === '' ? 0 : text.split(/\n\s*\n+/).filter(function(p){ return p.trim() !== ''; }).length;
+  var readTime = Math.max(1, Math.ceil(words / 200));
+
+  document.getElementById('wc-words').textContent = words.toLocaleString();
+  document.getElementById('wc-chars').textContent = chars.toLocaleString();
+  document.getElementById('wc-chars-no-space').textContent = charsNoSpace.toLocaleString();
+  document.getElementById('wc-sentences').textContent = sentences.toLocaleString();
+  document.getElementById('wc-paragraphs').textContent = paragraphs.toLocaleString();
+  document.getElementById('wc-read-time').innerHTML = readTime + '<span style="font-size:1rem;font-weight:600"> min</span>';
+}
+document.getElementById('wc-input').addEventListener('input', updateWordCount);
+</script>
+{% endblock %}

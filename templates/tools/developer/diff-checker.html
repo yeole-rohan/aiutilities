@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Diff Checker — Compare Two Texts & Highlight Differences | AIUtilities{% endblock %}
+{% block description %}Compare two blocks of text side-by-side and see exactly what changed. Added lines highlighted in green, removed in red. Free online diff checker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'diff-checker' %}{% endblock %}
+{% block og_title %}Diff Checker — Compare Text Differences | AIUtilities{% endblock %}
+{% block og_description %}Compare two texts and highlight what changed. Added and removed lines clearly marked. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'diff-checker' %}{% endblock %}
+{% block twitter_title %}Diff Checker — Compare Two Texts | AIUtilities{% endblock %}
+{% block twitter_description %}Compare two texts and see exactly what changed. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Diff Checker","description":"Compare two blocks of text and highlight added, removed, and changed lines.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'diff-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Diff Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'diff-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Diff Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste two versions of a text and instantly see what was added, removed, or changed. Lines highlighted in green were added; red lines were removed.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Line-by-line diff</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Added & removed</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:60rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="dc-left">Original Text</label>
+          <textarea id="dc-left" class="ai-tool-input" rows="14" style="resize:vertical;font-family:monospace;font-size:.8125rem;" placeholder="Paste the original version here…"></textarea>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="dc-right">Modified Text</label>
+          <textarea id="dc-right" class="ai-tool-input" rows="14" style="resize:vertical;font-family:monospace;font-size:.8125rem;" placeholder="Paste the modified version here…"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;">
+        <button type="button" onclick="runDiff()" class="ai-tool-btn">Compare →</button>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="dc-ignore-ws" checked> Ignore leading/trailing whitespace
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="dc-ignore-case"> Ignore case
+        </label>
+      </div>
+    </div>
+
+    <div id="dc-result" style="display:none;margin-top:1.25rem;">
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;">
+        <div style="display:flex;gap:1rem;align-items:center;padding:.75rem 1rem;background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+          <span id="dc-added-count" style="font-size:.8125rem;background:#dcfce7;color:#16a34a;padding:.2rem .6rem;border-radius:999px;font-weight:600;"></span>
+          <span id="dc-removed-count" style="font-size:.8125rem;background:#fee2e2;color:#dc2626;padding:.2rem .6rem;border-radius:999px;font-weight:600;"></span>
+        </div>
+        <div id="dc-diff-output" style="font-family:monospace;font-size:.8125rem;line-height:1.8;padding:0;max-height:32rem;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Diff Checker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste the original text</strong><br><span style="font-size:.875rem;color:#6b7280;">Put the earlier version of your text in the left panel (Original).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Paste the new text</strong><br><span style="font-size:.875rem;color:#6b7280;">Put the updated version in the right panel (Changed).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Click Compare</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool shows a line-by-line diff — red lines were removed, green lines were added.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How does the diff algorithm work? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The tool uses the Longest Common Subsequence (LCS) algorithm — the same approach used by git diff — to find the smallest set of additions and deletions that transforms one text into the other.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I use it to compare code files? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — paste code from any language. The diff is purely text-based, so it works for any plain text including code, JSON, Markdown, or configuration files.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What do the colours mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Red indicates a line that was removed from the original. Green indicates a line added in the new version. White lines are unchanged.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Remove Duplicate Lines</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function lcs(a, b) {
+  var m = a.length, n = b.length;
+  var dp = [];
+  for (var i = 0; i <= m; i++) { dp[i] = []; for (var j = 0; j <= n; j++) dp[i][j] = 0; }
+  for (var i = 1; i <= m; i++) for (var j = 1; j <= n; j++) {
+    if (a[i-1] === b[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+    else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+  }
+  var res = [], i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (a[i-1] === b[j-1]) { res.unshift({type:'equal',line:a[i-1]}); i--; j--; }
+    else if (dp[i-1][j] > dp[i][j-1]) { res.unshift({type:'removed',line:a[i-1]}); i--; }
+    else { res.unshift({type:'added',line:b[j-1]}); j--; }
+  }
+  while (i > 0) { res.unshift({type:'removed',line:a[i-1]}); i--; }
+  while (j > 0) { res.unshift({type:'added',line:b[j-1]}); j--; }
+  return res;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function runDiff() {
+  var ignoreWs = document.getElementById('dc-ignore-ws').checked;
+  var ignoreCase = document.getElementById('dc-ignore-case').checked;
+
+  var leftLines = document.getElementById('dc-left').value.split('\n');
+  var rightLines = document.getElementById('dc-right').value.split('\n');
+
+  function norm(s) { var r = ignoreWs ? s.trim() : s; return ignoreCase ? r.toLowerCase() : r; }
+
+  var diff = lcs(leftLines.map(norm), rightLines.map(norm));
+  var leftIdx = 0, rightIdx = 0;
+  var html = '', added = 0, removed = 0;
+
+  for (var i = 0; i < diff.length; i++) {
+    var d = diff[i];
+    if (d.type === 'equal') {
+      html += '<div style="padding:.15rem 1rem;color:#374151;">' + esc(leftLines[leftIdx] || '') + '</div>';
+      leftIdx++; rightIdx++;
+    } else if (d.type === 'removed') {
+      html += '<div style="padding:.15rem 1rem;background:#fee2e2;color:#dc2626;"><span style="user-select:none;margin-right:.5rem;opacity:.6;">-</span>' + esc(leftLines[leftIdx] || '') + '</div>';
+      leftIdx++; removed++;
+    } else {
+      html += '<div style="padding:.15rem 1rem;background:#dcfce7;color:#16a34a;"><span style="user-select:none;margin-right:.5rem;opacity:.6;">+</span>' + esc(rightLines[rightIdx] || '') + '</div>';
+      rightIdx++; added++;
+    }
+  }
+
+  document.getElementById('dc-diff-output').innerHTML = html || '<div style="padding:1rem;color:#6b7280;">No differences found.</div>';
+  document.getElementById('dc-added-count').textContent = '+' + added + ' added';
+  document.getElementById('dc-removed-count').textContent = '-' + removed + ' removed';
+  document.getElementById('dc-result').style.display = 'block';
+}
+</script>
+{% endblock %}

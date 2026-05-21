@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}BAC Calculator — Blood Alcohol Content Estimator | AIUtilities{% endblock %}
+{% block description %}Estimate your Blood Alcohol Content (BAC) based on drinks, weight, sex, and time. Educational tool — never drink and drive. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'bac-calculator' %}{% endblock %}
+{% block og_title %}BAC Calculator — Blood Alcohol Content Estimator | AIUtilities{% endblock %}
+{% block og_description %}Estimate BAC from drinks, weight, and time. Educational only. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'bac-calculator' %}{% endblock %}
+{% block twitter_title %}BAC Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Estimate blood alcohol content. Educational tool. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"BAC Calculator","description":"Estimate Blood Alcohol Content based on drinks consumed, weight, sex, and elapsed time.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'bac-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"BAC Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'bac-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Educational · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">BAC Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Estimate your Blood Alcohol Content based on drinks consumed, body weight, sex, and time elapsed. Uses the Widmark formula. For educational purposes only.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Widmark formula</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hours elapsed</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Legal limits shown</span>
+    </div>
+  </div>
+</section>
+
+<div style="background:#fef2f2;border-bottom:2px solid #fca5a5;padding:.75rem 1rem;text-align:center;font-size:.875rem;color:#991b1b;font-weight:600;">
+  ⚠️ This tool is for educational purposes only. BAC estimates vary by individual. Never drink and drive.
+</div>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label">Sex</label>
+          <select id="bac-sex" class="ai-tool-select">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div><label class="ai-tool-label" for="bac-weight">Weight (kg)</label><input type="number" id="bac-weight" class="ai-tool-input" placeholder="70" value="70" min="30" max="300"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div><label class="ai-tool-label" for="bac-drinks">Drinks</label><input type="number" id="bac-drinks" class="ai-tool-input" placeholder="3" value="3" min="0" max="30"></div>
+        <div>
+          <label class="ai-tool-label" for="bac-type">Drink Type</label>
+          <select id="bac-type" class="ai-tool-select">
+            <option value="14">Beer (12oz, 5%)</option>
+            <option value="14">Wine (5oz, 12%)</option>
+            <option value="14">Shot (1.5oz, 40%)</option>
+            <option value="14">Standard drink</option>
+          </select>
+        </div>
+        <div><label class="ai-tool-label" for="bac-hours">Hours elapsed</label><input type="number" id="bac-hours" class="ai-tool-input" placeholder="2" value="2" min="0" step="0.5"></div>
+      </div>
+      <button type="button" onclick="calcBAC()" class="ai-tool-btn">Estimate BAC →</button>
+
+      <div id="bac-result" style="display:none;margin-top:1.5rem;">
+        <div id="bac-meter" style="text-align:center;padding:1.5rem;border-radius:.75rem;margin-bottom:1rem;">
+          <div id="bac-value" style="font-size:3rem;font-weight:800;"></div>
+          <div id="bac-label" style="font-size:1.125rem;font-weight:700;margin-top:.25rem;"></div>
+        </div>
+        <div style="display:grid;gap:.5rem;font-size:.8125rem;">
+          <div style="display:flex;justify-content:space-between;padding:.5rem .75rem;background:#f8fafc;border-radius:.375rem;"><span style="color:#6b7280;">US legal limit (driving)</span><span style="font-weight:700;color:#0f172a;">0.08%</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem .75rem;background:#f8fafc;border-radius:.375rem;"><span style="color:#6b7280;">UK legal limit</span><span style="font-weight:700;color:#0f172a;">0.08% (England) · 0.05% (Scotland)</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem .75rem;background:#f8fafc;border-radius:.375rem;"><span style="color:#6b7280;">Approx. time to sober</span><span style="font-weight:700;color:#0f172a;" id="bac-time-sober"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the BAC Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your body weight and sex</strong><br><span style="font-size:.875rem;color:#6b7280;">Select male or female and enter your weight. The calculation uses different water percentages for each.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add your drinks</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the number of standard drinks consumed and the number of hours since you started drinking.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the estimate</strong><br><span style="font-size:.875rem;color:#6b7280;">Your estimated BAC, impairment level, and approximate time to sobriety are shown.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a standard drink? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">In the US, one standard drink contains 14 grams of pure alcohol — equivalent to 12 oz regular beer (5%), 5 oz wine (12%), or 1.5 oz spirits (40%).</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What formula is used? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The Widmark formula: BAC = (alcohol in grams / (body weight in grams × r)) × 100 − 0.015 × hours. r = 0.73 for males, 0.66 for females.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the legal BAC limit for driving? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">In the US and most of Europe the limit is 0.08% BAC. Some countries use 0.05%. Commercial drivers and under-21s face stricter limits.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'calorie-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Calorie Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function calcBAC(){
+  var sex=document.getElementById('bac-sex').value;
+  var weight=parseFloat(document.getElementById('bac-weight').value)||70;
+  var drinks=parseFloat(document.getElementById('bac-drinks').value)||0;
+  var hours=parseFloat(document.getElementById('bac-hours').value)||0;
+  var r=sex==='male'?0.73:0.66;
+  var alcoholGrams=drinks*14;
+  var weightG=weight*1000;
+  var rawBac=(alcoholGrams/(weightG*r))*100;
+  var bac=Math.max(0,rawBac-(0.015*hours));
+  var el=document.getElementById('bac-meter');
+  var valEl=document.getElementById('bac-value');
+  var lblEl=document.getElementById('bac-label');
+  valEl.textContent=bac.toFixed(3)+'%';
+  var cat,bg,color;
+  if(bac<0.02){cat='Sober / Safe to drive';bg='#f0fdf4';color='#16a34a';}
+  else if(bac<0.05){cat='Mild euphoria';bg='#fffbeb';color='#d97706';}
+  else if(bac<0.08){cat='Impaired — do not drive';bg='#fef9c3';color='#ca8a04';}
+  else if(bac<0.15){cat='Over legal limit';bg='#fef2f2';color='#dc2626';}
+  else{cat='Dangerous — severe impairment';bg='#fef2f2';color='#991b1b';}
+  el.style.background=bg;
+  lblEl.textContent=cat;
+  lblEl.style.color=color;
+  valEl.style.color=color;
+  var hoursToSober=bac/0.015;
+  document.getElementById('bac-time-sober').textContent=bac<=0?'Already sober':hoursToSober.toFixed(1)+' hours';
+  document.getElementById('bac-result').style.display='block';
+}
+</script>
+{% endblock %}

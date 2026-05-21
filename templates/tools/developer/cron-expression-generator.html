@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cron Expression Generator — Build Cron Jobs Visually | AIUtilities{% endblock %}
+{% block description %}Generate cron expressions with a visual builder. Set minute, hour, day, month, and weekday fields. See next run times instantly. Free online cron job generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'cron-expression-generator' %}{% endblock %}
+{% block og_title %}Cron Expression Generator | AIUtilities{% endblock %}
+{% block og_description %}Build cron expressions visually. Preview next run times. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'cron-expression-generator' %}{% endblock %}
+{% block twitter_title %}Cron Expression Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate cron expressions visually. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Cron Expression Generator","description":"Build cron expressions visually and preview next run times.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'cron-expression-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Cron Expression Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'cron-expression-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Visual builder · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Cron Expression Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Build cron expressions visually or type them directly. See the human-readable description and next 5 scheduled run times.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Visual field builder</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Next run preview</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Common presets</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+
+      <!-- Presets -->
+      <div style="margin-bottom:1.5rem;">
+        <div class="ai-tool-label" style="margin-bottom:.5rem;">Quick Presets</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+          <button class="cron-preset" onclick="applyPreset('* * * * *')">Every minute</button>
+          <button class="cron-preset" onclick="applyPreset('0 * * * *')">Every hour</button>
+          <button class="cron-preset" onclick="applyPreset('0 0 * * *')">Daily midnight</button>
+          <button class="cron-preset" onclick="applyPreset('0 9 * * *')">Daily 9 AM</button>
+          <button class="cron-preset" onclick="applyPreset('0 0 * * 0')">Weekly (Sun)</button>
+          <button class="cron-preset" onclick="applyPreset('0 0 1 * *')">Monthly (1st)</button>
+          <button class="cron-preset" onclick="applyPreset('0 9 * * 1-5')">Weekdays 9 AM</button>
+          <button class="cron-preset" onclick="applyPreset('*/5 * * * *')">Every 5 min</button>
+          <button class="cron-preset" onclick="applyPreset('*/15 * * * *')">Every 15 min</button>
+          <button class="cron-preset" onclick="applyPreset('0 0 1 1 *')">Yearly (Jan 1)</button>
+        </div>
+      </div>
+
+      <!-- Expression input -->
+      <div style="margin-bottom:1.5rem;">
+        <label class="ai-tool-label" for="cron-expr">Cron Expression</label>
+        <div style="display:flex;gap:.75rem;align-items:center;">
+          <input type="text" id="cron-expr" class="ai-tool-input" value="0 9 * * 1-5" style="font-family:monospace;font-size:1.125rem;font-weight:700;letter-spacing:.1em;" oninput="parseCronInput()">
+          <button onclick="copyExpr()" id="cron-copy-btn" style="white-space:nowrap;padding:.5rem 1rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;">Copy</button>
+        </div>
+        <div id="cron-error" style="display:none;margin-top:.5rem;padding:.4rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      </div>
+
+      <!-- Field labels -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.5rem;">
+        <div>
+          <label class="ai-tool-label" style="font-size:.75rem;margin-bottom:.3rem;" for="f-min">Minute</label>
+          <input type="text" id="f-min" class="ai-tool-input" value="0" style="font-family:monospace;text-align:center;" oninput="rebuildExpr()">
+          <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;text-align:center;">0–59</div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.75rem;margin-bottom:.3rem;" for="f-hour">Hour</label>
+          <input type="text" id="f-hour" class="ai-tool-input" value="9" style="font-family:monospace;text-align:center;" oninput="rebuildExpr()">
+          <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;text-align:center;">0–23</div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.75rem;margin-bottom:.3rem;" for="f-dom">Day (month)</label>
+          <input type="text" id="f-dom" class="ai-tool-input" value="*" style="font-family:monospace;text-align:center;" oninput="rebuildExpr()">
+          <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;text-align:center;">1–31</div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.75rem;margin-bottom:.3rem;" for="f-month">Month</label>
+          <input type="text" id="f-month" class="ai-tool-input" value="*" style="font-family:monospace;text-align:center;" oninput="rebuildExpr()">
+          <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;text-align:center;">1–12</div>
+        </div>
+        <div>
+          <label class="ai-tool-label" style="font-size:.75rem;margin-bottom:.3rem;" for="f-dow">Day (week)</label>
+          <input type="text" id="f-dow" class="ai-tool-input" value="1-5" style="font-family:monospace;text-align:center;" oninput="rebuildExpr()">
+          <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;text-align:center;">0–6 (Sun=0)</div>
+        </div>
+      </div>
+
+      <!-- Description + next runs -->
+      <div id="cron-output" style="display:none;">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:.75rem 1rem;margin-bottom:1rem;">
+          <div style="font-size:.8125rem;color:#374151;"><strong>Meaning:</strong> <span id="cron-desc" style="color:#0f172a;font-weight:600;"></span></div>
+        </div>
+        <div>
+          <div style="font-size:.875rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Next 5 run times (local time)</div>
+          <div id="cron-runs" style="display:grid;gap:.3rem;font-size:.875rem;font-family:monospace;color:#374151;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference table -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Syntax Reference</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+        <thead><tr style="border-bottom:2px solid #e2e8f0;"><th style="text-align:left;padding:.4rem .75rem;color:#0f172a;font-family:monospace;">Value</th><th style="text-align:left;padding:.4rem .75rem;color:#0f172a;">Meaning</th><th style="text-align:left;padding:.4rem .75rem;color:#0f172a;">Example</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">*</td><td style="padding:.4rem .75rem;color:#374151;">Every value</td><td style="padding:.4rem .75rem;font-family:monospace;color:#6b7280;">* (every minute)</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">*/n</td><td style="padding:.4rem .75rem;color:#374151;">Every n units</td><td style="padding:.4rem .75rem;font-family:monospace;color:#6b7280;">*/5 (every 5 min)</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">a-b</td><td style="padding:.4rem .75rem;color:#374151;">Range</td><td style="padding:.4rem .75rem;font-family:monospace;color:#6b7280;">1-5 (Mon–Fri)</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">a,b,c</td><td style="padding:.4rem .75rem;color:#374151;">List</td><td style="padding:.4rem .75rem;font-family:monospace;color:#6b7280;">0,6 (Sun & Sat)</td></tr>
+          <tr><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">n</td><td style="padding:.4rem .75rem;color:#374151;">Exact value</td><td style="padding:.4rem .75rem;font-family:monospace;color:#6b7280;">30 (at :30)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Cron Expression Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Use a preset or type an expression</strong><br><span style="font-size:.875rem;color:#6b7280;">Click a quick preset (e.g. "Daily 9 AM") or type your own 5-field cron expression directly.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Edit individual fields</strong><br><span style="font-size:.875rem;color:#6b7280;">Fine-tune Minute, Hour, Day (month), Month, and Day (week) in the individual input boxes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read description and next runs</strong><br><span style="font-size:.875rem;color:#6b7280;">The human-readable meaning and next 5 scheduled run times (in your local timezone) appear automatically.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a cron job? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A cron job is a scheduled task that runs automatically at specified times on a Unix-like server. Cron expressions define the schedule using 5 fields: minute, hour, day-of-month, month, and day-of-week.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does */5 mean in a cron field? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">*/5 means "every 5 units". In the minute field, */5 means the job runs at minutes 0, 5, 10, 15 ... 55 — i.e. every 5 minutes.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can both day-of-month and day-of-week be set? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">When both are specified (not *), most cron implementations run the job when either condition is true. To avoid confusion, set only one and leave the other as *.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What timezone does cron use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">By default, cron uses the server's local timezone. This tool shows next run times in your browser's local timezone.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'regex-tester' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Regex Tester</a>
+      <a href="{% url 'tools:tool' 'developer' 'jwt-decoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JWT Decoder</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.cron-preset{padding:.3rem .75rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.cron-preset:hover{background:#f1f5f9;border-color:#6366f1;color:#6366f1;}
+</style>
+<script>
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function applyPreset(expr){
+  document.getElementById('cron-expr').value=expr;
+  parseCronInput();
+}
+function rebuildExpr(){
+  var min=document.getElementById('f-min').value.trim()||'*';
+  var hour=document.getElementById('f-hour').value.trim()||'*';
+  var dom=document.getElementById('f-dom').value.trim()||'*';
+  var month=document.getElementById('f-month').value.trim()||'*';
+  var dow=document.getElementById('f-dow').value.trim()||'*';
+  var expr=min+' '+hour+' '+dom+' '+month+' '+dow;
+  document.getElementById('cron-expr').value=expr;
+  renderOutput(min,hour,dom,month,dow);
+}
+function parseCronInput(){
+  var parts=document.getElementById('cron-expr').value.trim().split(/\s+/);
+  var errEl=document.getElementById('cron-error');
+  errEl.style.display='none';
+  if(parts.length!==5){errEl.textContent='Cron expression must have exactly 5 fields: minute hour dom month dow';errEl.style.display='block';document.getElementById('cron-output').style.display='none';return;}
+  document.getElementById('f-min').value=parts[0];
+  document.getElementById('f-hour').value=parts[1];
+  document.getElementById('f-dom').value=parts[2];
+  document.getElementById('f-month').value=parts[3];
+  document.getElementById('f-dow').value=parts[4];
+  renderOutput(parts[0],parts[1],parts[2],parts[3],parts[4]);
+}
+function fieldDesc(val,unit,names){
+  if(val==='*')return 'every '+unit;
+  if(/^\*\/(\d+)$/.test(val))return 'every '+val.match(/\*\/(\d+)/)[1]+' '+unit+'s';
+  if(/^(\d+)-(\d+)$/.test(val)){
+    var m=val.match(/^(\d+)-(\d+)$/);
+    if(names)return names[+m[1]]+' to '+names[+m[2]];
+    return m[1]+' to '+m[2];
+  }
+  if(/,/.test(val)){
+    var parts=val.split(',');
+    if(names)return parts.map(function(p){return names[+p]||p;}).join(', ');
+    return val;
+  }
+  if(/^\d+$/.test(val)){if(names)return names[+val]||val;return 'at '+val;}
+  return val;
+}
+function describe(min,hour,dom,month,dow){
+  var parts=[];
+  if(min==='*'&&hour==='*')parts.push('every minute');
+  else if(min==='*')parts.push('every minute of hour '+hour);
+  else if(/^\*\/\d+$/.test(min)&&hour==='*')parts.push(fieldDesc(min,'minute'));
+  else parts.push('at '+fieldDesc(min,'minute')+' of hour '+fieldDesc(hour,'hour'));
+  if(dom!=='*')parts.push('on day '+fieldDesc(dom,'day'));
+  if(month!=='*')parts.push('in '+fieldDesc(month,'month',MONTHS));
+  if(dow!=='*')parts.push('on '+fieldDesc(dow,'day',DAYS));
+  return parts.join(', ');
+}
+
+function parseField(val,min,max){
+  var result=[];
+  if(val==='*'){for(var i=min;i<=max;i++)result.push(i);return result;}
+  var parts=val.split(',');
+  for(var pi=0;pi<parts.length;pi++){
+    var p=parts[pi];
+    if(/^\d+$/.test(p)){var n=+p;if(n>=min&&n<=max)result.push(n);}
+    else if(/^\*\/(\d+)$/.test(p)){var step=+p.match(/\*\/(\d+)/)[1];for(var i=min;i<=max;i+=step)result.push(i);}
+    else if(/^(\d+)-(\d+)$/.test(p)){var m=p.match(/^(\d+)-(\d+)$/);for(var i=+m[1];i<=+m[2];i++)if(i>=min&&i<=max)result.push(i);}
+    else if(/^(\d+)-(\d+)\/(\d+)$/.test(p)){var m=p.match(/^(\d+)-(\d+)\/(\d+)$/);for(var i=+m[1];i<=+m[2];i+=+m[3])if(i>=min&&i<=max)result.push(i);}
+  }
+  result.sort(function(a,b){return a-b;});
+  var unique=[];for(var i=0;i<result.length;i++)if(!i||result[i]!==result[i-1])unique.push(result[i]);
+  return unique;
+}
+
+function nextRuns(min,hour,dom,month,dow,count){
+  try{
+    var mins=parseField(min,0,59);
+    var hours=parseField(hour,0,23);
+    var doms=parseField(dom,1,31);
+    var months=parseField(month,1,12);
+    var dows=parseField(dow,0,6);
+    if(!mins.length||!hours.length||!doms.length||!months.length||!dows.length)return[];
+    var runs=[];
+    var d=new Date();
+    d.setSeconds(0,0);
+    d.setMinutes(d.getMinutes()+1);
+    var limit=d.getTime()+1000*60*60*24*366;
+    while(runs.length<count&&d.getTime()<limit){
+      var mo=d.getMonth()+1;
+      var dy=d.getDate();
+      var hr=d.getHours();
+      var mi=d.getMinutes();
+      var dw=d.getDay();
+      if(months.indexOf(mo)!==-1&&doms.indexOf(dy)!==-1&&dows.indexOf(dw)!==-1&&hours.indexOf(hr)!==-1&&mins.indexOf(mi)!==-1){
+        runs.push(new Date(d));
+      }
+      d.setMinutes(d.getMinutes()+1);
+    }
+    return runs;
+  }catch(e){return[];}
+}
+
+function renderOutput(min,hour,dom,month,dow){
+  document.getElementById('cron-output').style.display='none';
+  var errEl=document.getElementById('cron-error');
+  try{
+    parseField(min,0,59);parseField(hour,0,23);parseField(dom,1,31);parseField(month,1,12);parseField(dow,0,6);
+  }catch(e){errEl.textContent='Invalid field value.';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  document.getElementById('cron-desc').textContent=describe(min,hour,dom,month,dow);
+  var runs=nextRuns(min,hour,dom,month,dow,5);
+  var html=runs.length?runs.map(function(r){return '<div style="padding:.3rem .6rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.375rem;">'+r.toLocaleString()+'</div>';}).join(''):'<div style="color:#9ca3af;">Could not compute next runs (check field values)</div>';
+  document.getElementById('cron-runs').innerHTML=html;
+  document.getElementById('cron-output').style.display='block';
+}
+function copyExpr(){
+  navigator.clipboard.writeText(document.getElementById('cron-expr').value).then(function(){
+    var btn=document.getElementById('cron-copy-btn');
+    btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);
+  });
+}
+parseCronInput();
+</script>
+{% endblock %}

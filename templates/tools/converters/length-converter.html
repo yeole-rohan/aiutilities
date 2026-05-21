@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Length Converter — Meters, Feet, Inches, km, Miles | AIUtilities{% endblock %}
+{% block description %}Convert between meters, feet, inches, centimeters, kilometers, miles, and yards instantly. Type a value in any field to see all conversions. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'length-converter' %}{% endblock %}
+{% block og_title %}Length Converter — m, ft, in, km, miles | AIUtilities{% endblock %}
+{% block og_description %}Convert length units instantly — meters, feet, inches, km, miles. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'length-converter' %}{% endblock %}
+{% block twitter_title %}Length Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert meters, feet, inches, km, miles instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Length Converter","description":"Convert between meters, feet, inches, centimeters, kilometers, and miles instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'length-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Length Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'length-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Length Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between all common length units instantly. Type a value in any field and all others update in real time.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 8 units</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1rem;" id="lc-fields">
+        <!-- fields injected by JS -->
+      </div>
+      <button type="button" onclick="resetLength()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">Quick Reference</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+      <thead><tr style="border-bottom:2px solid #e2e8f0;"><th style="text-align:left;padding:.75rem;color:#0f172a;">From → To</th><th style="text-align:right;padding:.75rem;color:#0f172a;">Multiply by</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Inches → Centimeters</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 2.54</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Feet → Meters</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 0.3048</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Miles → Kilometers</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 1.60934</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Kilometers → Miles</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 0.62137</td></tr>
+        <tr><td style="padding:.75rem;color:#374151;">Yards → Meters</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 0.9144</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Length Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Type a value in any unit</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter a number in the unit you know — metres, feet, inches, miles, or any other — and all fields update instantly.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read the conversions</strong><br><span style="font-size:.875rem;color:#6b7280;">All units are shown simultaneously so you can compare values across metric and imperial systems at a glance.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many centimetres in an inch? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Exactly 2.54 cm per inch. So 1 foot = 30.48 cm, and 1 metre = 39.37 inches.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many kilometres in a mile? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 mile = 1.60934 km. Conversely, 1 km is approximately 0.621 miles.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a nautical mile? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A nautical mile (1852 m) is used in aviation and maritime navigation. It is based on one minute of arc of latitude along the Earth's surface.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'weight-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Weight Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'temperature-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Temperature Converter</a>
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* All factors relative to 1 meter */
+var UNITS = [
+  {id:'lc-mm', label:'Millimeters (mm)', factor:1000},
+  {id:'lc-cm', label:'Centimeters (cm)', factor:100},
+  {id:'lc-m',  label:'Meters (m)',        factor:1},
+  {id:'lc-km', label:'Kilometers (km)',   factor:0.001},
+  {id:'lc-in', label:'Inches (in)',       factor:39.3701},
+  {id:'lc-ft', label:'Feet (ft)',         factor:3.28084},
+  {id:'lc-yd', label:'Yards (yd)',        factor:1.09361},
+  {id:'lc-mi', label:'Miles (mi)',        factor:0.000621371},
+];
+
+var updating = false;
+var container = document.getElementById('lc-fields');
+
+UNITS.forEach(function(u) {
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<label class="ai-tool-label" for="'+u.id+'" style="font-size:.875rem;">'+u.label+'</label><input type="number" id="'+u.id+'" class="ai-tool-input" step="any" placeholder="0" oninput="convertLength(\''+u.id+'\')">';
+  container.appendChild(wrap);
+});
+
+function convertLength(fromId) {
+  if (updating) return;
+  updating = true;
+  var fromUnit = UNITS.find(function(u){ return u.id === fromId; });
+  var val = parseFloat(document.getElementById(fromId).value);
+  if (isNaN(val)) { updating = false; return; }
+  var meters = val / fromUnit.factor;
+  UNITS.forEach(function(u) {
+    if (u.id !== fromId) {
+      var converted = meters * u.factor;
+      var rounded = parseFloat(converted.toPrecision(8));
+      document.getElementById(u.id).value = rounded;
+    }
+  });
+  updating = false;
+}
+
+function resetLength() {
+  UNITS.forEach(function(u){ document.getElementById(u.id).value = ''; });
+}
+</script>
+{% endblock %}

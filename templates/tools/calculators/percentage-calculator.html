@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Percentage Calculator — Free Online % Calculator | AIUtilities{% endblock %}
+{% block description %}Calculate percentages instantly. Find what % of a number, percentage change, percentage difference, and more. Free online percentage calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'percentage-calculator' %}{% endblock %}
+{% block og_title %}Percentage Calculator — Free Online % Calculator | AIUtilities{% endblock %}
+{% block og_description %}Calculate percentages instantly — what % of X, % change, % difference. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'percentage-calculator' %}{% endblock %}
+{% block twitter_title %}Percentage Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate percentages instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Percentage Calculator","description":"Calculate percentages, percentage change, and percentage difference instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'percentage-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Percentage Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'percentage-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Percentage Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Three calculators in one: find a percentage of a number, calculate percentage change, or find what percentage one number is of another.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ % of a number</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ % change</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ X is what % of Y</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;gap:1.25rem;">
+
+    <!-- Calculator 1 -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">What is X% of Y?</h2>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto;gap:.75rem;align-items:center;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="pc1-pct">Percentage (%)</label><input type="number" id="pc1-pct" class="ai-tool-input" placeholder="25" oninput="calcPc1()"></div>
+        <span style="padding-top:1.5rem;color:#6b7280;font-weight:600;">of</span>
+        <div><label class="ai-tool-label" for="pc1-num">Number</label><input type="number" id="pc1-num" class="ai-tool-input" placeholder="200" oninput="calcPc1()"></div>
+        <span style="padding-top:1.5rem;color:#6b7280;font-weight:600;">=</span>
+      </div>
+      <div id="pc1-result" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:.75rem 1rem;display:none;">
+        <span style="font-size:1.25rem;font-weight:800;color:#6366f1;" id="pc1-value"></span>
+      </div>
+    </div>
+
+    <!-- Calculator 2 -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Percentage Change (from A to B)</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="pc2-from">From</label><input type="number" id="pc2-from" class="ai-tool-input" placeholder="80" oninput="calcPc2()"></div>
+        <div><label class="ai-tool-label" for="pc2-to">To</label><input type="number" id="pc2-to" class="ai-tool-input" placeholder="100" oninput="calcPc2()"></div>
+      </div>
+      <div id="pc2-result" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:.75rem 1rem;display:none;">
+        <span style="font-size:1.25rem;font-weight:800;color:#6366f1;" id="pc2-value"></span>
+      </div>
+    </div>
+
+    <!-- Calculator 3 -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">X is what % of Y?</h2>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.75rem;align-items:center;margin-bottom:1rem;">
+        <div><label class="ai-tool-label" for="pc3-x">X</label><input type="number" id="pc3-x" class="ai-tool-input" placeholder="30" oninput="calcPc3()"></div>
+        <span style="padding-top:1.5rem;color:#6b7280;font-weight:600;">of</span>
+        <div><label class="ai-tool-label" for="pc3-y">Y</label><input type="number" id="pc3-y" class="ai-tool-input" placeholder="150" oninput="calcPc3()"></div>
+      </div>
+      <div id="pc3-result" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.5rem;padding:.75rem 1rem;display:none;">
+        <span style="font-size:1.25rem;font-weight:800;color:#6366f1;" id="pc3-value"></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Percentage Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose a calculation type</strong><br><span style="font-size:.875rem;color:#6b7280;">Three modes: (1) X% of Y, (2) percentage change from A to B, (3) X is what % of Y.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Fill in the known values</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the numbers in the input fields for your chosen mode.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the result instantly</strong><br><span style="font-size:.875rem;color:#6b7280;">The answer updates in real time as you type.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I calculate a percentage increase? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use mode 2 (Percentage Change): enter the original value as A and the new value as B. A positive result is an increase; negative means a decrease.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is X% of Y? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This is the most common calculation — e.g. "What is 15% of 200?" equals 30. Use mode 1 for this.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I find what percentage X is of Y? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use mode 3: the result is (X / Y) × 100. For example, 30 is 15% of 200.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'tip-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tip Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function calcPc1() {
+  var pct = parseFloat(document.getElementById('pc1-pct').value);
+  var num = parseFloat(document.getElementById('pc1-num').value);
+  if (isNaN(pct) || isNaN(num)) { document.getElementById('pc1-result').style.display = 'none'; return; }
+  var res = (pct / 100) * num;
+  document.getElementById('pc1-value').textContent = pct + '% of ' + num + ' = ' + parseFloat(res.toFixed(6));
+  document.getElementById('pc1-result').style.display = 'block';
+}
+function calcPc2() {
+  var from = parseFloat(document.getElementById('pc2-from').value);
+  var to = parseFloat(document.getElementById('pc2-to').value);
+  if (isNaN(from) || isNaN(to) || from === 0) { document.getElementById('pc2-result').style.display = 'none'; return; }
+  var change = ((to - from) / Math.abs(from)) * 100;
+  var dir = change >= 0 ? 'increase' : 'decrease';
+  document.getElementById('pc2-value').textContent = Math.abs(change).toFixed(2) + '% ' + dir + ' (from ' + from + ' to ' + to + ')';
+  document.getElementById('pc2-result').style.display = 'block';
+}
+function calcPc3() {
+  var x = parseFloat(document.getElementById('pc3-x').value);
+  var y = parseFloat(document.getElementById('pc3-y').value);
+  if (isNaN(x) || isNaN(y) || y === 0) { document.getElementById('pc3-result').style.display = 'none'; return; }
+  var pct = (x / y) * 100;
+  document.getElementById('pc3-value').textContent = x + ' is ' + pct.toFixed(4) + '% of ' + y;
+  document.getElementById('pc3-result').style.display = 'block';
+}
+</script>
+{% endblock %}

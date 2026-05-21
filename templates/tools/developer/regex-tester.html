@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Regex Tester — Test Regular Expressions Live | AIUtilities{% endblock %}
+{% block description %}Test and debug regular expressions live. See matches highlighted in real time. Supports flags (i, g, m). Free online regex tester.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'regex-tester' %}{% endblock %}
+{% block og_title %}Regex Tester — Live Regular Expression Tool | AIUtilities{% endblock %}
+{% block og_description %}Test regular expressions live with real-time match highlighting. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'regex-tester' %}{% endblock %}
+{% block twitter_title %}Regex Tester | AIUtilities{% endblock %}
+{% block twitter_description %}Test regular expressions live. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Regex Tester","description":"Test and debug regular expressions live with real-time match highlighting.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'regex-tester' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Regex Tester","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'regex-tester' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Regex Tester</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Test regular expressions against any text in real time. See matches highlighted, view captured groups, and count matches instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Live match highlighting</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Groups & flags</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1rem;">
+        <div style="flex:1;">
+          <label class="ai-tool-label" for="rx-pattern">Regular Expression</label>
+          <div style="display:flex;align-items:center;border:1px solid #d1d5db;border-radius:.5rem;overflow:hidden;background:#fff;">
+            <span style="padding:.65rem .75rem;color:#6b7280;font-family:monospace;font-size:1rem;border-right:1px solid #e2e8f0;">/</span>
+            <input type="text" id="rx-pattern" style="flex:1;border:none;outline:none;padding:.65rem .5rem;font-family:monospace;font-size:.9375rem;" placeholder="[a-z]+" oninput="runRegex()">
+            <span style="padding:.65rem .75rem;color:#6b7280;font-family:monospace;font-size:1rem;border-left:1px solid #e2e8f0;">/</span>
+            <div style="display:flex;gap:.25rem;padding:.4rem .5rem;border-left:1px solid #e2e8f0;">
+              <label style="cursor:pointer;font-size:.75rem;font-family:monospace;color:#374151;" title="Case-insensitive"><input type="checkbox" id="rx-i" onchange="runRegex()"> i</label>
+              <label style="cursor:pointer;font-size:.75rem;font-family:monospace;color:#374151;" title="Global (all matches)"><input type="checkbox" id="rx-g" checked onchange="runRegex()"> g</label>
+              <label style="cursor:pointer;font-size:.75rem;font-family:monospace;color:#374151;" title="Multiline"><input type="checkbox" id="rx-m" onchange="runRegex()"> m</label>
+            </div>
+          </div>
+          <div id="rx-error" style="display:none;margin-top:.4rem;font-size:.8125rem;color:#dc2626;"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <label class="ai-tool-label" style="margin:0;">Test String</label>
+          <span id="rx-count" style="font-size:.8125rem;font-weight:600;color:#6366f1;"></span>
+        </div>
+        <div style="position:relative;">
+          <textarea id="rx-text" class="ai-tool-input" rows="6" style="resize:vertical;font-family:monospace;font-size:.875rem;" placeholder="Paste your test text here…" oninput="runRegex()"></textarea>
+        </div>
+      </div>
+
+      <div id="rx-result" style="display:none;">
+        <div style="margin-bottom:.75rem;">
+          <label class="ai-tool-label">Highlighted Matches</label>
+          <div id="rx-highlighted" style="background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem 1rem;font-family:monospace;font-size:.875rem;line-height:1.8;white-space:pre-wrap;max-height:12rem;overflow-y:auto;"></div>
+        </div>
+        <div id="rx-groups-wrap" style="display:none;">
+          <label class="ai-tool-label">Captured Groups</label>
+          <div id="rx-groups" style="display:grid;gap:.4rem;max-height:10rem;overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">Regex Quick Reference</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.8125rem;">
+      <div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr><th style="text-align:left;padding:.4rem;border-bottom:1px solid #e2e8f0;color:#0f172a;">Pattern</th><th style="text-align:left;padding:.4rem;border-bottom:1px solid #e2e8f0;color:#0f172a;">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:.3rem;font-family:monospace;">.</td><td style="padding:.3rem;color:#374151;">Any character</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">\d</td><td style="padding:.3rem;color:#374151;">Digit [0-9]</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">\w</td><td style="padding:.3rem;color:#374151;">Word char [a-zA-Z0-9_]</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">\s</td><td style="padding:.3rem;color:#374151;">Whitespace</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">^</td><td style="padding:.3rem;color:#374151;">Start of string/line</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">$</td><td style="padding:.3rem;color:#374151;">End of string/line</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr><th style="text-align:left;padding:.4rem;border-bottom:1px solid #e2e8f0;color:#0f172a;">Quantifier</th><th style="text-align:left;padding:.4rem;border-bottom:1px solid #e2e8f0;color:#0f172a;">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:.3rem;font-family:monospace;">*</td><td style="padding:.3rem;color:#374151;">0 or more</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">+</td><td style="padding:.3rem;color:#374151;">1 or more</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">?</td><td style="padding:.3rem;color:#374151;">0 or 1 (optional)</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">{n}</td><td style="padding:.3rem;color:#374151;">Exactly n times</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">{n,m}</td><td style="padding:.3rem;color:#374151;">Between n and m</td></tr>
+            <tr><td style="padding:.3rem;font-family:monospace;">(abc)</td><td style="padding:.3rem;color:#374151;">Capture group</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Regex Tester</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your pattern</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a regular expression in the Pattern field (without surrounding slashes).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set flags</strong><br><span style="font-size:.875rem;color:#6b7280;">Tick "g" for global (find all matches), "i" for case-insensitive, "m" for multiline.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Paste test text</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the string you want to test in the Test String field. Matches are highlighted in yellow.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a regular expression? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A regular expression (regex) is a sequence of characters that defines a search pattern. It is used for finding, extracting, or replacing text that matches the pattern.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does the "g" flag do? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Without "g", the regex stops at the first match. With "g" (global), it finds all matches in the string.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I match an email address with regex? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A common basic pattern is: [a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,} — this covers most standard email addresses.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between .* and .+? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The dot matches any character. * means zero or more; + means one or more. So .* can match an empty string while .+ requires at least one character.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runRegex(){
+  var pattern=document.getElementById('rx-pattern').value;
+  var text=document.getElementById('rx-text').value;
+  var errEl=document.getElementById('rx-error');
+  errEl.style.display='none';
+  if(!pattern){document.getElementById('rx-result').style.display='none';document.getElementById('rx-count').textContent='';return;}
+  var flags=(document.getElementById('rx-g').checked?'g':'')+(document.getElementById('rx-i').checked?'i':'')+(document.getElementById('rx-m').checked?'m':'');
+  var rx;
+  try{rx=new RegExp(pattern,flags);}catch(e){errEl.textContent='Invalid regex: '+e.message;errEl.style.display='block';document.getElementById('rx-result').style.display='none';return;}
+  var matches=[],m,count=0;
+  if(flags.includes('g')){
+    var rx2=new RegExp(pattern,flags);
+    while((m=rx2.exec(text))!==null){matches.push(m);count++;if(m.index===rx2.lastIndex)rx2.lastIndex++;}
+  } else {
+    m=rx.exec(text);if(m){matches.push(m);count=1;}
+  }
+  document.getElementById('rx-count').textContent=count+' match'+(count!==1?'es':'');
+  var highlighted=text,offset=0;
+  var parts=[];var last=0;
+  matches.forEach(function(m){
+    parts.push({text:text.slice(last,m.index),match:false});
+    parts.push({text:m[0],match:true});
+    last=m.index+m[0].length;
+  });
+  parts.push({text:text.slice(last),match:false});
+  document.getElementById('rx-highlighted').innerHTML=parts.map(function(p){
+    return p.match?'<mark style="background:#fde68a;border-radius:.2em;padding:0 .1em;">'+esc(p.text)+'</mark>':esc(p.text);
+  }).join('');
+  var groupsHtml='',hasGroups=false;
+  matches.forEach(function(m,mi){
+    if(m.length>1){hasGroups=true;
+      groupsHtml+='<div style="font-size:.8125rem;padding:.4rem .6rem;background:#f8fafc;border-radius:.375rem;font-family:monospace;">Match '+(mi+1)+': '+m.slice(1).map(function(g,gi){return '<span style="color:#6b7280;">['+(gi+1)+']</span> '+esc(g||'undefined');}).join(' &nbsp; ')+'</div>';
+    }
+  });
+  document.getElementById('rx-groups').innerHTML=groupsHtml;
+  document.getElementById('rx-groups-wrap').style.display=hasGroups?'block':'none';
+  document.getElementById('rx-result').style.display='block';
+}
+</script>
+{% endblock %}

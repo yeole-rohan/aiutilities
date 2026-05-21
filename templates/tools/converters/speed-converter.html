@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Speed Converter — mph, km/h, m/s, knots | AIUtilities{% endblock %}
+{% block description %}Convert between miles per hour, kilometres per hour, metres per second, knots, and more instantly. Type in any field. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'speed-converter' %}{% endblock %}
+{% block og_title %}Speed Converter — mph, km/h, m/s, knots | AIUtilities{% endblock %}
+{% block og_description %}Convert speed units instantly — mph, km/h, m/s, knots. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'speed-converter' %}{% endblock %}
+{% block twitter_title %}Speed Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert mph, km/h, m/s, knots instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Speed Converter","description":"Convert between mph, km/h, m/s, knots, and other speed units instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'speed-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Speed Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'speed-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Speed Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between miles per hour, kilometres per hour, metres per second, knots, Mach, and feet per second instantly. Type in any field.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 6 speed units</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1rem;" id="sp-fields"></div>
+      <button type="button" onclick="resetSpeed()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+
+    <div style="margin-top:1.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;">
+      <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Speed Reference</h3>
+      <div style="display:grid;gap:.4rem;font-size:.8125rem;">
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">Walking pace</span><span style="font-family:monospace;color:#6b7280;">~5 km/h · 3.1 mph</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">City speed limit</span><span style="font-family:monospace;color:#6b7280;">50 km/h · 31 mph</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">Motorway</span><span style="font-family:monospace;color:#6b7280;">120 km/h · 75 mph</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;border-bottom:1px solid #f1f5f9;"><span style="color:#374151;">Commercial aircraft</span><span style="font-family:monospace;color:#6b7280;">900 km/h · 560 mph</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem;"><span style="color:#374151;">Speed of light</span><span style="font-family:monospace;color:#6b7280;">299,792 km/s</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Speed Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a speed in any unit</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a value in m/s, km/h, mph, knots, fps, or Mach and all other units update instantly.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Copy the result</strong><br><span style="font-size:.875rem;color:#6b7280;">Click into any output field and copy the converted value you need.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many km/h in 1 mph? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 mph = 1.60934 km/h. Conversely, 1 km/h is approximately 0.621 mph.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a knot? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A knot is 1 nautical mile per hour (1.852 km/h). It is used in maritime and aviation navigation.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is Mach 1? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Mach 1 is the speed of sound — approximately 343 m/s (1235 km/h) at sea level and 20°C. The exact value varies with temperature and altitude.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'weight-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Weight Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'temperature-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Temperature Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* All factors relative to 1 m/s */
+var UNITS=[
+  {id:'sp-ms',  label:'Metres per second (m/s)',    factor:1},
+  {id:'sp-kmh', label:'Kilometres per hour (km/h)', factor:3.6},
+  {id:'sp-mph', label:'Miles per hour (mph)',        factor:2.23694},
+  {id:'sp-kn',  label:'Knots (kn)',                 factor:1.94384},
+  {id:'sp-fps', label:'Feet per second (ft/s)',      factor:3.28084},
+  {id:'sp-mach',label:'Mach (at sea level)',         factor:0.002939},
+];
+var updating=false;
+var container=document.getElementById('sp-fields');
+UNITS.forEach(function(u){
+  var d=document.createElement('div');
+  d.innerHTML='<label class="ai-tool-label" for="'+u.id+'" style="font-size:.875rem;">'+u.label+'</label><input type="number" id="'+u.id+'" class="ai-tool-input" step="any" placeholder="0" oninput="convertSpeed(\''+u.id+'\')">';
+  container.appendChild(d);
+});
+function convertSpeed(fromId){
+  if(updating)return;updating=true;
+  var fromUnit=UNITS.find(function(u){return u.id===fromId;});
+  var val=parseFloat(document.getElementById(fromId).value);
+  if(isNaN(val)){updating=false;return;}
+  var ms=val/fromUnit.factor;
+  UNITS.forEach(function(u){if(u.id!==fromId)document.getElementById(u.id).value=parseFloat((ms*u.factor).toPrecision(8));});
+  updating=false;
+}
+function resetSpeed(){UNITS.forEach(function(u){document.getElementById(u.id).value='';});}
+</script>
+{% endblock %}

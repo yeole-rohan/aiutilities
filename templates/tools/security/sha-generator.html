@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SHA Hash Generator — SHA-256, SHA-512, SHA-1 Online | AIUtilities{% endblock %}
+{% block description %}Generate SHA-1, SHA-256, and SHA-512 hashes from any text using the browser's native Web Crypto API. Private and free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'sha-generator' %}{% endblock %}
+{% block og_title %}SHA Hash Generator — SHA-256, SHA-512 | AIUtilities{% endblock %}
+{% block og_description %}Generate SHA-1, SHA-256, SHA-512 hashes instantly. Browser-only. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'sha-generator' %}{% endblock %}
+{% block twitter_title %}SHA Hash Generator | AIUtilities{% endblock %}
+{% block twitter_description %}SHA-1, SHA-256, SHA-512 hashing tool. Browser-only. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"SHA Hash Generator","description":"Generate SHA-1, SHA-256, and SHA-512 hashes using the browser's native Web Crypto API.","url":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'sha-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Security Tools","item":"{{ SITE_URL }}/tools/security/"},{"@type":"ListItem","position":3,"name":"SHA Hash Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'sha-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔐 Browser-only · Web Crypto API · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">SHA Hash Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate SHA-1, SHA-256, and SHA-512 hashes using your browser's native Web Crypto API. Your data never leaves your device.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ SHA-1 / SHA-256 / SHA-512</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Native Web Crypto</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Never leaves browser</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="sha-input">Input Text</label>
+        <textarea id="sha-input" class="ai-tool-input" rows="5" placeholder="Enter text to hash…" oninput="hashAll()"></textarea>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" id="sha-upper"> Uppercase</label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;"><input type="checkbox" id="sha-all" checked> Show all algorithms</label>
+      </div>
+
+      <div id="sha-results" style="display:none;display:grid;gap:1rem;">
+        <!-- SHA-1 -->
+        <div id="sha1-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+            <label class="ai-tool-label" style="margin:0;color:#6b7280;">SHA-1 <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(160-bit · not recommended for security)</span></label>
+            <button onclick="copyHash('sha1-out','sha1-copy')" id="sha1-copy" style="padding:.2rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <input type="text" id="sha1-out" class="ai-tool-input" readonly style="font-family:monospace;font-size:.8125rem;background:#fafafa;">
+        </div>
+        <!-- SHA-256 -->
+        <div id="sha256-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+            <label class="ai-tool-label" style="margin:0;">SHA-256 <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(256-bit · recommended)</span></label>
+            <button onclick="copyHash('sha256-out','sha256-copy')" id="sha256-copy" style="padding:.2rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <input type="text" id="sha256-out" class="ai-tool-input" readonly style="font-family:monospace;font-size:.8125rem;background:#f0fdf4;border-color:#bbf7d0;">
+        </div>
+        <!-- SHA-512 -->
+        <div id="sha512-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+            <label class="ai-tool-label" style="margin:0;">SHA-512 <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(512-bit · high security)</span></label>
+            <button onclick="copyHash('sha512-out','sha512-copy')" id="sha512-copy" style="padding:.2rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <input type="text" id="sha512-out" class="ai-tool-input" readonly style="font-family:monospace;font-size:.8125rem;background:#fafafa;word-break:break-all;">
+        </div>
+      </div>
+    </div>
+
+    <!-- comparison table -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Algorithm Comparison</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+        <thead><tr style="border-bottom:2px solid #e2e8f0;"><th style="text-align:left;padding:.4rem .75rem;">Algorithm</th><th style="text-align:left;padding:.4rem .75rem;">Output size</th><th style="text-align:left;padding:.4rem .75rem;">Security</th><th style="text-align:left;padding:.4rem .75rem;">Use for</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">SHA-1</td><td style="padding:.4rem .75rem;">160-bit / 40 hex</td><td style="padding:.4rem .75rem;color:#f97316;">Broken</td><td style="padding:.4rem .75rem;color:#6b7280;">Legacy only</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">SHA-256</td><td style="padding:.4rem .75rem;">256-bit / 64 hex</td><td style="padding:.4rem .75rem;color:#16a34a;">Strong</td><td style="padding:.4rem .75rem;color:#6b7280;">Checksums, digital signatures</td></tr>
+          <tr><td style="padding:.4rem .75rem;font-family:monospace;color:#6366f1;">SHA-512</td><td style="padding:.4rem .75rem;">512-bit / 128 hex</td><td style="padding:.4rem .75rem;color:#16a34a;">Very strong</td><td style="padding:.4rem .75rem;color:#6b7280;">High-security applications</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the SHA Hash Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Type or paste any string in the input field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">View all three algorithms</strong><br><span style="font-size:.875rem;color:#6b7280;">SHA-1, SHA-256, and SHA-512 hashes all compute simultaneously. Toggle Show all algorithms to focus on SHA-256 only.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy your hash</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy next to any algorithm, or use the Uppercase toggle for capital hex output.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between SHA-256 and SHA-512? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">SHA-256 produces a 256-bit (64 hex character) hash; SHA-512 produces a 512-bit (128 hex character) hash. SHA-512 provides more security but is larger. Both are considered secure.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is SHA-1 still safe to use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — SHA-1 has known collision vulnerabilities and should not be used for new security applications. Use SHA-256 or SHA-512 instead.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does this use under the hood? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool uses the browser native SubtleCrypto API (crypto.subtle.digest()), which is implemented in native code for accuracy and speed.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'security' 'md5-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MD5 Generator</a>
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'security' 'password-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Password Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+async function digestHex(algo,str){
+  var enc=new TextEncoder();
+  var buf=await crypto.subtle.digest(algo,enc.encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+async function hashAll(){
+  var input=document.getElementById('sha-input').value;
+  var upper=document.getElementById('sha-upper').checked;
+  if(!input){document.getElementById('sha-results').style.display='none';return;}
+  document.getElementById('sha-results').style.display='grid';
+  var fmt=function(h){return upper?h.toUpperCase():h;};
+  var[h1,h256,h512]=await Promise.all([
+    digestHex('SHA-1',input),
+    digestHex('SHA-256',input),
+    digestHex('SHA-512',input)
+  ]);
+  document.getElementById('sha1-out').value=fmt(h1);
+  document.getElementById('sha256-out').value=fmt(h256);
+  document.getElementById('sha512-out').value=fmt(h512);
+}
+document.getElementById('sha-upper').addEventListener('change',hashAll);
+document.getElementById('sha-all').addEventListener('change',function(){
+  var show=this.checked;
+  document.getElementById('sha1-row').style.display=show?'':'none';
+  document.getElementById('sha512-row').style.display=show?'':'none';
+});
+function copyHash(outId,btnId){
+  navigator.clipboard.writeText(document.getElementById(outId).value).then(function(){
+    var btn=document.getElementById(btnId);btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);
+  });
+}
+</script>
+{% endblock %}

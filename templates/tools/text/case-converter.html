@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Case Converter — Uppercase, Lowercase, Title Case, camelCase | AIUtilities{% endblock %}
+{% block description %}Convert text to uppercase, lowercase, title case, sentence case, camelCase, snake_case, and kebab-case instantly. Free online case converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'case-converter' %}{% endblock %}
+{% block og_title %}Case Converter — Uppercase, Lowercase, Title Case | AIUtilities{% endblock %}
+{% block og_description %}Convert text to any case instantly — uppercase, lowercase, camelCase, snake_case, and more. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'case-converter' %}{% endblock %}
+{% block twitter_title %}Case Converter — Any Text Case | AIUtilities{% endblock %}
+{% block twitter_description %}Convert text to uppercase, lowercase, camelCase, snake_case instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Case Converter","description":"Convert text to uppercase, lowercase, title case, camelCase, snake_case, and kebab-case instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'case-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Case Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'case-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📝 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Case Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Type or paste your text, then click the case you want. Convert to uppercase, lowercase, title case, camelCase, snake_case, kebab-case, and more instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 8 case formats</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="cc-input">Input Text</label>
+        <textarea id="cc-input" class="ai-tool-input" rows="5" style="resize:vertical;font-family:inherit;" placeholder="Type or paste your text here…"></textarea>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;">
+        <button type="button" onclick="convertCase('upper')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">UPPERCASE</button>
+        <button type="button" onclick="convertCase('lower')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">lowercase</button>
+        <button type="button" onclick="convertCase('title')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">Title Case</button>
+        <button type="button" onclick="convertCase('sentence')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">Sentence case</button>
+        <button type="button" onclick="convertCase('camel')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">camelCase</button>
+        <button type="button" onclick="convertCase('pascal')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">PascalCase</button>
+        <button type="button" onclick="convertCase('snake')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">snake_case</button>
+        <button type="button" onclick="convertCase('kebab')" class="ai-tool-btn" style="padding:.5rem 1rem;font-size:.875rem;">kebab-case</button>
+      </div>
+
+      <div id="cc-output-wrap" style="display:none;">
+        <label class="ai-tool-label">Result</label>
+        <div style="position:relative;">
+          <textarea id="cc-output" class="ai-tool-input" rows="5" style="resize:vertical;font-family:inherit;background:#f0fdf4;border-color:#bbf7d0;" readonly></textarea>
+          <button type="button" id="cc-copy-btn" onclick="copyResult()" style="position:absolute;top:.5rem;right:.5rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">When to Use Each Case</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;font-family:monospace;">camelCase</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">JavaScript variables and function names. First word lowercase, subsequent words capitalised: <code>myVariableName</code>.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;font-family:monospace;">PascalCase</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Class names, React components, TypeScript interfaces. Every word capitalised: <code>MyComponent</code>.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;font-family:monospace;">snake_case</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Python variables, database column names, file names. Words separated by underscores: <code>my_variable</code>.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;font-family:monospace;">kebab-case</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">CSS class names, HTML attributes, URLs. Words joined by hyphens: <code>my-class-name</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Case Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Type or paste any text into the input box — sentences, headlines, variable names, or slugs.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose a case format</strong><br><span style="font-size:.875rem;color:#6b7280;">Click one of the eight format buttons: UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, or kebab-case.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The converted text appears instantly. Click Copy to use it.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is camelCase? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">camelCase joins words without spaces, capitalising each word except the first — e.g. myVariableName. It is the standard convention for JavaScript variables and functions.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between PascalCase and camelCase? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">PascalCase capitalises every word including the first — e.g. MyClassName. It is commonly used for class names and React components.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is Title Case? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Title Case capitalises the first letter of every word — e.g. The Quick Brown Fox. It is standard for book titles and headings.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does the converter handle accented characters? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — Unicode letters are preserved when converting case, so accented characters like e-acute or u-umlaut are handled correctly.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'slug-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Slug Generator</a>
+      <a href="{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Remove Duplicate Lines</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function toWords(text) {
+  return text.trim().replace(/[-_]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\s+/g, ' ').split(' ').filter(function(w){ return w.length > 0; });
+}
+function convertCase(type) {
+  var text = document.getElementById('cc-input').value;
+  var result = '';
+  switch(type) {
+    case 'upper': result = text.toUpperCase(); break;
+    case 'lower': result = text.toLowerCase(); break;
+    case 'title': result = text.replace(/\w\S*/g, function(w){ return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }); break;
+    case 'sentence': result = text.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, function(c){ return c.toUpperCase(); }); break;
+    case 'camel':
+      var ws = toWords(text.toLowerCase());
+      result = ws.map(function(w, i){ return i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1); }).join('');
+      break;
+    case 'pascal':
+      result = toWords(text.toLowerCase()).map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join('');
+      break;
+    case 'snake': result = toWords(text).join('_').toLowerCase(); break;
+    case 'kebab': result = toWords(text).join('-').toLowerCase(); break;
+  }
+  document.getElementById('cc-output').value = result;
+  document.getElementById('cc-output-wrap').style.display = 'block';
+  document.getElementById('cc-copy-btn').textContent = 'Copy';
+}
+function copyResult() {
+  navigator.clipboard.writeText(document.getElementById('cc-output').value).then(function(){
+    document.getElementById('cc-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('cc-copy-btn').textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+{% endblock %}

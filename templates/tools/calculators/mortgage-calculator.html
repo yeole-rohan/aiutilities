@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mortgage Calculator — Monthly Payment & Amortisation | AIUtilities{% endblock %}
+{% block description %}Calculate your monthly mortgage payment including principal, interest, taxes, and insurance. See full amortisation schedule. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}{% endblock %}
+{% block og_title %}Mortgage Calculator — Monthly Payment | AIUtilities{% endblock %}
+{% block og_description %}Calculate monthly mortgage payment with amortisation schedule. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}{% endblock %}
+{% block twitter_title %}Mortgage Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate monthly mortgage payments. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Mortgage Calculator","description":"Calculate monthly mortgage payment and full amortisation schedule.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Mortgage Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Mortgage Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate your monthly mortgage payment, total interest over the loan term, and view a full amortisation schedule broken down year by year.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Down payment</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Yearly breakdown</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+    <div class="ai-tool-form-card" style="margin:0;">
+      <div style="display:grid;gap:1rem;">
+        <div><label class="ai-tool-label" for="mg-price">Home Price ($)</label><input type="number" id="mg-price" class="ai-tool-input" placeholder="350000" value="350000" oninput="calcMortgage()"></div>
+        <div><label class="ai-tool-label" for="mg-down">Down Payment ($)</label><input type="number" id="mg-down" class="ai-tool-input" placeholder="70000" value="70000" oninput="calcMortgage()"></div>
+        <div><label class="ai-tool-label" for="mg-rate">Annual Rate (%)</label><input type="number" id="mg-rate" class="ai-tool-input" placeholder="7.0" value="7.0" step="0.1" oninput="calcMortgage()"></div>
+        <div><label class="ai-tool-label" for="mg-term">Loan Term</label>
+          <select id="mg-term" class="ai-tool-select" onchange="calcMortgage()">
+            <option value="360">30 years</option>
+            <option value="240">20 years</option>
+            <option value="180" selected>15 years</option>
+            <option value="120">10 years</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="mg-result" style="display:none;">
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+          <div id="mg-monthly" style="font-size:2rem;font-weight:800;color:#6366f1;"></div>
+          <div style="font-size:.8125rem;color:#6b7280;">Monthly Payment</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="mg-loan" style="font-size:1.125rem;font-weight:700;color:#374151;"></div>
+            <div style="font-size:.75rem;color:#6b7280;">Loan Amount</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="mg-interest" style="font-size:1.125rem;font-weight:700;color:#ef4444;"></div>
+            <div style="font-size:.75rem;color:#6b7280;">Total Interest</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;max-height:18rem;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+          <thead style="position:sticky;top:0;background:#f8fafc;"><tr><th style="padding:.5rem .75rem;text-align:left;color:#0f172a;">Year</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Principal Paid</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Interest Paid</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Balance</th></tr></thead>
+          <tbody id="mg-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Mortgage Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter home price and down payment</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the property price and the down payment amount to get the loan amount.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set interest rate and term</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter your mortgage rate and choose a 15, 20, or 30-year term.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">View your payment breakdown</strong><br><span style="font-size:.875rem;color:#6b7280;">See monthly payment, total interest paid over the life of the loan, and a yearly amortisation summary.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between principal and interest? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Principal reduces your loan balance; interest is the cost of borrowing. Early in the mortgage most of your payment is interest; this flips over time.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does this include taxes and insurance? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — this calculator covers principal and interest only. Add property taxes, homeowner's insurance, and PMI separately for your full monthly payment.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the 30-year vs 15-year trade-off? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A 15-year mortgage has higher monthly payments but dramatically less total interest paid. A 30-year mortgage has lower payments but costs significantly more in interest over time.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'loan-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Loan Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compound Interest Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function calcMortgage(){
+  var price=parseFloat(document.getElementById('mg-price').value)||0;
+  var down=parseFloat(document.getElementById('mg-down').value)||0;
+  var annual=parseFloat(document.getElementById('mg-rate').value)||0;
+  var n=parseInt(document.getElementById('mg-term').value)||360;
+  var P=price-down;
+  if(P<=0)return;
+  var r=annual/100/12;
+  var pmt=r===0?P/n:P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  var bal=P,rows='',totalInt=0;
+  var months=n,m=0;
+  var year=1,yPrin=0,yInt=0;
+  while(m<months){
+    var int=bal*r,prin=pmt-int;
+    bal-=prin;totalInt+=int;yPrin+=prin;yInt+=int;m++;
+    if(m%12===0||m===months){
+      rows+='<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;color:#374151;">'+year+'</td><td style="padding:.4rem .75rem;text-align:right;color:#6366f1;">'+fmt(yPrin)+'</td><td style="padding:.4rem .75rem;text-align:right;color:#ef4444;">'+fmt(yInt)+'</td><td style="padding:.4rem .75rem;text-align:right;">'+fmt(Math.max(bal,0))+'</td></tr>';
+      year++;yPrin=0;yInt=0;
+    }
+  }
+  document.getElementById('mg-monthly').textContent=fmt(pmt);
+  document.getElementById('mg-loan').textContent=fmt(P);
+  document.getElementById('mg-interest').textContent=fmt(totalInt);
+  document.getElementById('mg-table').innerHTML=rows;
+  document.getElementById('mg-result').style.display='block';
+}
+calcMortgage();
+</script>
+{% endblock %}

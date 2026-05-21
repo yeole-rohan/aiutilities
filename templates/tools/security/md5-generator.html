@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}MD5 Hash Generator — Free Online MD5 Tool | AIUtilities{% endblock %}
+{% block description %}Generate MD5 hashes instantly from any text. Browser-only — your data never leaves your device. Free online MD5 hash generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'md5-generator' %}{% endblock %}
+{% block og_title %}MD5 Hash Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate MD5 hashes instantly. Browser-only. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'md5-generator' %}{% endblock %}
+{% block twitter_title %}MD5 Hash Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate MD5 hashes from text. Browser-only. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"MD5 Hash Generator","description":"Generate MD5 hashes from text instantly in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'md5-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Security Tools","item":"{{ SITE_URL }}/tools/security/"},{"@type":"ListItem","position":3,"name":"MD5 Hash Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'md5-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔐 Browser-only · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">MD5 Hash Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate MD5 hashes from any text instantly. Everything runs in your browser — your data is never sent to a server.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant hashing</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Upper/lowercase output</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Never leaves browser</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:.5rem;padding:.6rem 1rem;margin-bottom:1rem;font-size:.8125rem;color:#92400e;">
+      <strong>Note:</strong> MD5 is not cryptographically secure for passwords or digital signatures. Use SHA-256 or SHA-512 for security-sensitive applications.
+    </div>
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="md5-input">Input Text</label>
+        <textarea id="md5-input" class="ai-tool-input" rows="5" placeholder="Enter text to hash…" oninput="hashMd5()"></textarea>
+      </div>
+
+      <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="md5-upper"> Uppercase output
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="md5-live" checked onchange="hashMd5()"> Live update
+        </label>
+        <button onclick="hashMd5()" class="ai-tool-btn" style="padding:.4rem 1rem;font-size:.875rem;margin-left:auto;">Generate Hash</button>
+      </div>
+
+      <div id="md5-result" style="display:none;">
+        <label class="ai-tool-label">MD5 Hash</label>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <input type="text" id="md5-output" class="ai-tool-input" readonly style="font-family:monospace;font-size:.9375rem;letter-spacing:.05em;background:#f0fdf4;border-color:#bbf7d0;">
+          <button onclick="copyMd5()" id="md5-copy" style="white-space:nowrap;padding:.5rem 1rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;">Copy</button>
+        </div>
+        <div style="margin-top:.5rem;font-size:.75rem;color:#6b7280;font-family:monospace;">
+          128-bit hash · 32 hex characters
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk hashing -->
+    <div class="ai-tool-form-card" style="margin-top:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Bulk Hash (one value per line)</h2>
+      <textarea id="md5-bulk-input" class="ai-tool-input" rows="4" placeholder="line one&#10;line two&#10;line three"></textarea>
+      <button onclick="bulkHash()" class="ai-tool-btn" style="margin-top:.75rem;padding:.4rem 1rem;font-size:.875rem;">Hash All Lines</button>
+      <div id="md5-bulk-result" style="margin-top:.75rem;display:none;">
+        <textarea id="md5-bulk-output" class="ai-tool-input" rows="5" readonly style="font-family:monospace;font-size:.8125rem;background:#f0fdf4;"></textarea>
+        <button onclick="copyBulk()" style="margin-top:.4rem;padding:.3rem .75rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Copy all</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the MD5 Hash Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Type or paste any string in the input field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Copy the hash</strong><br><span style="font-size:.875rem;color:#6b7280;">The MD5 hash generates instantly. Use Uppercase for capital hex output. Click Copy.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Bulk hash multiple values</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste one value per line in the Bulk Hash section and click Hash All Lines to get a hash for each.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is an MD5 hash? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">MD5 is a hash function that produces a fixed 128-bit (32 hex character) fingerprint for any input. The same input always produces the same hash; even a tiny change produces a completely different hash.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is MD5 secure for passwords? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — MD5 is broken for security purposes. It is fast and vulnerable to rainbow table attacks. Use bcrypt, scrypt, or Argon2 for password hashing.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is MD5 still used for? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">File integrity checks (verifying a download was not corrupted), non-security checksums, cache keys, and legacy systems. Never use it for passwords or digital signatures.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'security' 'sha-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SHA Hash Generator</a>
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'security' 'password-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Password Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* Pure-JS MD5 implementation (RFC 1321) */
+function md5(str){
+  function safeAdd(x,y){var lsw=(x&0xFFFF)+(y&0xFFFF);var msw=(x>>16)+(y>>16)+(lsw>>16);return(msw<<16)|(lsw&0xFFFF);}
+  function bitRotateLeft(num,cnt){return(num<<cnt)|(num>>>(32-cnt));}
+  function md5cmn(q,a,b,x,s,t){return safeAdd(bitRotateLeft(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b);}
+  function md5ff(a,b,c,d,x,s,t){return md5cmn((b&c)|(~b&d),a,b,x,s,t);}
+  function md5gg(a,b,c,d,x,s,t){return md5cmn((b&d)|(c&~d),a,b,x,s,t);}
+  function md5hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t);}
+  function md5ii(a,b,c,d,x,s,t){return md5cmn(c^(b|~d),a,b,x,s,t);}
+  function strToUtf8Bytes(s){var utf8=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128){utf8.push(c);}else if(c<2048){utf8.push((c>>6)|192,(c&63)|128);}else{utf8.push((c>>12)|224,((c>>6)&63)|128,(c&63)|128);}}return utf8;}
+  var bytes=strToUtf8Bytes(str);
+  var len8=bytes.length;
+  bytes.push(0x80);
+  while(bytes.length%64!==56)bytes.push(0);
+  var bitLen=len8*8;
+  bytes.push(bitLen&0xFF,(bitLen>>8)&0xFF,(bitLen>>16)&0xFF,(bitLen>>24)&0xFF,0,0,0,0);
+  var words=[];
+  for(var i=0;i<bytes.length;i+=4)words.push(bytes[i]|(bytes[i+1]<<8)|(bytes[i+2]<<16)|(bytes[i+3]<<24));
+  var a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+  for(var i=0;i<words.length;i+=16){
+    var aa=a,bb=b,cc=c,dd=d;
+    a=md5ff(a,b,c,d,words[i],7,-680876936);d=md5ff(d,a,b,c,words[i+1],12,-389564586);c=md5ff(c,d,a,b,words[i+2],17,606105819);b=md5ff(b,c,d,a,words[i+3],22,-1044525330);
+    a=md5ff(a,b,c,d,words[i+4],7,-176418897);d=md5ff(d,a,b,c,words[i+5],12,1200080426);c=md5ff(c,d,a,b,words[i+6],17,-1473231341);b=md5ff(b,c,d,a,words[i+7],22,-45705983);
+    a=md5ff(a,b,c,d,words[i+8],7,1770035416);d=md5ff(d,a,b,c,words[i+9],12,-1958414417);c=md5ff(c,d,a,b,words[i+10],17,-42063);b=md5ff(b,c,d,a,words[i+11],22,-1990404162);
+    a=md5ff(a,b,c,d,words[i+12],7,1804603682);d=md5ff(d,a,b,c,words[i+13],12,-40341101);c=md5ff(c,d,a,b,words[i+14],17,-1502002290);b=md5ff(b,c,d,a,words[i+15],22,1236535329);
+    a=md5gg(a,b,c,d,words[i+1],5,-165796510);d=md5gg(d,a,b,c,words[i+6],9,-1069501632);c=md5gg(c,d,a,b,words[i+11],14,643717713);b=md5gg(b,c,d,a,words[i],20,-373897302);
+    a=md5gg(a,b,c,d,words[i+5],5,-701558691);d=md5gg(d,a,b,c,words[i+10],9,38016083);c=md5gg(c,d,a,b,words[i+15],14,-660478335);b=md5gg(b,c,d,a,words[i+4],20,-405537848);
+    a=md5gg(a,b,c,d,words[i+9],5,568446438);d=md5gg(d,a,b,c,words[i+14],9,-1019803690);c=md5gg(c,d,a,b,words[i+3],14,-187363961);b=md5gg(b,c,d,a,words[i+8],20,1163531501);
+    a=md5gg(a,b,c,d,words[i+13],5,-1444681467);d=md5gg(d,a,b,c,words[i+2],9,-51403784);c=md5gg(c,d,a,b,words[i+7],14,1735328473);b=md5gg(b,c,d,a,words[i+12],20,-1926607734);
+    a=md5hh(a,b,c,d,words[i+5],4,-378558);d=md5hh(d,a,b,c,words[i+8],11,-2022574463);c=md5hh(c,d,a,b,words[i+11],16,1839030562);b=md5hh(b,c,d,a,words[i+14],23,-35309556);
+    a=md5hh(a,b,c,d,words[i+1],4,-1530992060);d=md5hh(d,a,b,c,words[i+4],11,1272893353);c=md5hh(c,d,a,b,words[i+7],16,-155497632);b=md5hh(b,c,d,a,words[i+10],23,-1094730640);
+    a=md5hh(a,b,c,d,words[i+13],4,681279174);d=md5hh(d,a,b,c,words[i],11,-358537222);c=md5hh(c,d,a,b,words[i+3],16,-722521979);b=md5hh(b,c,d,a,words[i+6],23,76029189);
+    a=md5hh(a,b,c,d,words[i+9],4,-640364487);d=md5hh(d,a,b,c,words[i+12],11,-421815835);c=md5hh(c,d,a,b,words[i+15],16,530742520);b=md5hh(b,c,d,a,words[i+2],23,-995338651);
+    a=md5ii(a,b,c,d,words[i],6,-198630844);d=md5ii(d,a,b,c,words[i+7],10,1126891415);c=md5ii(c,d,a,b,words[i+14],15,-1416354905);b=md5ii(b,c,d,a,words[i+5],21,-57434055);
+    a=md5ii(a,b,c,d,words[i+12],6,1700485571);d=md5ii(d,a,b,c,words[i+3],10,-1894986606);c=md5ii(c,d,a,b,words[i+10],15,-1051523);b=md5ii(b,c,d,a,words[i+1],21,-2054922799);
+    a=md5ii(a,b,c,d,words[i+8],6,1873313359);d=md5ii(d,a,b,c,words[i+15],10,-30611744);c=md5ii(c,d,a,b,words[i+6],15,-1560198380);b=md5ii(b,c,d,a,words[i+13],21,1309151649);
+    a=md5ii(a,b,c,d,words[i+4],6,-145523070);d=md5ii(d,a,b,c,words[i+11],10,-1120210379);c=md5ii(c,d,a,b,words[i+2],15,718787259);b=md5ii(b,c,d,a,words[i+9],21,-343485551);
+    a=safeAdd(a,aa);b=safeAdd(b,bb);c=safeAdd(c,cc);d=safeAdd(d,dd);
+  }
+  function w2h(w){var s='';for(var j=0;j<4;j++){s+=('0'+((w>>>(j*8))&0xFF).toString(16)).slice(-2);}return s;}
+  return w2h(a)+w2h(b)+w2h(c)+w2h(d);
+}
+
+function hashMd5(){
+  var input=document.getElementById('md5-input').value;
+  if(!input){document.getElementById('md5-result').style.display='none';return;}
+  var hash=md5(input);
+  if(document.getElementById('md5-upper').checked)hash=hash.toUpperCase();
+  document.getElementById('md5-output').value=hash;
+  document.getElementById('md5-result').style.display='block';
+}
+document.getElementById('md5-upper').addEventListener('change',hashMd5);
+function copyMd5(){
+  navigator.clipboard.writeText(document.getElementById('md5-output').value).then(function(){
+    var btn=document.getElementById('md5-copy');btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);
+  });
+}
+function bulkHash(){
+  var lines=document.getElementById('md5-bulk-input').value.split('\n');
+  var upper=document.getElementById('md5-upper').checked;
+  var out=lines.map(function(l){
+    var h=md5(l);
+    return (upper?h.toUpperCase():h)+'  '+l;
+  }).join('\n');
+  document.getElementById('md5-bulk-output').value=out;
+  document.getElementById('md5-bulk-result').style.display='block';
+}
+function copyBulk(){
+  navigator.clipboard.writeText(document.getElementById('md5-bulk-output').value);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Compound Interest Calculator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Calculate compound interest with monthly and yearly breakdown. See total interest earned, final balance, and growth over time. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}{% endblock %}
+{% block og_title %}Compound Interest Calculator | AIUtilities{% endblock %}
+{% block og_description %}Calculate compound interest with a monthly/yearly breakdown. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}{% endblock %}
+{% block twitter_title %}Compound Interest Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate compound interest with full breakdown. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Compound Interest Calculator","description":"Calculate compound interest with monthly/yearly breakdown.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Compound Interest Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'compound-interest-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Compound Interest Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">See how your money grows with compound interest. Enter your principal, interest rate, and time period to get a full yearly breakdown.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Yearly breakdown</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Regular contributions</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+    <div class="ai-tool-form-card" style="margin:0;">
+      <div style="display:grid;gap:1rem;">
+        <div><label class="ai-tool-label" for="ci-principal">Initial Amount ($)</label><input type="number" id="ci-principal" class="ai-tool-input" placeholder="10000" value="10000" oninput="calcCI()"></div>
+        <div><label class="ai-tool-label" for="ci-rate">Annual Interest Rate (%)</label><input type="number" id="ci-rate" class="ai-tool-input" placeholder="7" value="7" step="0.1" oninput="calcCI()"></div>
+        <div><label class="ai-tool-label" for="ci-years">Time Period (years)</label><input type="number" id="ci-years" class="ai-tool-input" placeholder="10" value="10" min="1" max="50" oninput="calcCI()"></div>
+        <div><label class="ai-tool-label" for="ci-contrib">Monthly Contribution ($)</label><input type="number" id="ci-contrib" class="ai-tool-input" placeholder="0" value="0" oninput="calcCI()"></div>
+        <div><label class="ai-tool-label" for="ci-freq">Compounding Frequency</label>
+          <select id="ci-freq" class="ai-tool-select" onchange="calcCI()">
+            <option value="12">Monthly</option>
+            <option value="4">Quarterly</option>
+            <option value="2">Semi-annually</option>
+            <option value="1" selected>Annually</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div id="ci-result" style="display:none;">
+        <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;text-align:center;">
+            <div id="ci-final" style="font-size:2rem;font-weight:800;color:#6366f1;"></div>
+            <div style="font-size:.8125rem;color:#6b7280;">Final Balance</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+              <div id="ci-principal-total" style="font-size:1.25rem;font-weight:700;color:#374151;"></div>
+              <div style="font-size:.75rem;color:#6b7280;">Total Invested</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+              <div id="ci-interest-total" style="font-size:1.25rem;font-weight:700;color:#22c55e;"></div>
+              <div style="font-size:.75rem;color:#6b7280;">Interest Earned</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;max-height:18rem;overflow-y:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:.8125rem;">
+            <thead style="position:sticky;top:0;background:#f8fafc;"><tr><th style="padding:.5rem .75rem;text-align:left;color:#0f172a;">Year</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Balance</th><th style="padding:.5rem .75rem;text-align:right;color:#0f172a;">Interest</th></tr></thead>
+            <tbody id="ci-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Compound Interest Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter the principal</strong><br><span style="font-size:.875rem;color:#6b7280;">Type your starting investment or savings balance.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set interest rate and years</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the annual interest rate (%) and the number of years to grow.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Add monthly contributions and compounding frequency</strong><br><span style="font-size:.875rem;color:#6b7280;">Optionally add a regular monthly deposit and choose how often interest compounds: daily, monthly, quarterly, or annually.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is compound interest? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Compound interest means you earn interest on your interest — not just the principal. Over time this creates exponential growth compared to simple interest.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does compounding frequency mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The more frequently interest is compounded, the more you earn. Daily compounding pays slightly more than monthly, which pays more than annual.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How is the final balance calculated? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Each compounding period: balance = balance × (1 + rate/n) + monthly contribution. This repeats for every period over the full time horizon.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'loan-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Loan Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'mortgage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Mortgage Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmt(n){ return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function calcCI(){
+  var P=parseFloat(document.getElementById('ci-principal').value)||0;
+  var r=parseFloat(document.getElementById('ci-rate').value)||0;
+  var years=parseInt(document.getElementById('ci-years').value)||0;
+  var m=parseFloat(document.getElementById('ci-contrib').value)||0;
+  var n=parseInt(document.getElementById('ci-freq').value);
+  if(!P&&!m||!years)return;
+  var rn=r/100/n;
+  var bal=P,totalPrin=P,rows='';
+  for(var y=1;y<=years;y++){
+    var prevBal=bal;
+    for(var p=0;p<n;p++){ bal=bal*(1+rn)+m; }
+    totalPrin+=m*12;
+    rows+='<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;color:#374151;">'+y+'</td><td style="padding:.4rem .75rem;text-align:right;color:#0f172a;font-weight:600;">'+fmt(bal)+'</td><td style="padding:.4rem .75rem;text-align:right;color:#22c55e;">'+fmt(bal-prevBal-(m*12))+'</td></tr>';
+  }
+  var interest=bal-totalPrin;
+  document.getElementById('ci-final').textContent=fmt(bal);
+  document.getElementById('ci-principal-total').textContent=fmt(totalPrin);
+  document.getElementById('ci-interest-total').textContent=fmt(interest>0?interest:0);
+  document.getElementById('ci-table').innerHTML=rows;
+  document.getElementById('ci-result').style.display='block';
+}
+calcCI();
+</script>
+{% endblock %}

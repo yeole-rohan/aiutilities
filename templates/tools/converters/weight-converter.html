@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Weight Converter — kg, lbs, oz, grams, stones | AIUtilities{% endblock %}
+{% block description %}Convert between kilograms, pounds, ounces, grams, stones, and metric tons instantly. Type a value in any field to see all conversions. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'weight-converter' %}{% endblock %}
+{% block og_title %}Weight Converter — kg, lbs, oz, grams | AIUtilities{% endblock %}
+{% block og_description %}Convert weight units instantly — kg, lbs, oz, grams, stones. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'weight-converter' %}{% endblock %}
+{% block twitter_title %}Weight Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert kg, lbs, oz, grams, stones instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Weight Converter","description":"Convert between kilograms, pounds, ounces, grams, stones, and metric tons instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'weight-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Weight Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'weight-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Weight Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between kilograms, pounds, ounces, grams, stones, and metric tons instantly. Type in any field and all units update in real time.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 7 units</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1rem;" id="wc-fields"></div>
+      <button type="button" onclick="resetWeight()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">Quick Reference</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+      <thead><tr style="border-bottom:2px solid #e2e8f0;"><th style="text-align:left;padding:.75rem;color:#0f172a;">From → To</th><th style="text-align:right;padding:.75rem;color:#0f172a;">Multiply by</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Kilograms → Pounds</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 2.20462</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Pounds → Kilograms</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 0.45359</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Ounces → Grams</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 28.3495</td></tr>
+        <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.75rem;color:#374151;">Kilograms → Stones</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 0.15747</td></tr>
+        <tr><td style="padding:.75rem;color:#374151;">Metric Tons → Pounds</td><td style="padding:.75rem;text-align:right;font-family:monospace;">× 2204.62</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Weight Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a weight in any unit</strong><br><span style="font-size:.875rem;color:#6b7280;">Type in any of the fields — kilograms, pounds, grams, ounces, stone, tonnes, or milligrams.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">All units update instantly</strong><br><span style="font-size:.875rem;color:#6b7280;">The converter recalculates all other units in real time as you type.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many pounds in a kilogram? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 kg = 2.20462 lbs. Conversely, 1 lb is approximately 0.453592 kg.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a stone in pounds? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 stone = 14 pounds. Stone is used informally for body weight in the UK and Ireland.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many grams in an ounce? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">1 avoirdupois ounce = 28.3495 grams. Note this is the everyday ounce, not the troy ounce used for precious metals.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'temperature-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Temperature Converter</a>
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* All factors relative to 1 kilogram */
+var UNITS = [
+  {id:'wc-mg',  label:'Milligrams (mg)',     factor:1000000},
+  {id:'wc-g',   label:'Grams (g)',            factor:1000},
+  {id:'wc-kg',  label:'Kilograms (kg)',       factor:1},
+  {id:'wc-t',   label:'Metric Tons (t)',      factor:0.001},
+  {id:'wc-oz',  label:'Ounces (oz)',          factor:35.274},
+  {id:'wc-lb',  label:'Pounds (lb)',          factor:2.20462},
+  {id:'wc-st',  label:'Stones (st)',          factor:0.157473},
+];
+
+var updating = false;
+var container = document.getElementById('wc-fields');
+
+UNITS.forEach(function(u) {
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<label class="ai-tool-label" for="'+u.id+'" style="font-size:.875rem;">'+u.label+'</label><input type="number" id="'+u.id+'" class="ai-tool-input" step="any" placeholder="0" oninput="convertWeight(\''+u.id+'\')">';
+  container.appendChild(wrap);
+});
+
+function convertWeight(fromId) {
+  if (updating) return;
+  updating = true;
+  var fromUnit = UNITS.find(function(u){ return u.id === fromId; });
+  var val = parseFloat(document.getElementById(fromId).value);
+  if (isNaN(val)) { updating = false; return; }
+  var kg = val / fromUnit.factor;
+  UNITS.forEach(function(u) {
+    if (u.id !== fromId) {
+      document.getElementById(u.id).value = parseFloat((kg * u.factor).toPrecision(8));
+    }
+  });
+  updating = false;
+}
+
+function resetWeight() {
+  UNITS.forEach(function(u){ document.getElementById(u.id).value = ''; });
+}
+</script>
+{% endblock %}

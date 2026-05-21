@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}UUID Generator — Free Online UUID v4 Generator | AIUtilities{% endblock %}
+{% block description %}Generate random UUID v4 identifiers instantly. Copy one or generate a batch. Runs entirely in your browser. Free online UUID generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'uuid-generator' %}{% endblock %}
+{% block og_title %}UUID Generator — Free Online UUID v4 | AIUtilities{% endblock %}
+{% block og_description %}Generate random UUID v4 identifiers instantly. Batch generation. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'uuid-generator' %}{% endblock %}
+{% block twitter_title %}UUID Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate random UUID v4 identifiers instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"UUID Generator","description":"Generate random UUID v4 identifiers instantly in the browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'uuid-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Security Tools","item":"{{ SITE_URL }}/tools/security/"},{"@type":"ListItem","position":3,"name":"UUID Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'uuid-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔐 Runs in browser · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">UUID Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate cryptographically random UUID version 4 identifiers instantly. Generate one at a time or a batch of up to 100. Runs entirely in your browser.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ UUID v4 (random)</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Batch up to 100</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Runs in browser</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="uuid-count">Number of UUIDs</label>
+        <select id="uuid-count" class="ai-tool-select">
+          <option value="1" selected>1</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <label class="ai-tool-label">Format</label>
+        <div style="display:flex;gap:.5rem;">
+          <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+            <input type="radio" name="uuid-format" value="standard" checked> Standard (lowercase)
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+            <input type="radio" name="uuid-format" value="upper"> Uppercase
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;">
+            <input type="radio" name="uuid-format" value="nohyphen"> No hyphens
+          </label>
+        </div>
+      </div>
+
+      <button type="button" onclick="generateUuids()" class="ai-tool-btn">Generate UUID →</button>
+
+      <div id="uuid-output-wrap" style="display:none;margin-top:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <label class="ai-tool-label" style="margin:0;">Generated UUIDs</label>
+          <button type="button" id="uuid-copy-btn" onclick="copyUuids()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Copy All</button>
+        </div>
+        <textarea id="uuid-output" class="ai-tool-input" rows="10" style="resize:vertical;font-family:monospace;font-size:.875rem;background:#f0fdf4;border-color:#bbf7d0;" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1rem;">About UUID v4</h2>
+    <p style="color:#374151;line-height:1.7;margin-bottom:1rem;">UUID (Universally Unique Identifier) version 4 uses 122 bits of cryptographic randomness to generate a 128-bit identifier. The probability of a collision between two randomly generated UUIDs is astronomically small — roughly 1 in 5.3 × 10³⁶ per pair.</p>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;">
+      <p style="margin:0;font-size:.8125rem;color:#374151;font-family:monospace;">Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</p>
+      <p style="margin:.5rem 0 0;font-size:.8125rem;color:#6b7280;">The "4" marks UUID version 4. The "y" is one of 8, 9, a, or b (variant bits).</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the UUID Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Click Generate UUID</strong><br><span style="font-size:.875rem;color:#6b7280;">A new random UUID v4 is generated using the browser's Crypto API.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose a format</strong><br><span style="font-size:.875rem;color:#6b7280;">Optionally switch to uppercase or no-hyphens format.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Generate bulk</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter a count and click Generate Bulk to produce multiple UUIDs at once.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a UUID? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A Universally Unique Identifier (UUID) is a 128-bit value formatted as 8-4-4-4-12 hexadecimal digits. It is designed to be globally unique without a central coordinator.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is UUID v4? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">UUID v4 is randomly generated (122 random bits). The probability of generating two identical v4 UUIDs is astronomically small — making them safe as unique IDs in databases and distributed systems.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">When should I use a UUID instead of an auto-increment integer? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">UUIDs are better when IDs must be globally unique across systems, when you cannot predict the next ID (security), or in distributed databases where multiple nodes create records simultaneously.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'security' 'password-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Password Generator</a>
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function uuidv4() {
+  if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+  var bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  var hex = Array.from(bytes).map(function(b){ return ('0'+b.toString(16)).slice(-2); });
+  return hex.slice(0,4).join('') + '-' + hex.slice(4,6).join('') + '-' + hex.slice(6,8).join('') + '-' + hex.slice(8,10).join('') + '-' + hex.slice(10).join('');
+}
+
+function applyFormat(uuid) {
+  var fmt = document.querySelector('input[name="uuid-format"]:checked').value;
+  if (fmt === 'upper') return uuid.toUpperCase();
+  if (fmt === 'nohyphen') return uuid.replace(/-/g,'');
+  return uuid;
+}
+
+function generateUuids() {
+  var count = parseInt(document.getElementById('uuid-count').value);
+  var uuids = [];
+  for (var i = 0; i < count; i++) uuids.push(applyFormat(uuidv4()));
+  document.getElementById('uuid-output').value = uuids.join('\n');
+  document.getElementById('uuid-output-wrap').style.display = 'block';
+  document.getElementById('uuid-copy-btn').textContent = 'Copy All';
+}
+
+function copyUuids() {
+  navigator.clipboard.writeText(document.getElementById('uuid-output').value).then(function(){
+    document.getElementById('uuid-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('uuid-copy-btn').textContent = 'Copy All'; }, 1500);
+  });
+}
+
+generateUuids();
+</script>
+{% endblock %}

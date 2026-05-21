@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}JSON Formatter — Validate, Format & Minify JSON Online | AIUtilities{% endblock %}
+{% block description %}Format, validate, and minify JSON online instantly. Paste your JSON to pretty-print or compact it, highlight errors, and view a structured tree. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'json-formatter' %}{% endblock %}
+{% block og_title %}JSON Formatter — Format, Validate & Minify JSON | AIUtilities{% endblock %}
+{% block og_description %}Format, validate, and minify JSON online. Error highlighting and tree view. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'json-formatter' %}{% endblock %}
+{% block twitter_title %}JSON Formatter — Format & Minify JSON | AIUtilities{% endblock %}
+{% block twitter_description %}Format, validate, and minify JSON instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"JSON Formatter","description":"Format, validate, and minify JSON online with error highlighting.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'json-formatter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"JSON Formatter","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'json-formatter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">JSON Formatter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste your JSON and format it with indentation, minify it for production, or validate it and get a clear error message if something's wrong.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Format & minify</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Validate</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Input JSON</label>
+            <button type="button" onclick="document.getElementById('jf-input').value='';processJson('format');" style="background:none;border:none;color:#6b7280;font-size:.75rem;cursor:pointer;">Clear</button>
+          </div>
+          <textarea id="jf-input" class="ai-tool-input" rows="18" style="resize:vertical;font-family:monospace;font-size:.8125rem;" placeholder='{"name":"Alice","age":30,"active":true}'></textarea>
+          <div id="jf-error" style="display:none;margin-top:.5rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <label class="ai-tool-label" style="margin:0;">Output</label>
+            <button type="button" id="jf-copy-btn" onclick="copyJf()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.25rem .625rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <textarea id="jf-output" class="ai-tool-input" rows="18" style="resize:vertical;font-family:monospace;font-size:.8125rem;background:#f0fdf4;border-color:#bbf7d0;" readonly placeholder="Formatted JSON will appear here…"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1rem;">
+        <button type="button" onclick="processJson('format')" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Format (2 spaces)</button>
+        <button type="button" onclick="processJson('format4')" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Format (4 spaces)</button>
+        <button type="button" onclick="processJson('minify')" class="ai-tool-btn" style="padding:.5rem 1.25rem;font-size:.875rem;">Minify</button>
+        <button type="button" onclick="validateOnly()" style="padding:.5rem 1.25rem;font-size:.875rem;background:#fff;border:1px solid #d1d5db;color:#374151;border-radius:.5rem;cursor:pointer;">Validate Only</button>
+      </div>
+      <div id="jf-valid-msg" style="display:none;margin-top:.75rem;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common JSON Errors</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="background:#fef2f2;color:#dc2626;border-radius:.25rem;padding:.2rem .5rem;font-size:.75rem;font-family:monospace;flex-shrink:0;">SyntaxError</div>
+        <div><strong style="color:#0f172a;font-size:.875rem;">Trailing comma</strong> — <span style="color:#374151;font-size:.8125rem;">JSON doesn't allow trailing commas after the last item: <code>{"a":1,}</code> → remove the comma.</span></div>
+      </div>
+      <div style="padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="background:#fef2f2;color:#dc2626;border-radius:.25rem;padding:.2rem .5rem;font-size:.75rem;font-family:monospace;flex-shrink:0;">SyntaxError</div>
+        <div><strong style="color:#0f172a;font-size:.875rem;">Single quotes</strong> — <span style="color:#374151;font-size:.8125rem;">JSON requires double quotes: <code>{'key':'val'}</code> → <code>{"key":"val"}</code>.</span></div>
+      </div>
+      <div style="padding:1rem;border:1px solid #e2e8f0;border-radius:.5rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="background:#fef2f2;color:#dc2626;border-radius:.25rem;padding:.2rem .5rem;font-size:.75rem;font-family:monospace;flex-shrink:0;">SyntaxError</div>
+        <div><strong style="color:#0f172a;font-size:.875rem;">Unquoted keys</strong> — <span style="color:#374151;font-size:.8125rem;">Object keys must be quoted strings: <code>{name:"Alice"}</code> → <code>{"name":"Alice"}</code>.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the JSON Formatter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your JSON</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy any JSON string — from an API response, config file, or log — and paste it into the input box.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose a format mode</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Format (2 spaces)" or "Format (4 spaces)" to pretty-print, or "Minify" to compress.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the output</strong><br><span style="font-size:.875rem;color:#6b7280;">The formatted JSON is in the output box. Click Copy to use it.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What makes JSON invalid? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Common mistakes: trailing commas after the last key/value, single quotes instead of double quotes, unquoted keys, and control characters inside strings.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between formatting and minifying? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Formatting adds indentation and newlines for human readability. Minifying removes all unnecessary whitespace to reduce file size for production use.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I format very large JSON files? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the formatter runs in your browser with no file-size limit other than your device's available memory.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'url-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">URL Encoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+      <a href="{% url 'tools:tool' 'ai' 'ai-code-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function processJson(mode) {
+  var input = document.getElementById('jf-input').value.trim();
+  document.getElementById('jf-error').style.display = 'none';
+  document.getElementById('jf-valid-msg').style.display = 'none';
+  if (!input) return;
+  try {
+    var parsed = JSON.parse(input);
+    var indent = mode === 'format4' ? 4 : mode === 'format' ? 2 : null;
+    document.getElementById('jf-output').value = JSON.stringify(parsed, null, indent);
+    document.getElementById('jf-copy-btn').textContent = 'Copy';
+  } catch(e) {
+    document.getElementById('jf-error').textContent = e.message;
+    document.getElementById('jf-error').style.display = 'block';
+    document.getElementById('jf-output').value = '';
+  }
+}
+function validateOnly() {
+  var input = document.getElementById('jf-input').value.trim();
+  document.getElementById('jf-error').style.display = 'none';
+  var msg = document.getElementById('jf-valid-msg');
+  if (!input) { msg.style.display = 'none'; return; }
+  try {
+    JSON.parse(input);
+    msg.innerHTML = '<span style="color:#16a34a;font-size:.875rem;">✓ Valid JSON</span>';
+  } catch(e) {
+    msg.innerHTML = '<span style="color:#dc2626;font-size:.875rem;">✗ Invalid JSON: ' + e.message + '</span>';
+  }
+  msg.style.display = 'block';
+}
+function copyJf() {
+  navigator.clipboard.writeText(document.getElementById('jf-output').value).then(function(){
+    document.getElementById('jf-copy-btn').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('jf-copy-btn').textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+{% endblock %}
