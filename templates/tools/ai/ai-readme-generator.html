@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI README Generator — Free GitHub README Writer | AIUtilities{% endblock %}
+{% block description %}Generate a professional GitHub README for any project with AI. Enter project name, description, and tech stack — get a complete README.md instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-readme-generator' %}{% endblock %}
+{% block og_title %}AI README Generator — Free GitHub README Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate a professional GitHub README for any project with AI. Name, description, tech stack → complete README. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-readme-generator' %}{% endblock %}
+{% block twitter_title %}AI README Generator — GitHub README Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate a professional GitHub README with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI README Generator","description":"Generate professional GitHub README.md files for any project using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-readme-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI README Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-readme-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI README Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a professional, well-structured README.md for any project in seconds. Enter the project name, description, and tech stack — get a complete README with installation, usage, and contributing sections.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full Markdown</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All sections included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-readme-generator' %}" hx-target="#readme-output" hx-swap="innerHTML" hx-indicator="#readme-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="project_name">Project Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="project_name" name="project_name" class="ai-tool-input" placeholder="e.g. TaskFlow, csv-cleaner, react-toast-notifications">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="description">What does the project do? <span style="color:#ef4444;">*</span></label>
+          <textarea id="description" name="description" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. A lightweight CLI tool to clean and normalize CSV files — removes duplicates, trims whitespace, standardizes date formats, and outputs a summary report. Works with any CSV regardless of size."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="tech_stack">Tech Stack <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="tech_stack" name="tech_stack" class="ai-tool-input" placeholder="e.g. Python 3.10, pandas, Click, pytest">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="features">Key Features <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="features" name="features" class="ai-tool-input" placeholder="e.g. supports CSV and TSV, handles 1M+ rows, configurable rules">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate README →</button>
+        <div id="readme-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing README…</span>
+        </div>
+      </form>
+    </div>
+    <div id="readme-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes a Great README</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Clear one-liner description</h3><p style="font-size:.8125rem;color:#374151;">The first sentence should tell a developer what the project does, for whom, and why — in under 25 words. If they can't understand it immediately, they'll move on.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Working installation steps</h3><p style="font-size:.8125rem;color:#374151;">A README that can't be followed to a working install in under 5 minutes will frustrate contributors. Test your own install steps. Make the prerequisites explicit.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Code examples</h3><p style="font-size:.8125rem;color:#374151;">Show, don't tell. A 5-line code example is worth a paragraph of description. Show the most common use case — the 80% case, not the edge case.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it generate proper Markdown formatting?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the output is formatted Markdown with headers (#, ##), code blocks (```), bullet lists, and bold text. Copy it directly into a README.md file and it will render correctly on GitHub, GitLab, and other platforms that support Markdown.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I add badges (build status, license, etc.)?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The generated README includes badge placeholders — replace them with real shields.io badges for your project's CI status, npm version, license, etc. Badges add professional polish and give visitors at-a-glance status signals before reading a line of text.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-python-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Python Code Generator</a>
+      <a href="/tools/ai/ai-test-case-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Test Case Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+      <a href="/tools/ai/ai-report-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Report Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

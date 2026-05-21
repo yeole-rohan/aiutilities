@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Answer Generator — Get Instant AI Answers | AIUtilities{% endblock %}
+{% block description %}Get clear, detailed answers to any question with AI. Choose depth and audience level — get accurate, well-explained answers instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-answer-generator' %}{% endblock %}
+{% block og_title %}AI Answer Generator — Get Instant AI Answers | AIUtilities{% endblock %}
+{% block og_description %}Get clear, detailed answers to any question with AI. Choose depth and audience level. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-answer-generator' %}{% endblock %}
+{% block twitter_title %}AI Answer Generator — Instant AI Answers | AIUtilities{% endblock %}
+{% block twitter_description %}Get clear, detailed answers to any question with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Answer Generator","description":"Get clear, accurate, well-structured answers to any question using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-answer-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Answer Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-answer-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Answer Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Ask any question and get a clear, structured answer. Choose how deep you want to go — a brief summary, a detailed explanation, or a comprehensive breakdown with examples.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any question</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 depth levels</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-answer-generator' %}" hx-target="#answer-output" hx-swap="innerHTML" hx-indicator="#answer-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="question">Your Question <span style="color:#ef4444;">*</span></label>
+          <textarea id="question" name="question" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. How does compound interest work? What causes inflation? Explain the difference between machine learning and deep learning. Why do we dream?"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="depth">Answer Depth</label>
+            <select id="depth" name="depth" class="ai-tool-select">
+              <option value="brief">Brief (2–3 sentences)</option>
+              <option value="detailed" selected>Detailed (3–5 paragraphs)</option>
+              <option value="comprehensive">Comprehensive (in-depth)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="audience">Audience Level</label>
+            <select id="audience" name="audience" class="ai-tool-select">
+              <option value="general">General (no prior knowledge)</option>
+              <option value="intermediate">Intermediate (some familiarity)</option>
+              <option value="expert">Expert (technical depth)</option>
+              <option value="child-friendly">Child-friendly (simple language)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Get Answer →</button>
+        <div id="answer-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating answer…</span>
+        </div>
+      </form>
+    </div>
+    <div id="answer-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Types of Questions This Tool Handles</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔬</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Science & Technology</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">How does X work? Why does Y happen? Explain the difference between A and B. Complex topics explained clearly at whatever depth you need.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💼</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Business & Finance</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Questions about investing, economics, accounting, marketing, strategy, or management explained with practical context and real-world examples.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📚</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Academic & Study</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Homework questions, concept clarifications, essay topic explanations, or study-prep questions across any subject from history to mathematics.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">General Knowledge</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Curious about the world? Ask about history, culture, geography, philosophy, or "why" questions that you've always wondered about.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How accurate are the answers?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI is highly accurate on well-established topics in science, history, business, and general knowledge. It performs best on conceptual questions with broadly accepted answers. For rapidly changing topics (recent news, current prices, live data), verify answers with up-to-date sources. For medical, legal, or financial decisions, always consult a qualified professional.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between this and the AI Summarizer?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI Summarizer condenses existing text you provide into a shorter form. This Answer Generator draws on its knowledge to answer questions — you don't provide text, you ask questions. Use the Summarizer when you have content to shorten; use this tool when you want the AI to explain or answer something from its own knowledge.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-quiz-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Quiz Generator</a>
+      <a href="/tools/ai/ai-flashcard-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Flashcard Generator</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+      <a href="/tools/ai/ai-question-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Question Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

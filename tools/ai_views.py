@@ -1722,6 +1722,627 @@ def youtube_description_generator(request):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Batch 6 — Tools 51–60
+# ─────────────────────────────────────────────────────────────────────────────
+
+@require_POST
+def ai_song_generator(request):
+    theme = request.POST.get("theme", "").strip()
+    genre = request.POST.get("genre", "pop")
+    mood = request.POST.get("mood", "uplifting")
+    structure = request.POST.get("structure", "verse-chorus-verse-chorus-bridge-chorus")
+
+    if not theme:
+        return HttpResponse(_error_html("Please describe what the song should be about."))
+
+    system = (
+        "You are a professional songwriter with credits across multiple genres. "
+        "Write complete, original song lyrics that feel authentic to the genre and mood. "
+        "Format clearly with section labels: [Verse 1], [Chorus], [Verse 2], [Bridge], etc. "
+        "Make the chorus memorable and repeatable. Lyrics should rhyme naturally — no forced rhymes."
+    )
+    user = (
+        f"Theme/topic: {theme}\n"
+        f"Genre: {genre}\n"
+        f"Mood: {mood}\n"
+        f"Structure: {structure}\n\n"
+        "Write the complete song lyrics."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=900, temperature=0.92)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "song-result"))
+
+
+@require_POST
+def ai_poem_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    style = request.POST.get("style", "free verse")
+    mood = request.POST.get("mood", "reflective")
+    length = request.POST.get("length", "medium")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic for the poem."))
+
+    length_map = {"short": "8–12 lines", "medium": "16–24 lines", "long": "28–40 lines"}
+    length_guide = length_map.get(length, "16–24 lines")
+
+    system = (
+        "You are an accomplished poet. Write original, evocative poetry that uses concrete imagery, "
+        "precise language, and an authentic emotional core. Avoid clichés. "
+        "Honour the requested style — if a form (sonnet, haiku, etc.) is requested, follow its rules precisely."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Style/form: {style}\n"
+        f"Mood: {mood}\n"
+        f"Length: {length_guide}\n\n"
+        "Write the poem. Include a title."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "poem-result"))
+
+
+@require_POST
+def ai_rap_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    style = request.POST.get("style", "storytelling")
+    num_verses = request.POST.get("num_verses", "2")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic or theme for the rap."))
+
+    system = (
+        "You are a skilled rap lyricist. Write rap lyrics with strong rhyme schemes (AABB, ABAB, or multi-syllable), "
+        "rhythmic flow, and clever wordplay. Use internal rhymes and alliteration where natural. "
+        "Format: [Verse 1], [Hook], [Verse 2], [Hook], [Outro] sections clearly labeled."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Style/vibe: {style}\n"
+        f"Number of verses: {num_verses}\n\n"
+        "Write the rap lyrics."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.9)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "rap-result"))
+
+
+@require_POST
+def ai_answer_generator(request):
+    question = request.POST.get("question", "").strip()
+    depth = request.POST.get("depth", "detailed")
+    audience = request.POST.get("audience", "general")
+
+    if not question:
+        return HttpResponse(_error_html("Please enter a question to answer."))
+
+    depth_map = {
+        "brief": "2–3 sentences, direct and concise",
+        "detailed": "3–5 paragraphs with explanation and examples",
+        "comprehensive": "in-depth treatment with multiple angles, examples, and nuance",
+    }
+    depth_guide = depth_map.get(depth, depth_map["detailed"])
+
+    system = (
+        "You are a knowledgeable expert who gives clear, accurate, well-structured answers. "
+        "Tailor complexity to the audience level. Use examples where helpful. "
+        "Be honest about uncertainty — don't fabricate facts."
+    )
+    user = (
+        f"Question: {question}\n"
+        f"Answer depth: {depth_guide}\n"
+        f"Audience: {audience}\n\n"
+        "Answer the question clearly and accurately."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=900, temperature=0.5)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "answer-result"))
+
+
+@require_POST
+def ai_flashcard_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    num_cards = request.POST.get("num_cards", "10")
+    difficulty = request.POST.get("difficulty", "intermediate")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic for the flashcards."))
+
+    system = (
+        "You are an expert educator. Generate study flashcards that test understanding, not just recall. "
+        "Format each card as:\nQ: [question]\nA: [concise, accurate answer]\n\n"
+        "Number each card. Questions should vary in type — definitions, applications, comparisons, examples. "
+        "Answers should be complete but concise (1–3 sentences max)."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Number of flashcards: {num_cards}\n"
+        f"Difficulty level: {difficulty}\n\n"
+        f"Generate {num_cards} flashcards."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.45)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "flashcard-result"))
+
+
+@require_POST
+def ai_lesson_plan_generator(request):
+    subject = request.POST.get("subject", "").strip()
+    grade_level = request.POST.get("grade_level", "middle school")
+    duration = request.POST.get("duration", "60 minutes")
+    learning_objective = request.POST.get("learning_objective", "").strip()
+
+    if not subject:
+        return HttpResponse(_error_html("Please enter the subject or topic for the lesson."))
+
+    objective_line = f"Learning objective: {learning_objective}" if learning_objective else "Derive appropriate learning objectives from the subject."
+
+    system = (
+        "You are an experienced curriculum designer. Create detailed, practical lesson plans that teachers can use directly. "
+        "Structure: Learning Objectives, Materials Needed, Introduction/Hook (5 min), "
+        "Main Activity (with timing), Assessment/Check for Understanding, Closure, Extension Activities, Differentiation notes."
+    )
+    user = (
+        f"Subject/Topic: {subject}\n"
+        f"Grade level: {grade_level}\n"
+        f"Lesson duration: {duration}\n"
+        f"{objective_line}\n\n"
+        "Write the complete lesson plan."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1100, temperature=0.5)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "lesson-plan-result"))
+
+
+@require_POST
+def ai_script_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    platform = request.POST.get("platform", "YouTube")
+    duration = request.POST.get("duration", "5-7 minutes")
+    tone = request.POST.get("tone", "conversational")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter the topic for the script."))
+
+    system = (
+        "You are a professional video scriptwriter. Write scripts that are engaging, paced well, "
+        "and easy to read aloud. Structure: Hook (attention-grabbing opening), Introduction, "
+        "Main Content (with clear sections), Call to Action, Outro. "
+        "Include [PAUSE], [B-ROLL: ...], and [TRANSITION] cues where helpful. "
+        "Write in a natural spoken voice — not formal prose."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Platform: {platform}\n"
+        f"Target duration: {duration}\n"
+        f"Tone: {tone}\n\n"
+        "Write the complete video script."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1400, temperature=0.78)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "script-result"))
+
+
+@require_POST
+def ai_newsletter_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    audience = request.POST.get("audience", "").strip()
+    tone = request.POST.get("tone", "informative and friendly")
+    num_sections = request.POST.get("num_sections", "3")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter the topic or theme for the newsletter."))
+
+    system = (
+        "You are an expert email newsletter writer. Create newsletters that people actually want to read. "
+        "Structure: compelling subject line, preview text, warm greeting, "
+        f"{num_sections} content sections each with a subheading, clear CTA, sign-off. "
+        "Keep paragraphs short (3–4 sentences). Write for skimming — headers and bullets help."
+    )
+    user = (
+        f"Newsletter topic: {topic}\n"
+        f"Audience: {audience or 'general subscribers'}\n"
+        f"Tone: {tone}\n\n"
+        "Write the complete newsletter. Include subject line and preview text at the top."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1000, temperature=0.78)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "newsletter-result"))
+
+
+@require_POST
+def ai_pitch_deck_generator(request):
+    startup_name = request.POST.get("startup_name", "").strip()
+    problem = request.POST.get("problem", "").strip()
+    solution = request.POST.get("solution", "").strip()
+    audience = request.POST.get("audience", "seed investors")
+
+    if not problem or not solution:
+        return HttpResponse(_error_html("Please describe the problem you solve and your solution."))
+
+    system = (
+        "You are a startup pitch coach who has helped companies raise millions. "
+        "Generate a complete pitch deck outline with slide-by-slide content. "
+        "Cover: Title, Problem, Solution, Market Size, Product/Demo, Business Model, "
+        "Traction, Team, Competition, Financial Ask, Use of Funds. "
+        "For each slide provide: slide title + 3–5 bullet points of content to include. "
+        "Keep bullets punchy — investors read these in seconds."
+    )
+    user = (
+        f"Startup name: {startup_name or 'the startup'}\n"
+        f"Problem being solved: {problem}\n"
+        f"Solution: {solution}\n"
+        f"Pitching to: {audience}\n\n"
+        "Generate the complete pitch deck content."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.65)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "pitch-deck-result"))
+
+
+@require_POST
+def ai_proposal_generator(request):
+    project_title = request.POST.get("project_title", "").strip()
+    client_name = request.POST.get("client_name", "").strip()
+    scope = request.POST.get("scope", "").strip()
+    proposal_type = request.POST.get("proposal_type", "project proposal")
+
+    if not project_title or not scope:
+        return HttpResponse(_error_html("Please enter the project title and scope."))
+
+    system = (
+        "You are a professional proposal writer. Create polished, persuasive proposals that win business. "
+        "Structure: Executive Summary, Project Background, Proposed Solution/Scope, "
+        "Deliverables, Timeline, Pricing (placeholder), Team/Credentials, Terms, Next Steps. "
+        "Write in a confident, professional tone. Avoid filler — every sentence must add value."
+    )
+    user = (
+        f"Project title: {project_title}\n"
+        f"Client: {client_name or 'the client'}\n"
+        f"Proposal type: {proposal_type}\n"
+        f"Project scope: {scope}\n\n"
+        "Write the complete proposal."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "proposal-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Batch 7 — Tools 61–70
+# ─────────────────────────────────────────────────────────────────────────────
+
+@require_POST
+def ai_python_code_generator(request):
+    task = request.POST.get("task", "").strip()
+    context = request.POST.get("context", "").strip()
+    style = request.POST.get("style", "clean and readable")
+
+    if not task:
+        return HttpResponse(_error_html("Please describe what you want the Python code to do."))
+
+    system = (
+        "You are a senior Python developer. Write clean, idiomatic Python code that solves the task precisely. "
+        "Include: working code with type hints where appropriate, a brief docstring for functions/classes, "
+        "and example usage at the bottom in an `if __name__ == '__main__':` block. "
+        "No unnecessary comments. Follow PEP 8. Return only the code block and a brief explanation of how it works."
+    )
+    user = (
+        f"Task: {task}\n"
+        f"Additional context: {context or 'none'}\n"
+        f"Code style preference: {style}\n\n"
+        "Write the Python code."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1000, temperature=0.3)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_markdown_result_html(result, "python-code-result"))
+
+
+@require_POST
+def ai_sql_query_generator(request):
+    description = request.POST.get("description", "").strip()
+    dialect = request.POST.get("dialect", "PostgreSQL")
+    schema = request.POST.get("schema", "").strip()
+
+    if not description:
+        return HttpResponse(_error_html("Please describe what the SQL query should do."))
+
+    schema_line = f"Database schema/tables available:\n{schema}" if schema else "Assume reasonable table/column names based on the task."
+
+    system = (
+        "You are a senior database engineer. Write correct, efficient SQL queries. "
+        "Format the SQL cleanly with proper indentation and uppercase keywords. "
+        "Briefly explain what the query does and any assumptions made about the schema."
+    )
+    user = (
+        f"Task: {description}\n"
+        f"SQL dialect: {dialect}\n"
+        f"{schema_line}\n\n"
+        "Write the SQL query."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.25)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_markdown_result_html(result, "sql-query-result"))
+
+
+@require_POST
+def ai_excel_formula_generator(request):
+    task = request.POST.get("task", "").strip()
+    app = request.POST.get("app", "Excel")
+    context = request.POST.get("context", "").strip()
+
+    if not task:
+        return HttpResponse(_error_html("Please describe what you want the formula to do."))
+
+    system = (
+        f"You are a {app} expert. Generate the correct formula for the task. "
+        "Provide: 1) The formula itself, 2) A step-by-step explanation of how it works, "
+        "3) How to adapt it (e.g. change cell references). "
+        "If multiple approaches exist, show the best one and briefly mention alternatives."
+    )
+    user = (
+        f"Task: {task}\n"
+        f"Application: {app}\n"
+        f"Context: {context or 'standard spreadsheet'}\n\n"
+        "Generate the formula."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=600, temperature=0.2)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_markdown_result_html(result, "excel-formula-result"))
+
+
+@require_POST
+def ai_readme_generator(request):
+    project_name = request.POST.get("project_name", "").strip()
+    description = request.POST.get("description", "").strip()
+    tech_stack = request.POST.get("tech_stack", "").strip()
+    features = request.POST.get("features", "").strip()
+
+    if not project_name or not description:
+        return HttpResponse(_error_html("Please enter the project name and description."))
+
+    system = (
+        "You are a technical writer specialising in open-source documentation. "
+        "Write a professional GitHub README in Markdown. "
+        "Include: Project title + badges placeholder, Description, Features (bullet list), "
+        "Installation, Usage (with code examples), Configuration (if applicable), "
+        "Contributing, License. Use proper Markdown formatting."
+    )
+    user = (
+        f"Project name: {project_name}\n"
+        f"Description: {description}\n"
+        f"Tech stack: {tech_stack or 'not specified'}\n"
+        f"Key features: {features or 'infer from description'}\n\n"
+        "Write the complete README.md."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1000, temperature=0.5)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_markdown_result_html(result, "readme-result"))
+
+
+@require_POST
+def ai_image_prompt_generator(request):
+    subject = request.POST.get("subject", "").strip()
+    style = request.POST.get("style", "photorealistic")
+    platform = request.POST.get("platform", "Midjourney")
+    mood = request.POST.get("mood", "").strip()
+
+    if not subject:
+        return HttpResponse(_error_html("Please describe what you want to generate an image of."))
+
+    system = (
+        f"You are an expert at writing prompts for {platform}. "
+        "Generate 3 detailed, effective image prompts that will produce stunning results. "
+        "Each prompt should include: subject description, style, lighting, composition, mood, "
+        "and any platform-specific parameters. "
+        "For Midjourney include --ar and --style parameters. "
+        "Number each prompt clearly."
+    )
+    user = (
+        f"Subject: {subject}\n"
+        f"Visual style: {style}\n"
+        f"Mood/atmosphere: {mood or 'not specified'}\n"
+        f"Platform: {platform}\n\n"
+        "Generate 3 image prompts."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.82)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "image-prompt-result"))
+
+
+@require_POST
+def ai_ad_copy_generator(request):
+    product = request.POST.get("product", "").strip()
+    platform = request.POST.get("platform", "Google Ads")
+    audience = request.POST.get("audience", "").strip()
+    usp = request.POST.get("usp", "").strip()
+
+    if not product:
+        return HttpResponse(_error_html("Please describe your product or service."))
+
+    system = (
+        "You are a direct-response copywriter who has written ads that generated millions in revenue. "
+        "Write high-converting ad copy. For Google Ads: 3 headlines (30 chars each) + 2 descriptions (90 chars each). "
+        "For Meta/Facebook: primary text (125 chars) + headline + CTA. "
+        "For LinkedIn: professional headline + body. "
+        "Generate 3 ad variants. Lead with the benefit, not the feature."
+    )
+    user = (
+        f"Product/service: {product}\n"
+        f"Advertising platform: {platform}\n"
+        f"Target audience: {audience or 'not specified'}\n"
+        f"Unique selling point: {usp or 'infer from product'}\n\n"
+        "Write 3 ad copy variants."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.78)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "ad-copy-result"))
+
+
+@require_POST
+def ai_question_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    question_type = request.POST.get("question_type", "comprehension")
+    num_questions = request.POST.get("num_questions", "10")
+    difficulty = request.POST.get("difficulty", "intermediate")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter a topic to generate questions about."))
+
+    system = (
+        "You are an expert educator and interviewer. Generate thoughtful, well-worded questions. "
+        "Vary question types — don't repeat the same pattern. "
+        "For comprehension: test understanding and application. "
+        "For discussion: open-ended, encourage critical thinking. "
+        "For interview: behavioural and situational. "
+        "Number each question. Keep them clear and unambiguous."
+    )
+    user = (
+        f"Topic: {topic}\n"
+        f"Question type: {question_type}\n"
+        f"Number of questions: {num_questions}\n"
+        f"Difficulty: {difficulty}\n\n"
+        f"Generate {num_questions} questions."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=800, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "question-result"))
+
+
+@require_POST
+def ai_report_generator(request):
+    topic = request.POST.get("topic", "").strip()
+    report_type = request.POST.get("report_type", "general report")
+    audience = request.POST.get("audience", "management")
+    length = request.POST.get("length", "medium")
+
+    if not topic:
+        return HttpResponse(_error_html("Please enter the report topic."))
+
+    length_map = {"short": "400–600 words", "medium": "700–1000 words", "long": "1200–1600 words"}
+    length_guide = length_map.get(length, length_map["medium"])
+
+    system = (
+        "You are a professional report writer. Create well-structured, evidence-based reports. "
+        "Structure: Executive Summary, Introduction, Background/Context, "
+        "Key Findings (with subheadings), Analysis, Recommendations, Conclusion. "
+        "Use clear, professional language. Avoid jargon. Bullet points for lists."
+    )
+    user = (
+        f"Report topic: {topic}\n"
+        f"Report type: {report_type}\n"
+        f"Audience: {audience}\n"
+        f"Length: {length_guide}\n\n"
+        "Write the complete report."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1300, temperature=0.55)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "report-result"))
+
+
+@require_POST
+def ai_test_case_generator(request):
+    feature = request.POST.get("feature", "").strip()
+    test_type = request.POST.get("test_type", "functional")
+    language = request.POST.get("language", "plain English")
+    num_cases = request.POST.get("num_cases", "10")
+
+    if not feature:
+        return HttpResponse(_error_html("Please describe the feature or function to test."))
+
+    system = (
+        "You are a senior QA engineer. Generate comprehensive test cases that cover happy paths, "
+        "edge cases, and failure scenarios. "
+        "Format each test case as:\n"
+        "Test Case #N: [name]\n"
+        "Input: [what goes in]\n"
+        "Steps: [step-by-step]\n"
+        "Expected Result: [what should happen]\n"
+        "Type: [positive/negative/edge case]\n\n"
+        "Cover: valid inputs, invalid inputs, boundary values, and error states."
+    )
+    user = (
+        f"Feature/function to test: {feature}\n"
+        f"Test type: {test_type}\n"
+        f"Output format: {language}\n"
+        f"Number of test cases: {num_cases}\n\n"
+        f"Generate {num_cases} test cases."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=1200, temperature=0.4)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "test-case-result"))
+
+
+@require_POST
+def ai_color_palette_generator(request):
+    brand_description = request.POST.get("brand_description", "").strip()
+    palette_type = request.POST.get("palette_type", "brand palette")
+    mood = request.POST.get("mood", "professional")
+    num_colors = request.POST.get("num_colors", "5")
+
+    if not brand_description:
+        return HttpResponse(_error_html("Please describe your brand or the purpose of the palette."))
+
+    system = (
+        "You are a professional brand designer and color theorist. Generate color palettes with exact hex codes. "
+        "For each color provide: color name, hex code, RGB values, when/how to use it (primary/secondary/accent/background/text). "
+        "Ensure colors work together harmoniously — consider contrast ratios for accessibility. "
+        "Explain the reasoning behind the palette choices."
+    )
+    user = (
+        f"Brand/purpose: {brand_description}\n"
+        f"Palette type: {palette_type}\n"
+        f"Mood/feel: {mood}\n"
+        f"Number of colors: {num_colors}\n\n"
+        "Generate the color palette with hex codes, RGB, and usage guidance."
+    )
+    try:
+        result = groq_chat(system, user, max_tokens=700, temperature=0.6)
+    except Exception:
+        return HttpResponse(_error_html())
+    return HttpResponse(_result_html(result, "color-palette-result"))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Dispatcher map (tool_slug → handler)
 # ─────────────────────────────────────────────────────────────────────────────
 AI_HANDLERS = {
@@ -1780,4 +2401,26 @@ AI_HANDLERS = {
     "salary-negotiation-email": salary_negotiation_email,
     "thank-you-email-generator": thank_you_email_generator,
     "tagline-generator": tagline_generator,
+    # Batch 6
+    "ai-song-generator": ai_song_generator,
+    "ai-poem-generator": ai_poem_generator,
+    "ai-rap-generator": ai_rap_generator,
+    "ai-answer-generator": ai_answer_generator,
+    "ai-flashcard-generator": ai_flashcard_generator,
+    "ai-lesson-plan-generator": ai_lesson_plan_generator,
+    "ai-script-generator": ai_script_generator,
+    "ai-newsletter-generator": ai_newsletter_generator,
+    "ai-pitch-deck-generator": ai_pitch_deck_generator,
+    "ai-proposal-generator": ai_proposal_generator,
+    # Batch 7
+    "ai-python-code-generator": ai_python_code_generator,
+    "ai-sql-query-generator": ai_sql_query_generator,
+    "ai-excel-formula-generator": ai_excel_formula_generator,
+    "ai-readme-generator": ai_readme_generator,
+    "ai-image-prompt-generator": ai_image_prompt_generator,
+    "ai-ad-copy-generator": ai_ad_copy_generator,
+    "ai-question-generator": ai_question_generator,
+    "ai-report-generator": ai_report_generator,
+    "ai-test-case-generator": ai_test_case_generator,
+    "ai-color-palette-generator": ai_color_palette_generator,
 }

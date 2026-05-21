@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI SQL Query Generator — Free SQL Writer from Plain English | AIUtilities{% endblock %}
+{% block description %}Generate SQL queries from plain English with AI. SELECT, JOIN, GROUP BY, subqueries — describe what you need and get correct, formatted SQL. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-sql-query-generator' %}{% endblock %}
+{% block og_title %}AI SQL Query Generator — Write SQL from Plain English | AIUtilities{% endblock %}
+{% block og_description %}Generate SQL queries from plain English. SELECT, JOIN, GROUP BY, subqueries — correct, formatted SQL. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-sql-query-generator' %}{% endblock %}
+{% block twitter_title %}AI SQL Query Generator — SQL from Plain English | AIUtilities{% endblock %}
+{% block twitter_description %}Generate SQL queries from plain English. Any dialect. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI SQL Query Generator","description":"Generate correct, formatted SQL queries from plain English descriptions using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-sql-query-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI SQL Query Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-sql-query-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI SQL Query Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Turn plain English into SQL. Describe what data you need, tell us your database (PostgreSQL, MySQL, SQLite), and optionally paste your schema — get a correct, well-formatted query in seconds.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All major dialects</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Complex JOINs & subqueries</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-sql-query-generator' %}" hx-target="#sql-query-output" hx-swap="innerHTML" hx-indicator="#sql-query-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="description">What data do you need? <span style="color:#ef4444;">*</span></label>
+          <textarea id="description" name="description" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. Get the top 10 customers by total order value in the last 90 days, show all users who have not placed an order, find duplicate email addresses in the users table"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="dialect">SQL Dialect</label>
+            <select id="dialect" name="dialect" class="ai-tool-select">
+              <option value="PostgreSQL">PostgreSQL</option>
+              <option value="MySQL">MySQL</option>
+              <option value="SQLite">SQLite</option>
+              <option value="SQL Server (T-SQL)">SQL Server (T-SQL)</option>
+              <option value="BigQuery">BigQuery</option>
+              <option value="standard SQL">Standard SQL</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="schema">Table Schema <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="schema" name="schema" class="ai-tool-input" placeholder="e.g. users(id, email, created_at), orders(id, user_id, total, date)">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate SQL Query →</button>
+        <div id="sql-query-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing query…</span>
+        </div>
+      </form>
+    </div>
+    <div id="sql-query-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">SQL Query Types This Tool Handles</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">SELECT & filtering</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Basic SELECT, WHERE clauses, LIKE patterns, IN lists, date ranges, NULL checks — the bread and butter of SQL queries.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔗</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">JOINs</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">INNER, LEFT, RIGHT, FULL OUTER JOINs — including multi-table joins and self-joins. Describe the relationship and the AI builds the correct join.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📊</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Aggregations</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">GROUP BY, HAVING, COUNT, SUM, AVG, MIN, MAX, window functions (ROW_NUMBER, RANK, LAG, LEAD) — analytical queries and reporting.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔄</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">CTEs & subqueries</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Common Table Expressions, correlated subqueries, EXISTS/NOT EXISTS checks — for complex queries that would be messy in a single statement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How accurate is the generated SQL?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Very accurate for standard queries. Providing your schema (table names and column names) dramatically improves accuracy — the AI can generate the exact column references instead of guessing. Always test queries on a development database before running on production data.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can it generate INSERT, UPDATE, and DELETE queries?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — describe what you want to write, update, or delete in the description field. For data-modifying queries (UPDATE, DELETE), the AI will include appropriate WHERE clauses and warn about scope — always review before executing a bulk update or delete.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-python-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Python Code Generator</a>
+      <a href="/tools/ai/ai-excel-formula-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Excel Formula Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+      <a href="/tools/ai/ai-test-case-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Test Case Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Question Generator — Free Question Maker for Any Topic | AIUtilities{% endblock %}
+{% block description %}Generate questions on any topic with AI. Comprehension, discussion, interview, or exam questions — choose type and difficulty. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-question-generator' %}{% endblock %}
+{% block og_title %}AI Question Generator — Questions for Any Topic | AIUtilities{% endblock %}
+{% block og_description %}Generate comprehension, discussion, or interview questions on any topic with AI. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-question-generator' %}{% endblock %}
+{% block twitter_title %}AI Question Generator — Any Topic | AIUtilities{% endblock %}
+{% block twitter_description %}Generate questions for any topic — comprehension, discussion, interview. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Question Generator","description":"Generate comprehension, discussion, interview, or exam questions on any topic using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-question-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Question Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-question-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Question Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate thoughtful, well-worded questions on any topic instantly. Choose between comprehension, discussion, interview, or exam-style questions — at any difficulty level.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 4 question types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any topic</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-question-generator' %}" hx-target="#question-output" hx-swap="innerHTML" hx-indicator="#question-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input" placeholder="e.g. climate change, the role of AI in healthcare, JavaScript async/await, leadership styles, the Great Gatsby">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="question_type">Question Type</label>
+            <select id="question_type" name="question_type" class="ai-tool-select">
+              <option value="comprehension">Comprehension</option>
+              <option value="discussion / critical thinking">Discussion / Critical Thinking</option>
+              <option value="interview">Interview (Behavioural)</option>
+              <option value="exam / assessment">Exam / Assessment</option>
+              <option value="research / essay">Research / Essay Prompts</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="difficulty">Difficulty</label>
+            <select id="difficulty" name="difficulty" class="ai-tool-select">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="num_questions">Number of Questions</label>
+          <select id="num_questions" name="num_questions" class="ai-tool-select">
+            <option value="5">5 questions</option>
+            <option value="10" selected>10 questions</option>
+            <option value="15">15 questions</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Questions →</button>
+        <div id="question-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Generating questions…</span>
+        </div>
+      </form>
+    </div>
+    <div id="question-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Question Types Explained</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📖</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Comprehension</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Test understanding of a topic — what, who, when, where, how. Best for checking whether someone has understood core concepts and facts.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">💬</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Discussion</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Open-ended prompts that require opinion, analysis, and evidence. "To what extent...", "Discuss the implications of...", "Compare and contrast..." — no single right answer.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🤝</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Interview</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Behavioural questions ("Tell me about a time when...") and situational questions ("How would you handle...") that reveal character, skills, and past behaviour.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📝</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Exam / Assessment</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Short-answer and structured questions suitable for graded assessment. Mix of recall, application, and analysis questions across Bloom's taxonomy levels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What's the difference between this and the AI Quiz Generator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI Quiz Generator creates multiple-choice and true/false questions with answer keys — structured quiz format. This Question Generator creates open-ended, discussion, or interview questions that require longer responses. Use the Quiz Generator for assessment; use this for discussion, preparation, or research prompts.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use these for interview prep?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — select "Interview (Behavioural)" and enter the job role or skill as the topic (e.g. "product manager", "data analyst interview", "leadership and management"). You'll get behavioural and situational questions to practice with. Use the AI Answer Generator to then draft STAR-format answers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-quiz-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Quiz Generator</a>
+      <a href="/tools/ai/ai-flashcard-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Flashcard Generator</a>
+      <a href="/tools/ai/ai-answer-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Answer Generator</a>
+      <a href="/tools/ai/ai-lesson-plan-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Lesson Plan Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Ad Copy Generator — Free Google & Meta Ad Writer | AIUtilities{% endblock %}
+{% block description %}Generate high-converting ad copy for Google Ads, Meta, and LinkedIn with AI. Enter your product, audience, and USP — get 3 ad variants instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-ad-copy-generator' %}{% endblock %}
+{% block og_title %}AI Ad Copy Generator — Google & Meta Ad Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate high-converting ad copy for Google, Meta, and LinkedIn with AI. 3 variants instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-ad-copy-generator' %}{% endblock %}
+{% block twitter_title %}AI Ad Copy Generator — Google & Meta Ad Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate converting ad copy for Google, Meta, and LinkedIn. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Ad Copy Generator","description":"Generate high-converting ad copy for Google Ads, Meta, and LinkedIn using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-ad-copy-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Ad Copy Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-ad-copy-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Ad Copy Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate 3 high-converting ad copy variants for any platform. Enter your product, target audience, and unique selling point — get platform-formatted copy for Google Ads, Meta, or LinkedIn in seconds.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 ad variants</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Platform-formatted</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-ad-copy-generator' %}" hx-target="#ad-copy-output" hx-swap="innerHTML" hx-indicator="#ad-copy-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="product">Product or Service <span style="color:#ef4444;">*</span></label>
+          <textarea id="product" name="product" class="ai-tool-input" rows="2" style="resize:vertical;font-family:inherit;" placeholder="e.g. AI-powered CRM software for small businesses, handmade soy candles, online Spanish tutoring for busy professionals, gym membership app with personal trainer matching"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="platform">Ad Platform</label>
+            <select id="platform" name="platform" class="ai-tool-select">
+              <option value="Google Ads">Google Ads (Search)</option>
+              <option value="Meta (Facebook & Instagram)">Meta (Facebook/Instagram)</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="TikTok Ads">TikTok Ads</option>
+              <option value="all platforms">All Platforms</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input" placeholder="e.g. small business owners aged 35–55, fitness enthusiasts, software developers">
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="usp">Unique Selling Point <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="usp" name="usp" class="ai-tool-input" placeholder="e.g. 14-day free trial, money-back guarantee, 50% cheaper than competitors, ships in 24 hours">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Ad Copy →</button>
+        <div id="ad-copy-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing ad copy…</span>
+        </div>
+      </form>
+    </div>
+    <div id="ad-copy-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Good Ad Copy Does</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Leads with benefit</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">"Project tracking made simple" beats "Our software has a Gantt chart". Customers buy outcomes, not features. Lead with what they get, not what you built.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Creates urgency</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Deadlines, limited availability, and fear of missing out drive clicks. "Limited spots", "offer ends Friday", "join 10,000+ businesses" — all create pressure to act now.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔢</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Uses numbers</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Numbers are more credible than adjectives. "Save 3 hours per week" beats "saves lots of time". "Trusted by 50,000 users" beats "popular with businesses".</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📏</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Respects character limits</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Google Ads: 30 chars per headline, 90 per description. Meta: 125 chars primary text shown before truncation. The AI formats to platform limits so copy is never cut off.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How many ad variants should I test?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Start with 3 variants per ad group (this tool generates exactly 3). Vary one element between each — headline, CTA, or benefit focus. Let them run until you have 100+ impressions each, then cut the worst performer and replace it with a new variant based on what the winner taught you.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this for product listings on Amazon or Etsy?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The Meta/TikTok formats work well for organic social posts. For Amazon and Etsy listings, try the Product Description Generator or Etsy Product Description Generator — they're specifically optimised for marketplace listing formats and SEO.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+      <a href="/tools/ai/ai-newsletter-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Newsletter Generator</a>
+      <a href="/tools/ecommerce/product-description-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Product Description Generator</a>
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

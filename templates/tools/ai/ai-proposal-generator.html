@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Proposal Generator — Free Project Proposal Writer | AIUtilities{% endblock %}
+{% block description %}Generate professional project or business proposals with AI. Enter the project title, scope, and client — get a complete, persuasive proposal instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-proposal-generator' %}{% endblock %}
+{% block og_title %}AI Proposal Generator — Free Project Proposal Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate professional project or business proposals with AI. Title, scope, client — complete proposal. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-proposal-generator' %}{% endblock %}
+{% block twitter_title %}AI Proposal Generator — Free Proposal Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate professional project proposals with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Proposal Generator","description":"Generate professional, persuasive project or business proposals using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-proposal-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Proposal Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-proposal-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Proposal Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a complete, professional proposal in minutes. Describe the project and scope — get a polished document with executive summary, deliverables, timeline, and terms ready to send.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full structure</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Persuasive tone</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-proposal-generator' %}" hx-target="#proposal-output" hx-swap="innerHTML" hx-indicator="#proposal-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="project_title">Project Title <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="project_title" name="project_title" class="ai-tool-input" placeholder="e.g. Brand Identity Redesign, E-commerce Website Development, Digital Marketing Campaign Q3">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="scope">Project Scope <span style="color:#ef4444;">*</span></label>
+          <textarea id="scope" name="scope" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. Full brand redesign including new logo, color palette, typography, brand guidelines, and social media templates. Delivery over 6 weeks with 2 rounds of revisions."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="client_name">Client Name <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="client_name" name="client_name" class="ai-tool-input" placeholder="e.g. Acme Corp, Sarah Johnson">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="proposal_type">Proposal Type</label>
+            <select id="proposal_type" name="proposal_type" class="ai-tool-select">
+              <option value="project proposal">Project Proposal</option>
+              <option value="business proposal">Business Proposal</option>
+              <option value="grant proposal">Grant Proposal</option>
+              <option value="freelance proposal">Freelance Proposal</option>
+              <option value="partnership proposal">Partnership Proposal</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Proposal →</button>
+        <div id="proposal-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing proposal…</span>
+        </div>
+      </form>
+    </div>
+    <div id="proposal-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What's in a Winning Proposal</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Executive summary</h3><p style="font-size:.8125rem;color:#374151;">Decision-makers often read only this. Summarise the problem, your solution, why you're the right choice, and the investment required — in under 200 words.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Specific deliverables</h3><p style="font-size:.8125rem;color:#374151;">Vague scope leads to scope creep and disputes. List exactly what you'll deliver, what format it's in, and what's explicitly excluded. Clarity wins trust.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Clear next steps</h3><p style="font-size:.8125rem;color:#374151;">End every proposal with a specific call to action — "sign and return by [date]", "schedule a 30-minute call to discuss". A proposal without a next step is an invitation to procrastinate.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I add my own pricing to the proposal?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the generated proposal includes a pricing section placeholder that you fill in with your actual rates. You can copy the proposal into a Google Doc or Word and add your specific figures, payment terms, and any required legal language before sending.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How is this different from the AI Business Plan Generator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">A business plan is an internal strategic document describing your entire business — market analysis, financials, operations. A proposal is an external document sent to a specific client to win a specific project or contract. Different purpose, different structure, different audience.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-business-plan-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Business Plan Generator</a>
+      <a href="/tools/ai/ai-pitch-deck-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Pitch Deck Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+      <a href="/tools/ai/ai-report-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Report Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

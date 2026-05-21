@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Song Generator — Free AI Lyrics Writer | AIUtilities{% endblock %}
+{% block description %}Generate original song lyrics in any genre with AI. Enter your theme, genre, and mood — get complete lyrics with verses, chorus, and bridge. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-song-generator' %}{% endblock %}
+{% block og_title %}AI Song Generator — Free AI Lyrics Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate original song lyrics in any genre with AI. Theme, genre, mood — complete song lyrics. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-song-generator' %}{% endblock %}
+{% block twitter_title %}AI Song Generator — Free AI Lyrics Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate original song lyrics in any genre with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Song Generator","description":"Generate original song lyrics in any genre using AI — verse, chorus, bridge, and more.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-song-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Song Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-song-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Song Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate complete, original song lyrics in seconds. Choose your genre, describe your theme, set the mood — get a full song with verse, chorus, and bridge ready to use or inspire.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any genre</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full structure</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-song-generator' %}" hx-target="#song-output" hx-swap="innerHTML" hx-indicator="#song-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="theme">Song Theme or Story <span style="color:#ef4444;">*</span></label>
+          <textarea id="theme" name="theme" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. overcoming heartbreak and finding strength, a late-night drive with someone you love, chasing a dream against all odds, summer nostalgia"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="genre">Genre</label>
+            <select id="genre" name="genre" class="ai-tool-select">
+              <option value="pop">Pop</option>
+              <option value="country">Country</option>
+              <option value="R&B / Soul">R&B / Soul</option>
+              <option value="rock">Rock</option>
+              <option value="indie / folk">Indie / Folk</option>
+              <option value="hip-hop">Hip-Hop</option>
+              <option value="EDM / dance">EDM / Dance</option>
+              <option value="ballad">Ballad</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mood">Mood</label>
+            <select id="mood" name="mood" class="ai-tool-select">
+              <option value="uplifting">Uplifting</option>
+              <option value="melancholic">Melancholic</option>
+              <option value="romantic">Romantic</option>
+              <option value="energetic">Energetic</option>
+              <option value="reflective">Reflective</option>
+              <option value="angry / defiant">Angry / Defiant</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="structure">Song Structure</label>
+          <select id="structure" name="structure" class="ai-tool-select">
+            <option value="verse-chorus-verse-chorus-bridge-chorus">Verse / Chorus / Verse / Chorus / Bridge / Chorus</option>
+            <option value="verse-verse-chorus-verse-chorus">Verse / Verse / Chorus / Verse / Chorus</option>
+            <option value="verse-chorus-verse-chorus-outro">Verse / Chorus / Verse / Chorus / Outro</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Song →</button>
+        <div id="song-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your song…</span>
+        </div>
+      </form>
+    </div>
+    <div id="song-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Anatomy of a Great Song</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎵</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Verses tell the story</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Verses advance the narrative and add detail. Verse 1 sets the scene, Verse 2 deepens it. Each verse should feel different while flowing into the same chorus.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎶</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Chorus is the hook</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The chorus carries the emotional peak — it's what listeners remember and sing along to. It should be singable, memorable, and summarise the song's core feeling.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🌉</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Bridge adds contrast</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The bridge breaks the verse-chorus pattern and adds an emotional or melodic shift before the final chorus. It's the song's turning point.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">✏️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Edit like a writer</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">AI gives you a strong starting point — your job is to find the lines that resonate and cut the rest. The best lyrics feel inevitable, not clever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use these lyrics commercially?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The generated lyrics are yours to use. However, AI-generated content may not be eligible for copyright protection in all jurisdictions (laws are evolving). For commercial releases, we recommend using the AI output as a starting draft and adding substantial original creative input before publishing.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does this generate the music or just lyrics?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">This tool generates lyrics only — not audio. For AI-generated music and audio, tools like Suno, Udio, or Mubert can create melodies and full tracks. You can paste these lyrics into those tools to generate audio from them.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-poem-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Poem Generator</a>
+      <a href="/tools/ai/ai-rap-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Rap Generator</a>
+      <a href="/tools/ai/ai-story-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Story Generator</a>
+      <a href="/tools/ai/ai-script-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Script Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

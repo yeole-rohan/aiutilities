@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Newsletter Generator — Free Email Newsletter Writer | AIUtilities{% endblock %}
+{% block description %}Generate engaging email newsletters with AI. Enter your topic, audience, and tone — get a complete newsletter with subject line, sections, and CTA. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-newsletter-generator' %}{% endblock %}
+{% block og_title %}AI Newsletter Generator — Free Email Newsletter Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate complete email newsletters with AI. Topic, audience, tone — subject line to CTA. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-newsletter-generator' %}{% endblock %}
+{% block twitter_title %}AI Newsletter Generator — Free Email Newsletter Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate complete email newsletters with AI. Subject line to sign-off. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Newsletter Generator","description":"Generate complete, engaging email newsletters with subject line, sections, and CTA using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-newsletter-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Newsletter Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-newsletter-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Newsletter Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a complete, engaging email newsletter in minutes. From subject line to sign-off — with multiple content sections, a clear CTA, and a tone your subscribers will want to read.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Subject line included</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple sections</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-newsletter-generator' %}" hx-target="#newsletter-output" hx-swap="innerHTML" hx-indicator="#newsletter-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Newsletter Topic or Theme <span style="color:#ef4444;">*</span></label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. our product launch recap and what's coming next, this week's top productivity tips, the latest trends in sustainable fashion, monthly update for our fitness community"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="audience">Target Audience <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="audience" name="audience" class="ai-tool-input" placeholder="e.g. small business owners, fitness enthusiasts, developers">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tone">Tone</label>
+            <select id="tone" name="tone" class="ai-tool-select">
+              <option value="informative and friendly">Informative & Friendly</option>
+              <option value="professional">Professional</option>
+              <option value="casual and conversational">Casual & Conversational</option>
+              <option value="inspirational">Inspirational</option>
+              <option value="bold and direct">Bold & Direct</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="num_sections">Content Sections</label>
+          <select id="num_sections" name="num_sections" class="ai-tool-select">
+            <option value="2">2 sections</option>
+            <option value="3" selected>3 sections</option>
+            <option value="4">4 sections</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Newsletter →</button>
+        <div id="newsletter-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing newsletter…</span>
+        </div>
+      </form>
+    </div>
+    <div id="newsletter-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Newsletter Best Practices</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📧</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Subject line is everything</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">47% of recipients decide whether to open based on the subject line alone. The AI generates a subject line and preview text — test multiple options if your platform supports it.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">✂️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Short paragraphs</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Email readers scan, they don't read. Keep paragraphs to 2–3 sentences. Use subheadings to let readers jump to what interests them. The AI structures output for scanners.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">One CTA per email</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Multiple CTAs split attention and reduce clicks on each. Pick one primary action — read an article, buy a product, book a call — and everything in the email should point toward it.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📅</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Consistency beats perfection</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A good newsletter sent every week beats a perfect newsletter sent whenever inspiration strikes. Use AI to maintain your publishing cadence even on low-inspiration weeks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this output directly in Mailchimp or Substack?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — copy the generated newsletter and paste it into your email platform's text editor (Mailchimp, Substack, ConvertKit, Beehiiv, etc.). Add your images, adjust links, and personalise the greeting before sending. The structure is already optimised for email.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How is this different from the AI Content Generator?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI Content Generator writes articles and blog posts (600–2,000 words) formatted for web reading. This Newsletter Generator is specifically structured for email — shorter paragraphs, subject line, preview text, and an email-native CTA. The output format and writing style are optimised for inbox consumption.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Email Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-ad-copy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Ad Copy Generator</a>
+      <a href="/tools/ai/cold-email-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cold Email Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

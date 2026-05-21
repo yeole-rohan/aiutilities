@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Test Case Generator — Free Software Test Case Writer | AIUtilities{% endblock %}
+{% block description %}Generate software test cases with AI. Functional, edge cases, and negative tests — enter your feature and get complete test cases with steps and expected results. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-test-case-generator' %}{% endblock %}
+{% block og_title %}AI Test Case Generator — Software Test Case Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate software test cases with AI. Happy path, edge cases, negative tests — with steps and expected results. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-test-case-generator' %}{% endblock %}
+{% block twitter_title %}AI Test Case Generator — Test Case Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate software test cases with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Test Case Generator","description":"Generate comprehensive software test cases with steps and expected results using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-test-case-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Test Case Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-test-case-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Test Case Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate comprehensive test cases for any software feature. Describe what you're testing — get test cases covering happy paths, edge cases, and failure scenarios with clear steps and expected results.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Happy path & edge cases</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Steps & expected results</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-test-case-generator' %}" hx-target="#test-case-output" hx-swap="innerHTML" hx-indicator="#test-case-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="feature">Feature or Function to Test <span style="color:#ef4444;">*</span></label>
+          <textarea id="feature" name="feature" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. User registration form with email and password, shopping cart add/remove item functionality, password reset via email, file upload with size and format validation, payment checkout flow"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="test_type">Test Type</label>
+            <select id="test_type" name="test_type" class="ai-tool-select">
+              <option value="functional">Functional</option>
+              <option value="unit">Unit Tests</option>
+              <option value="integration">Integration</option>
+              <option value="end-to-end / UI">End-to-End / UI</option>
+              <option value="API">API Testing</option>
+              <option value="security">Security / Validation</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="num_cases">Number of Test Cases</label>
+            <select id="num_cases" name="num_cases" class="ai-tool-select">
+              <option value="5">5 test cases</option>
+              <option value="10" selected>10 test cases</option>
+              <option value="15">15 test cases</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="language">Output Format</label>
+          <select id="language" name="language" class="ai-tool-select">
+            <option value="plain English">Plain English (step-by-step)</option>
+            <option value="Gherkin / BDD (Given/When/Then)">Gherkin / BDD (Given/When/Then)</option>
+            <option value="table format">Table Format</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Test Cases →</button>
+        <div id="test-case-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing test cases…</span>
+        </div>
+      </form>
+    </div>
+    <div id="test-case-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Good Test Coverage Looks Like</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">✅</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Happy path</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The ideal flow — everything works as expected with valid inputs. This is where most teams start, but it's not where most bugs hide.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚠️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Edge cases</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Boundary values (min/max), empty inputs, very long strings, zero values, special characters — the unusual-but-valid inputs that expose hidden assumptions.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">❌</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Negative tests</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Invalid inputs, missing required fields, wrong data types — tests that verify the system fails gracefully and shows helpful error messages rather than crashing.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔒</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Security tests</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">SQL injection, XSS payloads in form fields, unauthorised access attempts — basic security test cases that catch the most common vulnerabilities before they reach production.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use Gherkin format for Cucumber or Behave?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — select "Gherkin / BDD (Given/When/Then)" format and the output will be in Feature/Scenario/Given/When/Then format compatible with Cucumber, Behave, SpecFlow, and other BDD frameworks. You'll still need to implement the step definitions.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Should I use this for manual or automated testing?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Both. The plain English and table formats work for manual QA test plans. The Gherkin format is for BDD automation. For traditional unit tests, describe the specific function in the feature field and select "Unit Tests" — the output gives you a test plan you can then implement in Jest, pytest, JUnit, or your preferred framework.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-python-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Python Code Generator</a>
+      <a href="/tools/ai/ai-sql-query-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI SQL Query Generator</a>
+      <a href="/tools/ai/ai-readme-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI README Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

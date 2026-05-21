@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Image Prompt Generator — Free Midjourney & DALL-E Prompt Writer | AIUtilities{% endblock %}
+{% block description %}Generate detailed image prompts for Midjourney, DALL-E, and Stable Diffusion with AI. Describe your subject and style — get 3 optimised prompts. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-image-prompt-generator' %}{% endblock %}
+{% block og_title %}AI Image Prompt Generator — Midjourney & DALL-E Prompts | AIUtilities{% endblock %}
+{% block og_description %}Generate image prompts for Midjourney, DALL-E, and Stable Diffusion with AI. Subject + style = 3 detailed prompts. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-image-prompt-generator' %}{% endblock %}
+{% block twitter_title %}AI Image Prompt Generator — Midjourney & DALL-E Prompts | AIUtilities{% endblock %}
+{% block twitter_description %}Generate image prompts for Midjourney, DALL-E, Stable Diffusion. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Image Prompt Generator","description":"Generate detailed prompts for Midjourney, DALL-E, and Stable Diffusion using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-image-prompt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Image Prompt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-image-prompt-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Image Prompt Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate 3 detailed, highly effective image prompts for Midjourney, DALL-E, or Stable Diffusion. Describe what you want to see — get platform-optimised prompts with lighting, composition, and style details.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 3 prompt variations</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Platform-specific</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-image-prompt-generator' %}" hx-target="#image-prompt-output" hx-swap="innerHTML" hx-indicator="#image-prompt-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="subject">What do you want to generate? <span style="color:#ef4444;">*</span></label>
+          <textarea id="subject" name="subject" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. a lone astronaut walking through a forest on an alien planet, a cozy coffee shop interior on a rainy day, a futuristic city skyline at sunset, a portrait of a wise elderly woman with kind eyes"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="platform">Platform</label>
+            <select id="platform" name="platform" class="ai-tool-select">
+              <option value="Midjourney">Midjourney</option>
+              <option value="DALL-E 3">DALL-E 3</option>
+              <option value="Stable Diffusion">Stable Diffusion</option>
+              <option value="Adobe Firefly">Adobe Firefly</option>
+              <option value="any image AI">Any Image AI</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="style">Visual Style</label>
+            <select id="style" name="style" class="ai-tool-select">
+              <option value="photorealistic">Photorealistic</option>
+              <option value="digital art">Digital Art</option>
+              <option value="oil painting">Oil Painting</option>
+              <option value="cinematic">Cinematic</option>
+              <option value="anime / manga">Anime / Manga</option>
+              <option value="watercolor">Watercolor</option>
+              <option value="concept art">Concept Art</option>
+              <option value="minimalist">Minimalist</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="mood">Mood / Atmosphere <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="mood" name="mood" class="ai-tool-input" placeholder="e.g. dramatic and moody, warm and cozy, ethereal and dreamlike, dark and mysterious">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Image Prompts →</button>
+        <div id="image-prompt-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Crafting prompts…</span>
+        </div>
+      </form>
+    </div>
+    <div id="image-prompt-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes an Effective Image Prompt</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Be specific, not vague</h3><p style="font-size:.8125rem;color:#374151;">"A forest" gets a generic result. "An ancient redwood forest in morning fog, shafts of golden light filtering through the canopy, ground covered in ferns" gets a stunning image. Specificity is everything.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Add lighting and camera details</h3><p style="font-size:.8125rem;color:#374151;">Lighting transforms an image. "Golden hour backlight", "studio lighting with soft box", "neon reflections" — and camera terms like "wide angle", "macro", "bokeh" tell the AI how to frame the shot.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Reference artistic styles</h3><p style="font-size:.8125rem;color:#374151;">Reference a photographer's style (Annie Leibovitz), a painting movement (Baroque, Impressionism), or a film (Blade Runner aesthetic). Style references dramatically shift the feel of the output.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">What are the --ar and --v parameters in Midjourney prompts?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">--ar sets the aspect ratio (e.g. --ar 16:9 for widescreen, --ar 1:1 for square). --v sets the model version (--v 6 is currently the latest). --style raw disables Midjourney's aesthetic enhancements for a more literal interpretation. The AI includes these parameters in generated Midjourney prompts.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use these prompts in Canva AI or Adobe Firefly?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — the descriptive prompts work across all text-to-image platforms. Midjourney-specific parameters (--ar, --v) should be removed when using other platforms since they use different syntax. Select "Any Image AI" for platform-agnostic prompts that work everywhere.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-prompt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Prompt Generator</a>
+      <a href="/tools/ai/chatgpt-prompt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">ChatGPT Prompt Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-color-palette-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Color Palette Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

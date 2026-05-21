@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Color Palette Generator — Free Brand Color Palette Creator | AIUtilities{% endblock %}
+{% block description %}Generate beautiful, on-brand color palettes with hex codes and usage guidance using AI. Describe your brand and mood — get a complete palette instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-color-palette-generator' %}{% endblock %}
+{% block og_title %}AI Color Palette Generator — Brand Color Palette Creator | AIUtilities{% endblock %}
+{% block og_description %}Generate on-brand color palettes with hex codes and usage guidance. Brand + mood = complete palette. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-color-palette-generator' %}{% endblock %}
+{% block twitter_title %}AI Color Palette Generator — Brand Colors with Hex Codes | AIUtilities{% endblock %}
+{% block twitter_description %}Generate on-brand color palettes with hex codes and usage guidance. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Color Palette Generator","description":"Generate beautiful, on-brand color palettes with hex codes and usage guidance using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-color-palette-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Color Palette Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-color-palette-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Color Palette Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate a beautiful, on-brand color palette in seconds. Describe your brand, industry, and mood — get hex codes, RGB values, and clear guidance on how to use each color in your designs.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hex codes & RGB</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Usage guidance</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-color-palette-generator' %}" hx-target="#color-palette-output" hx-swap="innerHTML" hx-indicator="#color-palette-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="brand_description">Brand or Project Description <span style="color:#ef4444;">*</span></label>
+          <textarea id="brand_description" name="brand_description" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. a sustainable outdoor clothing brand targeting eco-conscious millennials, a luxury spa and wellness retreat, a playful children's education app, a fintech startup for personal budgeting, a modern coffee brand"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="mood">Mood / Feeling</label>
+            <select id="mood" name="mood" class="ai-tool-select">
+              <option value="professional and trustworthy">Professional & Trustworthy</option>
+              <option value="warm and friendly">Warm & Friendly</option>
+              <option value="bold and energetic">Bold & Energetic</option>
+              <option value="calm and serene">Calm & Serene</option>
+              <option value="luxurious and sophisticated">Luxurious & Sophisticated</option>
+              <option value="playful and fun">Playful & Fun</option>
+              <option value="earthy and natural">Earthy & Natural</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="palette_type">Palette Type</label>
+            <select id="palette_type" name="palette_type" class="ai-tool-select">
+              <option value="brand palette">Brand Palette</option>
+              <option value="website UI palette">Website / UI Palette</option>
+              <option value="social media palette">Social Media Palette</option>
+              <option value="interior design palette">Interior Design Palette</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="num_colors">Number of Colors</label>
+          <select id="num_colors" name="num_colors" class="ai-tool-select">
+            <option value="4">4 colors</option>
+            <option value="5" selected>5 colors</option>
+            <option value="6">6 colors</option>
+            <option value="8">8 colors (extended palette)</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Color Palette →</button>
+        <div id="color-palette-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Creating palette…</span>
+        </div>
+      </form>
+    </div>
+    <div id="color-palette-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">How to Build a Strong Brand Palette</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Choose a primary color</h3><p style="font-size:.8125rem;color:#374151;">Your primary color is the dominant brand color — the one used most and most associated with your brand. It should embody your brand personality and be memorable in isolation.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Add 1–2 secondary colors</h3><p style="font-size:.8125rem;color:#374151;">Secondary colors complement the primary and provide variety without competing for attention. Use them for backgrounds, UI elements, and sections that need visual separation.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Include neutral tones</h3><p style="font-size:.8125rem;color:#374151;">Whites, greys, and near-blacks anchor the palette and give visual breathing room. Most text and large background areas should use neutrals so your brand colors can pop when used.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I check if the colors meet WCAG accessibility standards?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The AI notes approximate contrast ratios for text usage, but for precise WCAG 2.1 AA/AAA verification, run your hex pairs through a contrast checker tool like WebAIM's Contrast Checker. For body text, aim for a 4.5:1 ratio minimum; for large headings, 3:1 is the minimum.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use the generated colors in Figma or Sketch?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — copy the hex codes directly into Figma, Sketch, Adobe XD, or any design tool. In Figma, paste hex codes into the color picker or add them to your Local Styles to build a design system. The RGB values are also provided for tools that use RGB input.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-image-prompt-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Image Prompt Generator</a>
+      <a href="/tools/ai/ai-business-name-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Business Name Generator</a>
+      <a href="/tools/ai/tagline-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tagline Generator</a>
+      <a href="/tools/ai/ai-ad-copy-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Ad Copy Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Report Generator — Free Professional Report Writer | AIUtilities{% endblock %}
+{% block description %}Generate structured professional reports on any topic with AI. Enter topic, type, and audience — get a complete report with executive summary, findings, and recommendations. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-report-generator' %}{% endblock %}
+{% block og_title %}AI Report Generator — Free Professional Report Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate structured professional reports with AI. Topic, type, audience — complete report. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-report-generator' %}{% endblock %}
+{% block twitter_title %}AI Report Generator — Professional Report Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate structured professional reports with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Report Generator","description":"Generate structured, professional reports on any topic using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-report-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Report Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-report-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Report Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate structured, professional reports in minutes. Enter your topic, report type, and audience — get a complete document with executive summary, findings, analysis, and recommendations.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full structure</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Executive summary</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-report-generator' %}" hx-target="#report-output" hx-swap="innerHTML" hx-indicator="#report-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Report Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="topic" name="topic" class="ai-tool-input" placeholder="e.g. Q3 social media performance, the impact of remote work on employee productivity, market analysis for entering the Southeast Asian market">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="report_type">Report Type</label>
+            <select id="report_type" name="report_type" class="ai-tool-select">
+              <option value="general report">General Report</option>
+              <option value="business / management report">Business / Management</option>
+              <option value="market research report">Market Research</option>
+              <option value="performance / progress report">Performance / Progress</option>
+              <option value="technical report">Technical Report</option>
+              <option value="research paper summary">Research Paper Summary</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="audience">Audience</label>
+            <select id="audience" name="audience" class="ai-tool-select">
+              <option value="management">Management</option>
+              <option value="executives / board">Executives / Board</option>
+              <option value="technical team">Technical Team</option>
+              <option value="clients">Clients</option>
+              <option value="general audience">General Audience</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="length">Report Length</label>
+          <select id="length" name="length" class="ai-tool-select">
+            <option value="short">Short (400–600 words)</option>
+            <option value="medium" selected>Medium (700–1000 words)</option>
+            <option value="long">Long (1200–1600 words)</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Report →</button>
+        <div id="report-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing report…</span>
+        </div>
+      </form>
+    </div>
+    <div id="report-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Report Writing Best Practices</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Executive summary first</h3><p style="font-size:.8125rem;color:#374151;">Most readers start — and sometimes end — at the executive summary. It should stand alone: problem, key findings, and top recommendations in under 200 words. Write it last; put it first.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Lead findings with insight</h3><p style="font-size:.8125rem;color:#374151;">Don't just report data — interpret it. "Sales dropped 12%" is a finding. "Sales dropped 12% due to a 3-week inventory gap in August, not demand softening" is an insight. Reports are valuable for analysis, not just information.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Actionable recommendations</h3><p style="font-size:.8125rem;color:#374151;">Every recommendation should be specific, feasible, and assigned. "Improve marketing" is advice. "Increase LinkedIn ad spend by 20% in Q1, targeting 35–54 SaaS decision-makers" is a recommendation.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I use this for academic reports?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">This tool generates a structured framework and draft content that's useful for academic reports. For academic submission, you must verify all facts, add proper citations, and rewrite substantially in your own voice. AI-assisted drafts should be treated as starting points, not final submissions.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">How do I add data and charts to the report?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Copy the report into Google Docs or Word, then insert your actual data, tables, and charts. The AI generates the narrative structure and analysis framework — your real numbers and visuals make it authoritative. Placeholder text like "[INSERT DATA]" marks where your specific figures should go.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-proposal-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Proposal Generator</a>
+      <a href="/tools/ai/ai-essay-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Essay Generator</a>
+      <a href="/tools/ai/ai-content-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Content Generator</a>
+      <a href="/tools/ai/ai-summarizer/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Summarizer</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

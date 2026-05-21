@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Lesson Plan Generator — Free Lesson Plan Maker | AIUtilities{% endblock %}
+{% block description %}Generate structured lesson plans for any subject and grade level with AI. Enter topic, duration, and objectives — get a complete, ready-to-use lesson plan. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-lesson-plan-generator' %}{% endblock %}
+{% block og_title %}AI Lesson Plan Generator — Free Lesson Plan Maker | AIUtilities{% endblock %}
+{% block og_description %}Generate structured lesson plans for any subject and grade with AI. Topic + duration = complete lesson plan. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-lesson-plan-generator' %}{% endblock %}
+{% block twitter_title %}AI Lesson Plan Generator — Free Lesson Plan Maker | AIUtilities{% endblock %}
+{% block twitter_description %}Generate complete lesson plans for any subject with AI. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Lesson Plan Generator","description":"Generate structured, curriculum-aligned lesson plans for any subject and grade level using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-lesson-plan-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Lesson Plan Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-lesson-plan-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Lesson Plan Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Create complete, structured lesson plans in minutes. Enter the subject, grade level, and duration — get a ready-to-use plan with objectives, activities, assessment, and differentiation notes.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any subject</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Full structure</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-lesson-plan-generator' %}" hx-target="#lesson-plan-output" hx-swap="innerHTML" hx-indicator="#lesson-plan-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="subject">Subject / Topic <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="subject" name="subject" class="ai-tool-input" placeholder="e.g. Introduction to fractions, The water cycle, World War II causes, Photosynthesis, Persuasive writing techniques">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="grade_level">Grade Level</label>
+            <select id="grade_level" name="grade_level" class="ai-tool-select">
+              <option value="elementary school (grades 1-5)">Elementary (Grades 1–5)</option>
+              <option value="middle school (grades 6-8)" selected>Middle School (Grades 6–8)</option>
+              <option value="high school (grades 9-12)">High School (Grades 9–12)</option>
+              <option value="college / university">College / University</option>
+              <option value="adult learners">Adult Learners</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="duration">Lesson Duration</label>
+            <select id="duration" name="duration" class="ai-tool-select">
+              <option value="30 minutes">30 minutes</option>
+              <option value="45 minutes">45 minutes</option>
+              <option value="60 minutes" selected>60 minutes</option>
+              <option value="90 minutes">90 minutes</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="learning_objective">Learning Objective <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+          <input type="text" id="learning_objective" name="learning_objective" class="ai-tool-input" placeholder="e.g. Students will be able to add and subtract fractions with unlike denominators">
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Lesson Plan →</button>
+        <div id="lesson-plan-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Creating lesson plan…</span>
+        </div>
+      </form>
+    </div>
+    <div id="lesson-plan-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What's Included in Every Lesson Plan</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Learning Objectives</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Clear, measurable objectives written in "Students will be able to..." format, aligned to Bloom's Taxonomy levels.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⏱️</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Timed Activities</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Hook/intro, main instruction, guided practice, and independent work — each with time allocation so you stay on track.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Assessment & Closure</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Exit tickets, check-for-understanding questions, or formative assessment strategies to gauge learning before students leave.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">♿</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Differentiation Notes</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Suggestions for supporting struggling learners and extending advanced students — because one size rarely fits all in a classroom.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Is this aligned to Common Core or other standards?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">The lesson plans follow general best-practice structure and can reference Common Core or other standards when you include the standard code in your subject description (e.g. "CCSS.MATH.CONTENT.5.NF.A.1 — adding fractions"). Without a standard code, the AI structures objectives using broadly accepted pedagogical frameworks.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I customise the generated plan?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — copy the plan and paste it into Google Docs, Word, or your school's lesson planning template. The AI provides the skeleton; your professional judgment about your specific students, classroom, and available resources will always improve it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-flashcard-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Flashcard Generator</a>
+      <a href="/tools/ai/ai-quiz-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Quiz Generator</a>
+      <a href="/tools/ai/ai-question-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Question Generator</a>
+      <a href="/tools/ai/ai-essay-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Essay Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

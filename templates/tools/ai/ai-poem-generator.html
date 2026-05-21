@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Poem Generator — Free AI Poetry Writer | AIUtilities{% endblock %}
+{% block description %}Generate beautiful poems in any style with AI. Sonnet, haiku, free verse, ode — enter your topic and mood and get original poetry instantly. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-poem-generator' %}{% endblock %}
+{% block og_title %}AI Poem Generator — Free AI Poetry Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate beautiful poems in any style with AI. Sonnet, haiku, free verse, ode — enter your topic and get original poetry instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-poem-generator' %}{% endblock %}
+{% block twitter_title %}AI Poem Generator — Free AI Poetry Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate poems in any style with AI. Sonnet, haiku, free verse — any topic. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Poem Generator","description":"Generate original, evocative poems in any style or form using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-poem-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Poem Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-poem-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Poem Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate beautiful, original poetry in seconds. Choose your style — sonnet, haiku, free verse, ode — enter your topic and mood and get a poem that actually resonates.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 10+ styles & forms</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any topic</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-poem-generator' %}" hx-target="#poem-output" hx-swap="innerHTML" hx-indicator="#poem-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Poem Topic or Subject <span style="color:#ef4444;">*</span></label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. the feeling of rain on a Sunday morning, losing a grandparent, the ocean at dusk, falling in love for the first time, autumn leaves"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="style">Poetry Style / Form</label>
+            <select id="style" name="style" class="ai-tool-select">
+              <option value="free verse">Free Verse</option>
+              <option value="sonnet (14 lines, iambic pentameter)">Sonnet</option>
+              <option value="haiku (5-7-5 syllables)">Haiku</option>
+              <option value="ode">Ode</option>
+              <option value="ballad">Ballad</option>
+              <option value="limerick">Limerick</option>
+              <option value="acrostic">Acrostic</option>
+              <option value="villanelle">Villanelle</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mood">Mood / Tone</label>
+            <select id="mood" name="mood" class="ai-tool-select">
+              <option value="reflective">Reflective</option>
+              <option value="melancholic">Melancholic</option>
+              <option value="joyful">Joyful</option>
+              <option value="romantic">Romantic</option>
+              <option value="hopeful">Hopeful</option>
+              <option value="dark and mysterious">Dark & Mysterious</option>
+              <option value="whimsical">Whimsical</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label class="ai-tool-label" for="length">Length</label>
+          <select id="length" name="length" class="ai-tool-select">
+            <option value="short">Short (8–12 lines)</option>
+            <option value="medium" selected>Medium (16–24 lines)</option>
+            <option value="long">Long (28–40 lines)</option>
+          </select>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Poem →</button>
+        <div id="poem-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your poem…</span>
+        </div>
+      </form>
+    </div>
+    <div id="poem-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Poetry Forms Explained</h2>
+    <div style="display:grid;gap:1rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Sonnet</h3><p style="font-size:.8125rem;color:#374151;">14 lines in iambic pentameter — the form Shakespeare and Keats used. Three quatrains build an argument; a final couplet delivers a twist or resolution. Best for love, beauty, and philosophical themes.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Haiku</h3><p style="font-size:.8125rem;color:#374151;">Three lines of 5, 7, 5 syllables — the Japanese form focused on nature and a single moment. The best haikus contain a juxtaposition (kigo) that creates an unexpected emotional punch.</p></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div class="ai-step-num" style="width:2rem;height:2rem;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.25rem;">Free Verse</h3><p style="font-size:.8125rem;color:#374151;">No fixed rhyme or meter — the most widely used modern form. Success depends entirely on the quality of imagery, line breaks, and sound. Harder than it looks, which is why a strong starting point matters.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I submit AI-generated poems to literary journals?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Most literary journals now require disclosure of AI involvement and many require human-authored work. Use the generated poem as inspiration or a structural starting point, then rewrite substantially in your own voice before submitting. Always check submission guidelines.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it generate poems for special occasions?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — just describe the occasion in the topic field. For example: "my daughter's graduation", "a wedding toast for my best friend", "a farewell poem for a colleague". The more specific you are, the more personal the result.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-song-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Song Generator</a>
+      <a href="/tools/ai/ai-rap-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Rap Generator</a>
+      <a href="/tools/ai/ai-story-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Story Generator</a>
+      <a href="/tools/ai/ai-paragraph-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Paragraph Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

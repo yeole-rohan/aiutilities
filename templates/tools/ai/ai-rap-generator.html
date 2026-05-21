@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Rap Generator — Free AI Rap Lyrics Writer | AIUtilities{% endblock %}
+{% block description %}Generate rap lyrics with rhyme schemes and flow with AI. Enter your topic and style — get verses, hook, and bridge in seconds. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-rap-generator' %}{% endblock %}
+{% block og_title %}AI Rap Generator — Free AI Rap Lyrics Writer | AIUtilities{% endblock %}
+{% block og_description %}Generate rap lyrics with rhyme schemes and flow with AI. Topic + style = verses, hook, bridge. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-rap-generator' %}{% endblock %}
+{% block twitter_title %}AI Rap Generator — Free AI Rap Lyrics Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate rap lyrics with rhymes and flow. Any topic, any style. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Rap Generator","description":"Generate rap lyrics with strong rhyme schemes and flow using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-rap-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Rap Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-rap-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Rap Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate original rap lyrics with real rhyme schemes, wordplay, and flow. Pick your style — storytelling, braggadocious, conscious, or battle rap — and get bars in seconds.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real rhyme schemes</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple styles</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-rap-generator' %}" hx-target="#rap-output" hx-swap="innerHTML" hx-indicator="#rap-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="topic">Topic or Story <span style="color:#ef4444;">*</span></label>
+          <textarea id="topic" name="topic" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. coming up from nothing, city life struggles, proving the doubters wrong, a freestyle battle, celebrating success, hustle and ambition"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <label class="ai-tool-label" for="style">Rap Style / Vibe</label>
+            <select id="style" name="style" class="ai-tool-select">
+              <option value="storytelling">Storytelling</option>
+              <option value="braggadocious / confident">Braggadocious / Confident</option>
+              <option value="conscious / lyrical">Conscious / Lyrical</option>
+              <option value="battle rap">Battle Rap</option>
+              <option value="trap / street">Trap / Street</option>
+              <option value="old school / boom bap">Old School / Boom Bap</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="num_verses">Number of Verses</label>
+            <select id="num_verses" name="num_verses" class="ai-tool-select">
+              <option value="1">1 verse + hook</option>
+              <option value="2" selected>2 verses + hook</option>
+              <option value="3">3 verses + hook</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Rap →</button>
+        <div id="rap-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Writing your bars…</span>
+        </div>
+      </form>
+    </div>
+    <div id="rap-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What Makes Great Rap Lyrics</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎤</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Multi-syllable rhymes</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Single-syllable end rhymes (cat/bat) are basic. Great rappers rhyme across multiple syllables — "motivating" with "oscillating". The more syllables in a rhyme, the more impressive.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Internal rhymes</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">End-line rhymes are expected. Internal rhymes (rhyming words mid-line) create a dense, layered sound that rewards repeated listening. This is what separates bars from poetry.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📖</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Specific details</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Vague lyrics about "the streets" feel generic. Specific details — a brand, a street name, a smell, a year — make the listener feel like they were there. Specificity = authenticity.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🎯</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Punchlines</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A punchline lands at the end of a couplet — a twist, a double meaning, or a clever metaphor that makes the listener rewind. Build up to it; don't bury it mid-bar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it generate music or just lyrics?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Lyrics only. For AI-generated beats and full tracks, check tools like Suno, Udio, or BeatStars. You can take these lyrics into those tools to create a complete track.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can I name myself in the rap?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — include your name or artist name in the topic field. For example: "A rap about my rise as an artist named [name], from a small town to the big stage." The AI will weave it naturally into the lyrics.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-song-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Song Generator</a>
+      <a href="/tools/ai/ai-poem-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Poem Generator</a>
+      <a href="/tools/social-media/tweet-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tweet Generator</a>
+      <a href="/tools/ai/ai-story-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Story Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

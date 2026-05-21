@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Excel Formula Generator — Free Excel & Sheets Formula Writer | AIUtilities{% endblock %}
+{% block description %}Generate Excel and Google Sheets formulas from plain English with AI. Describe what you want to calculate — get the formula with step-by-step explanation. Free.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-excel-formula-generator' %}{% endblock %}
+{% block og_title %}AI Excel Formula Generator — Formula Writer from Plain English | AIUtilities{% endblock %}
+{% block og_description %}Generate Excel and Google Sheets formulas from plain English with AI. Description → formula + explanation. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-excel-formula-generator' %}{% endblock %}
+{% block twitter_title %}AI Excel Formula Generator — Excel Formula Writer | AIUtilities{% endblock %}
+{% block twitter_description %}Generate Excel and Sheets formulas from plain English. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Excel Formula Generator","description":"Generate Excel and Google Sheets formulas from plain English descriptions using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-excel-formula-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"AI Tools","item":"{{ SITE_URL }}/tools/ai/"},{"@type":"ListItem","position":3,"name":"AI Excel Formula Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ai' 'ai-excel-formula-generator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 Powered by Groq AI · Llama 3.3 70B</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Excel Formula Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Describe what you want to calculate in plain English — get the exact Excel or Google Sheets formula, a step-by-step explanation of how it works, and how to adapt it to your data.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Excel & Google Sheets</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Step-by-step explained</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Free, instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <form hx-post="{% url 'tools:ai_generate' 'ai' 'ai-excel-formula-generator' %}" hx-target="#excel-formula-output" hx-swap="innerHTML" hx-indicator="#excel-formula-spinner">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem;">
+          <label class="ai-tool-label" for="task">What should the formula do? <span style="color:#ef4444;">*</span></label>
+          <textarea id="task" name="task" class="ai-tool-input" rows="3" style="resize:vertical;font-family:inherit;" placeholder="e.g. Sum values in column B where column A equals 'Sales', look up a product price from Sheet2 using SKU code, count cells in C2:C100 that contain text, calculate 90-day rolling average, extract just the domain from email addresses in column A"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <label class="ai-tool-label" for="app">Application</label>
+            <select id="app" name="app" class="ai-tool-select">
+              <option value="Excel">Microsoft Excel</option>
+              <option value="Google Sheets">Google Sheets</option>
+              <option value="Excel and Google Sheets">Both (compatible formula)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="context">Your Data Context <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
+            <input type="text" id="context" name="context" class="ai-tool-input" placeholder="e.g. data starts in A1, dates in column C, headers in row 1">
+          </div>
+        </div>
+        <button type="submit" class="ai-tool-btn">Generate Formula →</button>
+        <div id="excel-formula-spinner" class="ai-htmx-indicator" style="justify-content:center;margin-top:.75rem;">
+          <div class="ai-spin"></div><span>Building formula…</span>
+        </div>
+      </form>
+    </div>
+    <div id="excel-formula-output" style="min-height:1rem;"></div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Formula Categories This Tool Covers</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔍</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Lookup & reference</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">VLOOKUP, HLOOKUP, XLOOKUP, INDEX/MATCH, INDIRECT — finding and retrieving data across sheets and ranges.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📐</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Conditional logic</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">IF, IFS, SUMIF, COUNTIF, AVERAGEIF, nested conditions — calculations that depend on criteria or conditions in your data.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">📅</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Date & time</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">DATEDIF, EDATE, NETWORKDAYS, TODAY, NOW, date parsing and formatting — working with dates, durations, and calendars.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔤</div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Text manipulation</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">LEFT, RIGHT, MID, TRIM, SUBSTITUTE, TEXTJOIN — extracting, cleaning, and combining text from cells.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Frequently Asked Questions</h2>
+    <div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Does it work for both Excel and Google Sheets?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — select your target application. Most formulas are identical, but some differ (e.g. XLOOKUP works in Excel 365 and Google Sheets but not older Excel; QUERY is Google Sheets-only; TEXTJOIN has different syntax). Selecting "Both" generates the most compatible version that works in both.</div>
+      </div>
+      <div class="ai-faq-item" onclick="this.classList.toggle('open')">
+        <div class="ai-faq-q">Can it help me understand a formula I didn't write?<svg class="ai-faq-chevron" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+        <div class="ai-faq-a">Yes — paste the formula in the task field with the description "Explain what this formula does: [formula]". The AI will break down each function, what each argument does, and what the overall formula computes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="/tools/ai/ai-sql-query-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI SQL Query Generator</a>
+      <a href="/tools/ai/ai-python-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Python Code Generator</a>
+      <a href="/tools/ai/ai-code-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+      <a href="/tools/ai/ai-answer-generator/" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Answer Generator</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
