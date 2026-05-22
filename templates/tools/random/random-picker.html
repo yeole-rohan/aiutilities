@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Random Picker — Pick a Random Item from a List | AIUtilities{% endblock %}
+{% block description %}Pick a random item from a custom list. Add names, options, or any items and spin the wheel. Great for team decisions, prizes, and games. Free online random picker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-picker' %}{% endblock %}
+{% block og_title %}Random Picker | AIUtilities{% endblock %}
+{% block og_description %}Pick a random item from your list. Spin the wheel. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-picker' %}{% endblock %}
+{% block twitter_title %}Random Picker | AIUtilities{% endblock %}
+{% block twitter_description %}Pick a random item from any list. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Random Picker","description":"Pick a random item from a custom list — great for decisions, prizes, and games.","url":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-picker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Random Tools","item":"{{ SITE_URL }}/tools/random/"},{"@type":"ListItem","position":3,"name":"Random Picker","item":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-picker' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎯 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Random Picker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Can't decide? Add your options and pick one at random. Remove picked items to keep drawing without repeats.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="rp-items">Items <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(one per line)</span></label>
+          <textarea id="rp-items" class="ai-tool-input" rows="8" placeholder="Alice&#10;Bob&#10;Carol&#10;Dave&#10;Eve">Alice
+Bob
+Carol
+Dave
+Eve</textarea>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;">
+            <input type="checkbox" id="rp-remove"> Remove picked item from list
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;">
+            <input type="number" id="rp-count" value="1" min="1" max="50" style="width:4rem;padding:.2rem .4rem;border:1px solid #d1d5db;border-radius:.375rem;font-size:.875rem;"> items to pick
+          </label>
+        </div>
+      </div>
+
+      <button onclick="pickRandom()" style="width:100%;padding:.9rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1.1rem;font-weight:700;cursor:pointer;margin-bottom:1.25rem;letter-spacing:.02em;">🎲 Pick!</button>
+
+      <!-- Result display -->
+      <div id="rp-result" style="display:none;text-align:center;background:#1e293b;border-radius:.75rem;padding:1.5rem;margin-bottom:1rem;">
+        <div style="font-size:.8125rem;color:#64748b;margin-bottom:.5rem;">Selected</div>
+        <div id="rp-winner" style="font-size:1.75rem;font-weight:800;color:#6366f1;line-height:1.3;"></div>
+      </div>
+
+      <!-- History -->
+      <div id="rp-history-wrap" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <span style="font-size:.875rem;font-weight:600;color:#0f172a;">Pick History</span>
+          <button onclick="clearHistory()" style="font-size:.75rem;color:#ef4444;background:none;border:none;cursor:pointer;">Clear</button>
+        </div>
+        <div id="rp-history" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Random Picker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your items</strong><br><span style="font-size:.875rem;color:#6b7280;">Type or paste your list of options — one per line. These can be names, tasks, dinner choices, or anything else.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set options and pick</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose how many items to pick and whether to remove them from the list. Click Pick to get your result.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Keep picking or start over</strong><br><span style="font-size:.875rem;color:#6b7280;">Picks are shown in a history log. Enable Remove mode to draw without repeats until the list is empty.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is the result truly random? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — each item in the list has an equal probability of being selected. The tool uses the browser's pseudorandom number generator, which is unpredictable enough for all everyday decision-making purposes.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I pick more than one item at once? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — change the "items to pick" number to select multiple winners at once. When remove mode is on, each picked item is removed so duplicates are impossible.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'random' 'random-number-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Number Generator</a>
+      <a href="{% url 'tools:tool' 'random' 'random-name-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Name Generator</a>
+      <a href="{% url 'tools:tool' 'text' 'lorem-ipsum-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Lorem Ipsum Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var rpHistory=[];
+
+function getItems(){
+  return document.getElementById('rp-items').value.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+}
+function pickRandom(){
+  var items=getItems();
+  var n=Math.min(parseInt(document.getElementById('rp-count').value)||1,items.length);
+  var remove=document.getElementById('rp-remove').checked;
+  if(!items.length){alert('Add at least one item.');return;}
+  var picked=[];var pool=items.slice();
+  for(var i=0;i<n;i++){
+    if(!pool.length)break;
+    var idx=Math.floor(Math.random()*pool.length);
+    picked.push(pool[idx]);
+    pool.splice(idx,1);
+  }
+  if(remove){
+    // Remove picked from the textarea
+    var remaining=items.filter(function(x){return picked.indexOf(x)===-1;});
+    document.getElementById('rp-items').value=remaining.join('\n');
+  }
+  document.getElementById('rp-winner').textContent=picked.join(' · ');
+  document.getElementById('rp-result').style.display='';
+  picked.forEach(function(p){rpHistory.unshift(p);});
+  renderHistory();
+}
+function renderHistory(){
+  if(!rpHistory.length)return;
+  document.getElementById('rp-history-wrap').style.display='';
+  document.getElementById('rp-history').innerHTML=rpHistory.map(function(h){
+    return '<span style="padding:.3rem .65rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.375rem;font-size:.8125rem;color:#374151;">'+h+'</span>';
+  }).join('');
+}
+function clearHistory(){
+  rpHistory=[];document.getElementById('rp-history').innerHTML='';document.getElementById('rp-history-wrap').style.display='none';
+}
+</script>
+{% endblock %}

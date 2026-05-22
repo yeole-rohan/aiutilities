@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}CSS Gradient Generator — Free Online Linear & Radial Gradient Tool | AIUtilities{% endblock %}
+{% block description %}Create beautiful CSS linear and radial gradients visually. Add multiple color stops, adjust angle and position, and copy the CSS code instantly. Free online gradient generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'gradient-generator' %}{% endblock %}
+{% block og_title %}CSS Gradient Generator | AIUtilities{% endblock %}
+{% block og_description %}Build CSS gradients visually with live preview. Copy CSS code instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'gradient-generator' %}{% endblock %}
+{% block twitter_title %}CSS Gradient Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Create CSS gradients with live preview. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"CSS Gradient Generator","description":"Create CSS linear and radial gradients visually with a live preview.","url":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'gradient-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Color Tools","item":"{{ SITE_URL }}/tools/color/"},{"@type":"ListItem","position":3,"name":"Gradient Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'gradient-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎨 Visual · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">CSS Gradient Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Build CSS linear and radial gradients visually. Adjust colors, stops, and angle, then copy the ready-to-use CSS.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Linear & radial</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple stops</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Controls -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Gradient Settings</h2>
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label">Type</label>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="setType('linear')" id="btn-linear" class="gr-type-btn gr-active">Linear</button>
+              <button onclick="setType('radial')" id="btn-radial" class="gr-type-btn">Radial</button>
+            </div>
+          </div>
+          <div id="angle-row">
+            <label class="ai-tool-label" for="gr-angle">Angle: <span id="gr-angle-val">135</span>°</label>
+            <input type="range" id="gr-angle" min="0" max="360" value="135" oninput="updateAngle(this.value);buildGradient();" style="width:100%;">
+          </div>
+          <div>
+            <label class="ai-tool-label">Color Stops</label>
+            <div id="gr-stops" style="display:grid;gap:.5rem;"></div>
+            <button onclick="addStop()" style="margin-top:.5rem;padding:.3rem .75rem;border:1px dashed #d1d5db;background:transparent;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;width:100%;">+ Add stop</button>
+          </div>
+          <div>
+            <label class="ai-tool-label">Presets</label>
+            <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+              <button onclick="applyPreset('sunset')" class="gr-preset">Sunset</button>
+              <button onclick="applyPreset('ocean')" class="gr-preset">Ocean</button>
+              <button onclick="applyPreset('forest')" class="gr-preset">Forest</button>
+              <button onclick="applyPreset('candy')" class="gr-preset">Candy</button>
+              <button onclick="applyPreset('midnight')" class="gr-preset">Midnight</button>
+              <button onclick="applyPreset('fire')" class="gr-preset">Fire</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Preview + output -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div id="gr-preview" style="height:12rem;border-radius:.75rem;border:1px solid #e2e8f0;"></div>
+        <div class="ai-tool-form-card" style="padding:.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <span style="font-size:.875rem;font-weight:600;color:#0f172a;">CSS Output</span>
+            <button onclick="copyGradient()" id="gr-copy" style="padding:.25rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+          </div>
+          <textarea id="gr-output" readonly style="width:100%;font-family:monospace;font-size:.75rem;background:#1e293b;color:#e2e8f0;border:none;border-radius:.5rem;padding:.5rem;resize:none;height:6rem;box-sizing:border-box;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Gradient Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose gradient type</strong><br><span style="font-size:.875rem;color:#6b7280;">Select Linear for directional gradients or Radial for circular ones. Adjust the angle for linear gradients.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add and adjust color stops</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the color swatches to change colors. Use the position sliders to set where each stop falls (0–100%). Add more stops for complex gradients.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the CSS</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy to grab the complete CSS background property. Paste it into your stylesheet or inline style.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between linear and radial gradients? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A linear gradient transitions colors along a straight line at a given angle. A radial gradient radiates from a center point outward. Both support multiple color stops.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I add a gradient to a background in CSS? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use the <code>background</code> or <code>background-image</code> property with the generated value. Example: <code>background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);</code></div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I use gradients on text? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — apply the gradient as a background on the text element, then add <code>-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;</code> to clip it to the text shape.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'color' 'color-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Color Picker</a>
+      <a href="{% url 'tools:tool' 'color' 'hex-to-rgb' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hex to RGB</a>
+      <a href="{% url 'tools:tool' 'color' 'palette-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Palette Generator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.gr-type-btn{padding:.35rem .9rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.gr-active{background:#6366f1;color:#fff;border-color:#6366f1;}
+.gr-preset{padding:.25rem .6rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.75rem;cursor:pointer;color:#374151;}
+.gr-preset:hover{background:#f1f5f9;border-color:#6366f1;color:#6366f1;}
+</style>
+<script>
+var grType='linear',grAngle=135;
+var grStops=[{color:'#6366f1',pos:0},{color:'#ec4899',pos:100}];
+
+var PRESETS={
+  sunset:[{color:'#ff6b6b',pos:0},{color:'#feca57',pos:100}],
+  ocean:[{color:'#0891b2',pos:0},{color:'#6ee7b7',pos:100}],
+  forest:[{color:'#166534',pos:0},{color:'#84cc16',pos:100}],
+  candy:[{color:'#ec4899',pos:0},{color:'#a855f7',pos:50},{color:'#6366f1',pos:100}],
+  midnight:[{color:'#0f172a',pos:0},{color:'#312e81',pos:100}],
+  fire:[{color:'#7c2d12',pos:0},{color:'#ea580c',pos:50},{color:'#fbbf24',pos:100}]
+};
+
+function setType(t){
+  grType=t;
+  document.getElementById('btn-linear').className='gr-type-btn'+(t==='linear'?' gr-active':'');
+  document.getElementById('btn-radial').className='gr-type-btn'+(t==='radial'?' gr-active':'');
+  document.getElementById('angle-row').style.display=t==='linear'?'':'none';
+  buildGradient();
+}
+function updateAngle(v){grAngle=v;document.getElementById('gr-angle-val').textContent=v;}
+function applyPreset(name){
+  grStops=PRESETS[name].map(function(s){return{color:s.color,pos:s.pos};});
+  renderStops();buildGradient();
+}
+function addStop(){
+  var mid=grStops.length>1?Math.round((grStops[grStops.length-2].pos+grStops[grStops.length-1].pos)/2):50;
+  grStops.push({color:'#ffffff',pos:mid});
+  renderStops();buildGradient();
+}
+function removeStop(i){
+  if(grStops.length<=2)return;
+  grStops.splice(i,1);
+  renderStops();buildGradient();
+}
+function renderStops(){
+  var c=document.getElementById('gr-stops');
+  c.innerHTML=grStops.map(function(s,i){
+    return '<div style="display:grid;grid-template-columns:2.5rem 1fr 4rem 1.5rem;gap:.4rem;align-items:center;">'
+      +'<input type="color" value="'+s.color+'" oninput="grStops['+i+'].color=this.value;buildGradient();" style="width:2.25rem;height:2.25rem;border:1px solid #d1d5db;border-radius:.375rem;cursor:pointer;padding:0;">'
+      +'<input type="range" min="0" max="100" value="'+s.pos+'" oninput="grStops['+i+'].pos=+this.value;buildGradient();" style="width:100%;">'
+      +'<span style="font-size:.75rem;color:#6b7280;">'+s.pos+'%</span>'
+      +'<button onclick="removeStop('+i+')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.875rem;padding:0;" title="Remove">&#215;</button>'
+      +'</div>';
+  }).join('');
+}
+function buildGradient(){
+  var stops=grStops.map(function(s){return s.color+' '+s.pos+'%';}).join(', ');
+  var css=grType==='linear'
+    ?'linear-gradient('+grAngle+'deg, '+stops+')'
+    :'radial-gradient(circle, '+stops+')';
+  document.getElementById('gr-preview').style.background=css;
+  document.getElementById('gr-output').value='background: '+css+';\nbackground-image: '+css+';';
+}
+function copyGradient(){
+  navigator.clipboard.writeText(document.getElementById('gr-output').value).then(function(){
+    var b=document.getElementById('gr-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+renderStops();buildGradient();
+</script>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}QR Code Generator — Free Online QR Maker | AIUtilities{% endblock %}
+{% block description %}Generate QR codes for URLs, plain text, WiFi networks, email, and phone numbers. Download as PNG. Customise size and error correction. Free online QR code generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}{% endblock %}
+{% block og_title %}QR Code Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate QR codes for URLs, text, WiFi, email, and phone. Download as PNG. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}{% endblock %}
+{% block twitter_title %}QR Code Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate QR codes instantly. Free online tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"QR Code Generator","description":"Generate QR codes for URLs, text, WiFi networks, email, and phone numbers.","url":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"QR & Barcode Tools","item":"{{ SITE_URL }}/tools/qr-barcode/"},{"@type":"ListItem","position":3,"name":"QR Code Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}"}]}]}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📱 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">QR Code Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate QR codes for URLs, text, WiFi credentials, email, and phone numbers. Download as PNG instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 content types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ PNG download</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Customisable size</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Form -->
+      <div class="ai-tool-form-card">
+        <div style="margin-bottom:1rem;">
+          <label class="ai-tool-label">Content Type</label>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+            <button onclick="setQrType('url')" class="qr-type qr-active" id="qr-btn-url">URL</button>
+            <button onclick="setQrType('text')" class="qr-type" id="qr-btn-text">Text</button>
+            <button onclick="setQrType('wifi')" class="qr-type" id="qr-btn-wifi">WiFi</button>
+            <button onclick="setQrType('email')" class="qr-type" id="qr-btn-email">Email</button>
+            <button onclick="setQrType('phone')" class="qr-type" id="qr-btn-phone">Phone</button>
+          </div>
+        </div>
+
+        <!-- URL -->
+        <div id="qrf-url">
+          <label class="ai-tool-label" for="qr-url">URL</label>
+          <input type="url" id="qr-url" class="ai-tool-input" placeholder="https://example.com" value="https://example.com" oninput="genQR()">
+        </div>
+
+        <!-- Text -->
+        <div id="qrf-text" style="display:none;">
+          <label class="ai-tool-label" for="qr-text">Text</label>
+          <textarea id="qr-text" class="ai-tool-input" rows="4" placeholder="Enter any text" oninput="genQR()"></textarea>
+        </div>
+
+        <!-- WiFi -->
+        <div id="qrf-wifi" style="display:none;">
+          <div style="display:grid;gap:.6rem;">
+            <div><label class="ai-tool-label" for="qr-ssid">Network Name (SSID)</label><input type="text" id="qr-ssid" class="ai-tool-input" placeholder="MyWiFi" oninput="genQR()"></div>
+            <div><label class="ai-tool-label" for="qr-wpass">Password</label><input type="text" id="qr-wpass" class="ai-tool-input" placeholder="password123" oninput="genQR()"></div>
+            <div><label class="ai-tool-label" for="qr-wenc">Encryption</label>
+              <select id="qr-wenc" class="ai-tool-select" onchange="genQR()">
+                <option value="WPA">WPA/WPA2</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">None</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div id="qrf-email" style="display:none;">
+          <div style="display:grid;gap:.6rem;">
+            <div><label class="ai-tool-label" for="qr-eto">To</label><input type="email" id="qr-eto" class="ai-tool-input" placeholder="recipient@example.com" oninput="genQR()"></div>
+            <div><label class="ai-tool-label" for="qr-esub">Subject</label><input type="text" id="qr-esub" class="ai-tool-input" placeholder="Hello!" oninput="genQR()"></div>
+            <div><label class="ai-tool-label" for="qr-ebody">Body</label><textarea id="qr-ebody" class="ai-tool-input" rows="3" placeholder="Message body..." oninput="genQR()"></textarea></div>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div id="qrf-phone" style="display:none;">
+          <label class="ai-tool-label" for="qr-phone">Phone Number</label>
+          <input type="tel" id="qr-phone" class="ai-tool-input" placeholder="+15550001234" oninput="genQR()">
+        </div>
+
+        <!-- Options -->
+        <div style="margin-top:1rem;display:grid;gap:.6rem;">
+          <div>
+            <label class="ai-tool-label" for="qr-size">Size: <span id="qr-size-val">256</span>px</label>
+            <input type="range" id="qr-size" min="128" max="512" step="64" value="256" oninput="document.getElementById('qr-size-val').textContent=this.value;genQR();" style="width:100%;">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="qr-ec">Error Correction</label>
+            <select id="qr-ec" class="ai-tool-select" onchange="genQR()">
+              <option value="L">L — Low (7%)</option>
+              <option value="M" selected>M — Medium (15%)</option>
+              <option value="Q">Q — Quartile (25%)</option>
+              <option value="H">H — High (30%)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR preview -->
+      <div class="ai-tool-form-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+        <div id="qr-canvas-wrap" style="background:#fff;padding:1rem;border-radius:.75rem;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;min-height:12rem;"></div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+          <button onclick="downloadQR('png')" id="qr-dl-png" style="padding:.5rem 1.25rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;font-weight:600;" disabled>Download PNG</button>
+          <button onclick="copyQRImg()" id="qr-copy-img" style="padding:.5rem 1.25rem;background:#0f172a;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;font-weight:600;" disabled>Copy Image</button>
+        </div>
+        <div id="qr-content-preview" style="font-size:.75rem;color:#9ca3af;word-break:break-all;text-align:center;max-width:16rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the QR Code Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose content type</strong><br><span style="font-size:.875rem;color:#6b7280;">Select URL for website links, WiFi to share network credentials, Email to launch a compose window, or plain Text for any message.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter your details</strong><br><span style="font-size:.875rem;color:#6b7280;">Fill in the fields for your chosen type. The QR code regenerates automatically as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download or copy</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Download PNG to save the QR code image, or Copy Image to paste it directly into a document or design tool.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What error correction level should I choose? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use Medium (M) for most digital uses. Use High (H) if the QR code will be printed and may get dirty or partially damaged — it adds redundancy so the code can still be read even if up to 30% is obscured.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the minimum print size for a QR code? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The minimum recommended print size is 2 cm × 2 cm (about 0.8 inches) for a standard smartphone camera at a scanning distance of 20 cm. Larger QR codes with more data need to be printed bigger to remain scannable.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Do QR codes expire? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">QR codes generated here embed the content directly — they never expire. Dynamic QR codes (from paid services) redirect through a short URL that can be changed; those expire if the service shuts down. Static QR codes (like these) work forever.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'text' 'url-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">URL Encoder</a>
+      <a href="{% url 'tools:tool' 'random' 'random-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Picker</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.qr-type{padding:.3rem .75rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.qr-active{background:#6366f1;color:#fff;border-color:#6366f1;}
+</style>
+<script>
+var curQrType='url';
+var qrInstance=null;
+
+function setQrType(t){
+  curQrType=t;
+  ['url','text','wifi','email','phone'].forEach(function(x){
+    document.getElementById('qrf-'+x).style.display=x===t?'':'none';
+    document.getElementById('qr-btn-'+x).className='qr-type'+(x===t?' qr-active':'');
+  });
+  genQR();
+}
+
+function buildQrContent(){
+  if(curQrType==='url'){return document.getElementById('qr-url').value||'https://example.com';}
+  if(curQrType==='text'){return document.getElementById('qr-text').value||'';}
+  if(curQrType==='wifi'){
+    var s=document.getElementById('qr-ssid').value;
+    var p=document.getElementById('qr-wpass').value;
+    var e=document.getElementById('qr-wenc').value;
+    return 'WIFI:T:'+e+';S:'+s+';P:'+p+';;';
+  }
+  if(curQrType==='email'){
+    var to=document.getElementById('qr-eto').value;
+    var sub=encodeURIComponent(document.getElementById('qr-esub').value);
+    var body=encodeURIComponent(document.getElementById('qr-ebody').value);
+    return 'mailto:'+to+'?subject='+sub+'&body='+body;
+  }
+  if(curQrType==='phone'){return 'tel:'+document.getElementById('qr-phone').value;}
+  return '';
+}
+
+function genQR(){
+  var content=buildQrContent();
+  if(!content){return;}
+  var size=parseInt(document.getElementById('qr-size').value)||256;
+  var ec=document.getElementById('qr-ec').value;
+  var ecMap={L:QRCode.CorrectLevel.L,M:QRCode.CorrectLevel.M,Q:QRCode.CorrectLevel.Q,H:QRCode.CorrectLevel.H};
+  var wrap=document.getElementById('qr-canvas-wrap');
+  wrap.innerHTML='';
+  try{
+    new QRCode(wrap,{text:content,width:size,height:size,correctLevel:ecMap[ec]||QRCode.CorrectLevel.M});
+    document.getElementById('qr-dl-png').disabled=false;
+    document.getElementById('qr-copy-img').disabled=false;
+    document.getElementById('qr-content-preview').textContent=content.length>80?content.slice(0,80)+'…':content;
+  }catch(e){wrap.innerHTML='<span style="color:#ef4444;font-size:.875rem;">Content too long for QR code</span>';}
+}
+
+function getCanvas(){return document.getElementById('qr-canvas-wrap').querySelector('canvas');}
+
+function downloadQR(){
+  var c=getCanvas();if(!c)return;
+  var a=document.createElement('a');a.download='qrcode.png';a.href=c.toDataURL('image/png');a.click();
+}
+
+function copyQRImg(){
+  var c=getCanvas();if(!c)return;
+  c.toBlob(function(blob){
+    navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){
+      var b=document.getElementById('qr-copy-img');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy Image';},1500);
+    });
+  });
+}
+
+genQR();
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Color Palette Generator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate harmonious color palettes from a base color. Get complementary, triadic, split-complementary, tetradic, and monochromatic palettes with hex codes. Free online tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'palette-generator' %}{% endblock %}
+{% block og_title %}Color Palette Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate harmonious color palettes from any base color. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'palette-generator' %}{% endblock %}
+{% block twitter_title %}Color Palette Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate color palettes from any base color. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Color Palette Generator","description":"Generate harmonious color palettes from a base color using color theory.","url":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'palette-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Color Tools","item":"{{ SITE_URL }}/tools/color/"},{"@type":"ListItem","position":3,"name":"Palette Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'palette-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎨 Color Theory · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Color Palette Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate beautiful, harmonious color palettes from any base color using color theory rules.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 5 harmony types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hex codes</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card" style="margin-bottom:1.5rem;">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <input type="color" id="pal-picker" value="#6366f1" oninput="buildPalettes()" style="width:3.5rem;height:3.5rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;padding:0;flex-shrink:0;">
+          <div>
+            <label class="ai-tool-label" for="pal-hex" style="margin-bottom:.2rem;">Base Color</label>
+            <input type="text" id="pal-hex" class="ai-tool-input" value="#6366f1" oninput="syncHex()" style="font-family:monospace;width:8rem;">
+          </div>
+        </div>
+        <div style="flex:1;min-width:12rem;">
+          <label class="ai-tool-label">Harmony</label>
+          <select id="pal-harmony" class="ai-tool-select" onchange="buildPalettes()">
+            <option value="all">All harmonies</option>
+            <option value="complementary">Complementary</option>
+            <option value="triadic">Triadic</option>
+            <option value="split">Split-complementary</option>
+            <option value="tetradic">Tetradic</option>
+            <option value="monochromatic">Monochromatic</option>
+            <option value="analogous">Analogous</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="pal-output" style="display:grid;gap:1.5rem;"></div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Palette Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Pick your base color</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the swatch to open the color picker, or type a hex code directly into the input field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose a harmony or view all</strong><br><span style="font-size:.875rem;color:#6b7280;">Select a specific harmony type (complementary, triadic, etc.) or keep All to see every palette at once.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Click any color to copy its hex</strong><br><span style="font-size:.875rem;color:#6b7280;">Click any swatch to copy its hex code to the clipboard. A checkmark confirms the copy.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a complementary color palette? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Complementary colors sit opposite each other on the color wheel (180° apart). They create high contrast and visual pop — great for call-to-action buttons or accent highlights.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a triadic palette? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A triadic palette uses three colors equally spaced on the color wheel (120° apart). It offers balance and variety — commonly used in children's media and vibrant brand identities.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a monochromatic palette? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A monochromatic palette uses shades and tints of a single hue. It is elegant and cohesive — ideal for minimal, professional, or corporate design where you want a clean look without loud contrasts.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'color' 'color-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Color Picker</a>
+      <a href="{% url 'tools:tool' 'color' 'hex-to-rgb' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hex to RGB</a>
+      <a href="{% url 'tools:tool' 'color' 'gradient-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Gradient Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function hexToHsl(hex){
+  hex=hex.replace('#','');
+  if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  var r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;
+  var max=Math.max(r,g,b),min=Math.min(r,g,b);
+  var h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    var d=max-min;s=l>.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6;}
+  }
+  return[h*360,s*100,l*100];
+}
+function hslToHex(h,s,l){
+  s/=100;l/=100;
+  var c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;
+  var r=0,g=0,b=0;
+  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}
+  r=Math.round((r+m)*255);g=Math.round((g+m)*255);b=Math.round((b+m)*255);
+  return '#'+('000000'+((r<<16)|(g<<8)|b).toString(16)).slice(-6);
+}
+function buildHarmony(h,s,l,type){
+  var colors=[];
+  if(type==='complementary'){colors=[hslToHex(h,s,l),hslToHex((h+180)%360,s,l)];}
+  else if(type==='triadic'){colors=[hslToHex(h,s,l),hslToHex((h+120)%360,s,l),hslToHex((h+240)%360,s,l)];}
+  else if(type==='split'){colors=[hslToHex(h,s,l),hslToHex((h+150)%360,s,l),hslToHex((h+210)%360,s,l)];}
+  else if(type==='tetradic'){colors=[hslToHex(h,s,l),hslToHex((h+90)%360,s,l),hslToHex((h+180)%360,s,l),hslToHex((h+270)%360,s,l)];}
+  else if(type==='monochromatic'){colors=[hslToHex(h,s,20),hslToHex(h,s,35),hslToHex(h,s,50),hslToHex(h,s,65),hslToHex(h,s,80)];}
+  else if(type==='analogous'){colors=[hslToHex((h-30+360)%360,s,l),hslToHex(h,s,l),hslToHex((h+30)%360,s,l)];}
+  return colors;
+}
+var LABELS={complementary:'Complementary',triadic:'Triadic',split:'Split-complementary',tetradic:'Tetradic',monochromatic:'Monochromatic',analogous:'Analogous'};
+var ALL=['complementary','triadic','split','tetradic','monochromatic','analogous'];
+
+function renderPalette(label,colors){
+  var swatches=colors.map(function(c){
+    return '<div onclick="copyColor(this,\''+c+'\')" title="Click to copy '+c+'" style="flex:1;min-width:5rem;border-radius:.5rem;cursor:pointer;background:'+c+';display:flex;flex-direction:column;justify-content:flex-end;padding:.5rem;min-height:6rem;">'
+      +'<span style="font-size:.6875rem;font-family:monospace;background:rgba(255,255,255,.85);padding:.15rem .3rem;border-radius:.2rem;color:#0f172a;align-self:center;">'+c+'</span></div>';
+  }).join('');
+  return '<div><div style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">'+label+'</div>'
+    +'<div style="display:flex;gap:.5rem;">'+swatches+'</div></div>';
+}
+function buildPalettes(){
+  var hex=document.getElementById('pal-hex').value.trim();
+  if(!/^#[0-9a-fA-F]{6}$/i.test(hex)&&!/^#[0-9a-fA-F]{3}$/i.test(hex))return;
+  document.getElementById('pal-picker').value=hex.length===4?'#'+hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3]:hex;
+  var hsl=hexToHsl(hex);
+  var harmony=document.getElementById('pal-harmony').value;
+  var types=harmony==='all'?ALL:[harmony];
+  document.getElementById('pal-output').innerHTML=types.map(function(t){
+    return renderPalette(LABELS[t],buildHarmony(hsl[0],hsl[1],hsl[2],t));
+  }).join('');
+}
+function syncHex(){
+  var hex=document.getElementById('pal-hex').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/i.test(hex))document.getElementById('pal-picker').value=hex;
+  buildPalettes();
+}
+function copyColor(el,hex){
+  navigator.clipboard.writeText(hex);
+  var orig=el.querySelector('span').textContent;
+  el.querySelector('span').textContent='Copied!';
+  setTimeout(function(){el.querySelector('span').textContent=orig;},1200);
+}
+buildPalettes();
+</script>
+{% endblock %}

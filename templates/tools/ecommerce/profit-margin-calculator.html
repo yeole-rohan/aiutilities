@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profit Margin Calculator — Calculate Gross & Net Margin | AIUtilities{% endblock %}
+{% block description %}Calculate gross profit margin, net profit margin, markup percentage, and revenue needed to hit a target margin. Free online profit margin calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}{% endblock %}
+{% block og_title %}Profit Margin Calculator | AIUtilities{% endblock %}
+{% block og_description %}Calculate gross and net profit margins and markup. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}{% endblock %}
+{% block twitter_title %}Profit Margin Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate profit margins and markup instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Profit Margin Calculator","description":"Calculate gross profit margin, net profit margin, markup, and revenue targets.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"E-commerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Profit Margin Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💰 Business · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Profit Margin Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate gross margin, net margin, and markup from cost and revenue. Find the selling price needed to hit a target margin.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Gross & net margin</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Markup %</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Target price finder</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+
+    <!-- Basic margin calc -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Margin Calculator</h2>
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="pm-cost">Cost (COGS)</label>
+          <div style="position:relative;">
+            <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#6b7280;">$</span>
+            <input type="number" id="pm-cost" class="ai-tool-input" style="padding-left:1.5rem;" placeholder="50.00" min="0" step="0.01" oninput="calcMargin()">
+          </div>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="pm-revenue">Revenue (Selling Price)</label>
+          <div style="position:relative;">
+            <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#6b7280;">$</span>
+            <input type="number" id="pm-revenue" class="ai-tool-input" style="padding-left:1.5rem;" placeholder="100.00" min="0" step="0.01" oninput="calcMargin()">
+          </div>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="pm-opex">Operating Expenses (optional)</label>
+          <div style="position:relative;">
+            <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#6b7280;">$</span>
+            <input type="number" id="pm-opex" class="ai-tool-input" style="padding-left:1.5rem;" placeholder="10.00" min="0" step="0.01" oninput="calcMargin()">
+          </div>
+        </div>
+      </div>
+      <div id="pm-result" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div style="background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div style="font-size:.75rem;color:#64748b;margin-bottom:.25rem;">Gross Profit</div>
+          <div id="pm-gross-profit" style="font-size:1.5rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+        </div>
+        <div style="background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div style="font-size:.75rem;color:#64748b;margin-bottom:.25rem;">Gross Margin</div>
+          <div id="pm-gross-margin" style="font-size:1.5rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+        </div>
+        <div style="background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div style="font-size:.75rem;color:#64748b;margin-bottom:.25rem;">Markup</div>
+          <div id="pm-markup" style="font-size:1.5rem;font-weight:800;color:#22c55e;font-family:monospace;"></div>
+        </div>
+        <div style="background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+          <div style="font-size:.75rem;color:#64748b;margin-bottom:.25rem;">Net Margin</div>
+          <div id="pm-net-margin" style="font-size:1.5rem;font-weight:800;color:#22c55e;font-family:monospace;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target price finder -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Find Selling Price for Target Margin</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="pm-tcost">Cost</label>
+          <div style="position:relative;">
+            <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#6b7280;">$</span>
+            <input type="number" id="pm-tcost" class="ai-tool-input" style="padding-left:1.5rem;" placeholder="50.00" min="0" step="0.01" oninput="calcTarget()">
+          </div>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="pm-target">Target Margin %</label>
+          <div style="position:relative;">
+            <input type="number" id="pm-target" class="ai-tool-input" style="padding-right:1.5rem;" placeholder="40" min="0" max="99.99" step="0.1" oninput="calcTarget()">
+            <span style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);color:#6b7280;">%</span>
+          </div>
+        </div>
+      </div>
+      <div id="pm-target-result" style="display:none;background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+        <div style="font-size:.8125rem;color:#64748b;margin-bottom:.25rem;">Required Selling Price</div>
+        <div id="pm-target-price" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+        <div id="pm-target-markup" style="font-size:.8125rem;color:#94a3b8;margin-top:.25rem;"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Profit Margin Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter cost and selling price</strong><br><span style="font-size:.875rem;color:#6b7280;">Input your cost of goods sold (COGS) and the revenue or selling price. Optionally add operating expenses to calculate net margin.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read your margins</strong><br><span style="font-size:.875rem;color:#6b7280;">Gross profit, gross margin %, markup %, and net margin all calculate instantly. Results update as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Find the price for a target margin</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the second section: enter your cost and desired margin percentage to find the exact selling price needed.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between margin and markup? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Margin is profit as a percentage of revenue: (Revenue − Cost) / Revenue. Markup is profit as a percentage of cost: (Revenue − Cost) / Cost. A 50% markup equals a 33% margin. They measure the same profit but against different bases.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a good profit margin? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">It depends heavily on the industry. Software and SaaS companies often exceed 70%. Retail typically runs 20–50% gross margin. Restaurants can be as low as 3–9% net margin. Compare your margins to industry benchmarks for meaningful context.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I improve my profit margin? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">You can improve margin by increasing prices, reducing COGS through better supplier negotiation, cutting operating expenses, upselling higher-margin products, or improving operational efficiency to serve more customers at the same cost.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Amazon Fee Calculator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Shipping Cost Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmt(n){return n<0?'-$'+Math.abs(n).toFixed(2):'$'+n.toFixed(2);}
+function fmtPct(n){return n.toFixed(2)+'%';}
+
+function calcMargin(){
+  var cost=parseFloat(document.getElementById('pm-cost').value)||0;
+  var rev=parseFloat(document.getElementById('pm-revenue').value)||0;
+  var opex=parseFloat(document.getElementById('pm-opex').value)||0;
+  if(!rev)return;
+  var grossProfit=rev-cost;
+  var grossMargin=rev>0?(grossProfit/rev)*100:0;
+  var markup=cost>0?(grossProfit/cost)*100:0;
+  var netProfit=grossProfit-opex;
+  var netMargin=rev>0?(netProfit/rev)*100:0;
+  document.getElementById('pm-gross-profit').textContent=fmt(grossProfit);
+  document.getElementById('pm-gross-margin').textContent=fmtPct(grossMargin);
+  document.getElementById('pm-markup').textContent=fmtPct(markup);
+  document.getElementById('pm-net-margin').textContent=fmtPct(netMargin);
+  document.getElementById('pm-result').style.display='grid';
+}
+
+function calcTarget(){
+  var cost=parseFloat(document.getElementById('pm-tcost').value)||0;
+  var target=parseFloat(document.getElementById('pm-target').value)||0;
+  if(!cost||target>=100)return;
+  var price=cost/(1-target/100);
+  var mu=(price-cost)/cost*100;
+  document.getElementById('pm-target-price').textContent=fmt(price);
+  document.getElementById('pm-target-markup').textContent='Markup: '+fmtPct(mu)+' · Profit: '+fmt(price-cost);
+  document.getElementById('pm-target-result').style.display='';
+}
+</script>
+{% endblock %}

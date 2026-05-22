@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Hex to RGB Converter — Free Online Color Converter | AIUtilities{% endblock %}
+{% block description %}Convert hex color codes to RGB, HSL, and CSS values instantly. Supports shorthand hex (#fff), 8-digit hex with alpha, and reverse RGB to hex conversion. Free online tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'hex-to-rgb' %}{% endblock %}
+{% block og_title %}Hex to RGB Converter | AIUtilities{% endblock %}
+{% block og_description %}Convert hex color codes to RGB and HSL. Free online color converter.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'hex-to-rgb' %}{% endblock %}
+{% block twitter_title %}Hex to RGB Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert hex to RGB, HSL, and CSS. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Hex to RGB Converter","description":"Convert hex color codes to RGB, HSL, and CSS values instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'hex-to-rgb' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Color Tools","item":"{{ SITE_URL }}/tools/color/"},{"@type":"ListItem","position":3,"name":"Hex to RGB","item":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'hex-to-rgb' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎨 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Hex to RGB Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert hex color codes to RGB, HSL, and CSS values — or reverse from RGB to hex. Instant live preview.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+
+    <!-- Hex to RGB -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Hex → RGB / HSL</h2>
+      <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
+        <input type="color" id="h2r-picker" value="#6366f1" oninput="syncFromPicker()" style="width:3rem;height:3rem;border:1px solid #d1d5db;border-radius:.5rem;cursor:pointer;padding:0;flex-shrink:0;">
+        <input type="text" id="h2r-hex" class="ai-tool-input" placeholder="#6366f1" value="#6366f1" oninput="convertHex()" style="font-family:monospace;flex:1;max-width:12rem;">
+        <span id="h2r-invalid" style="font-size:.8125rem;color:#ef4444;display:none;">Invalid hex</span>
+      </div>
+      <div id="h2r-result" style="display:grid;gap:.5rem;">
+        <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">RGB</span>
+          <input type="text" id="h2r-rgb" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+          <button onclick="copyVal('h2r-rgb')" class="h2r-copy">&#10697;</button>
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">HSL</span>
+          <input type="text" id="h2r-hsl" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+          <button onclick="copyVal('h2r-hsl')" class="h2r-copy">&#10697;</button>
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">CSS rgb()</span>
+          <input type="text" id="h2r-css-rgb" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+          <button onclick="copyVal('h2r-css-rgb')" class="h2r-copy">&#10697;</button>
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">CSS hsl()</span>
+          <input type="text" id="h2r-css-hsl" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+          <button onclick="copyVal('h2r-css-hsl')" class="h2r-copy">&#10697;</button>
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Normalized</span>
+          <input type="text" id="h2r-norm" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+          <button onclick="copyVal('h2r-norm')" class="h2r-copy">&#10697;</button>
+        </div>
+      </div>
+      <!-- Swatch -->
+      <div id="h2r-swatch" style="height:3rem;border-radius:.5rem;margin-top:.75rem;border:1px solid #e2e8f0;"></div>
+    </div>
+
+    <!-- RGB to Hex -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">RGB → Hex</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+        <div>
+          <label class="ai-tool-label" for="r2h-r">Red (0–255)</label>
+          <input type="number" id="r2h-r" class="ai-tool-input" min="0" max="255" value="99" oninput="convertRGB()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="r2h-g">Green (0–255)</label>
+          <input type="number" id="r2h-g" class="ai-tool-input" min="0" max="255" value="102" oninput="convertRGB()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="r2h-b">Blue (0–255)</label>
+          <input type="number" id="r2h-b" class="ai-tool-input" min="0" max="255" value="241" oninput="convertRGB()">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:7rem 1fr 2.5rem;gap:.5rem;align-items:center;margin-bottom:.75rem;">
+        <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Hex</span>
+        <input type="text" id="r2h-out" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        <button onclick="copyVal('r2h-out')" class="h2r-copy">&#10697;</button>
+      </div>
+      <div id="r2h-swatch" style="height:2.5rem;border-radius:.5rem;border:1px solid #e2e8f0;"></div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Hex to RGB Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a hex code or use the picker</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a hex color like #ff6b6b or #fff, or click the color swatch to open your browser color picker.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">See all formats instantly</strong><br><span style="font-size:.875rem;color:#6b7280;">RGB, HSL, CSS rgb(), CSS hsl(), and normalized (0–1) values all update live. Click the copy icon next to any value.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Convert RGB to hex</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the lower section to go the other way — enter R, G, B values (0–255) and get the hex code.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How does hex color work? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A hex color is a 6-digit hexadecimal number (e.g. #FF6B6B) where each pair of digits represents Red, Green, and Blue channels from 00 to FF (0–255 in decimal). Shorthand like #F0F expands to #FF00FF.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is normalized color (0–1 range)? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Normalized values divide each RGB channel by 255, giving a float between 0 and 1. This format is used by OpenGL, WebGL, Three.js, Blender, and many other graphics APIs and game engines.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">When should I use HSL instead of RGB? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">HSL (Hue, Saturation, Lightness) is more intuitive for humans because you can adjust brightness or saturation without changing the hue. It is great for creating color scales and theming where you want consistent relationships between shades.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'color' 'color-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Color Picker</a>
+      <a href="{% url 'tools:tool' 'color' 'gradient-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Gradient Generator</a>
+      <a href="{% url 'tools:tool' 'color' 'palette-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Palette Generator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.h2r-copy{padding:.2rem .4rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.25rem;cursor:pointer;font-size:.875rem;color:#6b7280;flex-shrink:0;}
+.h2r-copy:hover{background:#e2e8f0;}
+</style>
+<script>
+function parseHex(h){
+  h=h.replace(/^#/,'');
+  if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if(!/^[0-9a-fA-F]{6}$/.test(h))return null;
+  return{r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)};
+}
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  var max=Math.max(r,g,b),min=Math.min(r,g,b);
+  var h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    var d=max-min;s=l>.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6;}
+  }
+  return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+function syncFromPicker(){
+  document.getElementById('h2r-hex').value=document.getElementById('h2r-picker').value;
+  convertHex();
+}
+function convertHex(){
+  var raw=document.getElementById('h2r-hex').value.trim();
+  var c=parseHex(raw);
+  var inv=document.getElementById('h2r-invalid');
+  if(!c){inv.style.display='';return;}
+  inv.style.display='none';
+  document.getElementById('h2r-picker').value='#'+('000000'+((c.r<<16)|(c.g<<8)|c.b).toString(16)).slice(-6);
+  var hsl=rgbToHsl(c.r,c.g,c.b);
+  document.getElementById('h2r-rgb').value=c.r+', '+c.g+', '+c.b;
+  document.getElementById('h2r-hsl').value=hsl.h+'°, '+hsl.s+'%, '+hsl.l+'%';
+  document.getElementById('h2r-css-rgb').value='rgb('+c.r+', '+c.g+', '+c.b+')';
+  document.getElementById('h2r-css-hsl').value='hsl('+hsl.h+', '+hsl.s+'%, '+hsl.l+'%)';
+  document.getElementById('h2r-norm').value=(c.r/255).toFixed(4)+', '+(c.g/255).toFixed(4)+', '+(c.b/255).toFixed(4);
+  document.getElementById('h2r-swatch').style.background='#'+('000000'+((c.r<<16)|(c.g<<8)|c.b).toString(16)).slice(-6);
+}
+function convertRGB(){
+  var r=Math.max(0,Math.min(255,parseInt(document.getElementById('r2h-r').value)||0));
+  var g=Math.max(0,Math.min(255,parseInt(document.getElementById('r2h-g').value)||0));
+  var b=Math.max(0,Math.min(255,parseInt(document.getElementById('r2h-b').value)||0));
+  var hex='#'+('000000'+((r<<16)|(g<<8)|b).toString(16)).slice(-6);
+  document.getElementById('r2h-out').value=hex;
+  document.getElementById('r2h-swatch').style.background=hex;
+}
+function copyVal(id){
+  var el=document.getElementById(id);
+  navigator.clipboard.writeText(el.value);
+}
+convertHex();convertRGB();
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Unix Timestamp / Epoch Converter — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Convert Unix timestamps to human-readable dates and vice versa. Shows UTC and local time. Current epoch time displayed live. Free online epoch converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'epoch-converter' %}{% endblock %}
+{% block og_title %}Unix Epoch Converter | AIUtilities{% endblock %}
+{% block og_description %}Convert Unix timestamps to dates and back. Live epoch clock. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'epoch-converter' %}{% endblock %}
+{% block twitter_title %}Unix Timestamp Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert Unix timestamps to readable dates. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Unix Timestamp Converter","description":"Convert Unix timestamps to human-readable dates and vice versa.","url":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'epoch-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Date & Time Tools","item":"{{ SITE_URL }}/tools/date-time/"},{"@type":"ListItem","position":3,"name":"Epoch Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'epoch-converter' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🕐 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Unix Timestamp / Epoch Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert Unix timestamps to human-readable dates and vice versa. Includes local timezone and UTC output.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <!-- Live clock -->
+    <div style="text-align:center;margin-bottom:1.5rem;padding:1rem;background:#1e293b;border-radius:.75rem;">
+      <div style="font-size:.8125rem;color:#64748b;margin-bottom:.25rem;">Current Unix Timestamp</div>
+      <div id="live-epoch" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+      <div id="live-utc" style="font-size:.8125rem;color:#94a3b8;margin-top:.25rem;"></div>
+    </div>
+
+    <div class="ai-tool-form-card" style="margin-bottom:1.5rem;">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Timestamp → Date</h2>
+      <div style="display:flex;gap:.75rem;margin-bottom:.75rem;">
+        <input type="number" id="ep-ts" class="ai-tool-input" placeholder="e.g. 1700000000" style="font-family:monospace;" oninput="tsToDate()">
+        <button onclick="document.getElementById('ep-ts').value=Math.floor(Date.now()/1000);tsToDate();" style="white-space:nowrap;padding:.5rem 1rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;">Use now</button>
+      </div>
+      <div id="ep-ts-result" style="display:none;display:grid;gap:.5rem;">
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">UTC</span>
+          <input type="text" id="ep-utc" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Local</span>
+          <input type="text" id="ep-local" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">ISO 8601</span>
+          <input type="text" id="ep-iso" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Relative</span>
+          <input type="text" id="ep-rel" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Date → Timestamp</h2>
+      <div style="display:flex;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap;">
+        <input type="datetime-local" id="ep-dt" class="ai-tool-input" oninput="dateToTs()" style="flex:1;">
+        <button onclick="document.getElementById('ep-dt').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);dateToTs();" style="white-space:nowrap;padding:.5rem 1rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.875rem;cursor:pointer;">Use now</button>
+      </div>
+      <div id="ep-dt-result" style="display:none;display:grid;gap:.5rem;">
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Unix (s)</span>
+          <input type="text" id="ep-unix-s" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:7rem 1fr;gap:.5rem;align-items:center;">
+          <span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Unix (ms)</span>
+          <input type="text" id="ep-unix-ms" class="ai-tool-input" readonly style="font-family:monospace;font-size:.875rem;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Epoch Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Convert a timestamp to a date</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste any Unix timestamp (seconds or milliseconds) into the top input. The tool auto-detects the unit and shows UTC, local, ISO 8601, and relative time.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Convert a date to a timestamp</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the lower section to pick a date and time and get its Unix timestamp in both seconds and milliseconds.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Use the live epoch clock</strong><br><span style="font-size:.875rem;color:#6b7280;">The live counter at the top shows the current Unix timestamp updating every second — copy it with one click.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a Unix timestamp? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A Unix timestamp (also called epoch time) is the number of seconds that have elapsed since 00:00:00 UTC on 1 January 1970, not counting leap seconds. It is widely used in programming to represent points in time without timezone ambiguity.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between seconds and milliseconds timestamps? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Unix timestamps in seconds (10 digits currently) are used by most Unix/Linux systems and programming languages. Millisecond timestamps (13 digits) are used by JavaScript (Date.now()), Java, and many APIs. Divide milliseconds by 1000 to get seconds.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the Year 2038 problem? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">On 19 January 2038, the Unix timestamp will overflow a signed 32-bit integer (max value 2,147,483,647). Systems using 32-bit timestamps will reset to 1901. Modern 64-bit systems are not affected — they can handle timestamps billions of years into the future.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'date-time' 'date-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Date Calculator</a>
+      <a href="{% url 'tools:tool' 'date-time' 'countdown-timer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Countdown Timer</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function relTime(ms){
+  var diff=Date.now()-ms;var abs=Math.abs(diff);var future=diff<0;
+  var s=Math.floor(abs/1000),m=Math.floor(s/60),h=Math.floor(m/60),d=Math.floor(h/24),mo=Math.floor(d/30),y=Math.floor(d/365);
+  var str=y?y+' year'+(y>1?'s':''):mo?mo+' month'+(mo>1?'s':''):d?d+' day'+(d>1?'s','s':''):h?h+' hour'+(h>1?'s':''):m?m+' minute'+(m>1?'s':''):(s+' second'+(s!==1?'s':''));
+  return future?'in '+str:str+' ago';
+}
+function tsToDate(){
+  var raw=document.getElementById('ep-ts').value.trim();
+  if(!raw){document.getElementById('ep-ts-result').style.display='none';return;}
+  var ts=parseInt(raw);
+  if(raw.length>11)ts=Math.floor(ts/1000);
+  var d=new Date(ts*1000);
+  document.getElementById('ep-utc').value=d.toUTCString();
+  document.getElementById('ep-local').value=d.toLocaleString();
+  document.getElementById('ep-iso').value=d.toISOString();
+  document.getElementById('ep-rel').value=relTime(d.getTime());
+  document.getElementById('ep-ts-result').style.display='grid';
+}
+function dateToTs(){
+  var val=document.getElementById('ep-dt').value;
+  if(!val){document.getElementById('ep-dt-result').style.display='none';return;}
+  var ms=new Date(val).getTime();
+  document.getElementById('ep-unix-s').value=Math.floor(ms/1000);
+  document.getElementById('ep-unix-ms').value=ms;
+  document.getElementById('ep-dt-result').style.display='grid';
+}
+function tickClock(){
+  var now=new Date();
+  document.getElementById('live-epoch').textContent=Math.floor(now.getTime()/1000);
+  document.getElementById('live-utc').textContent=now.toUTCString();
+}
+tickClock();setInterval(tickClock,1000);
+</script>
+{% endblock %}

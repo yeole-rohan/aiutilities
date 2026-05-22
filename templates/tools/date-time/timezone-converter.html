@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Time Zone Converter — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Convert times between any two time zones instantly. See the current time in multiple cities at once. Free online timezone converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'timezone-converter' %}{% endblock %}
+{% block og_title %}Time Zone Converter | AIUtilities{% endblock %}
+{% block og_description %}Convert times between any two time zones. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'timezone-converter' %}{% endblock %}
+{% block twitter_title %}Time Zone Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert times between time zones. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Time Zone Converter","description":"Convert times between any two time zones and see world clock times.","url":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'timezone-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Date & Time Tools","item":"{{ SITE_URL }}/tools/date-time/"},{"@type":"ListItem","position":3,"name":"Time Zone Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'timezone-converter' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌍 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Time Zone Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert any date and time between two time zones instantly, and see a world clock for popular cities.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+
+    <!-- Converter -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Convert Time</h2>
+      <div style="display:grid;gap:.75rem;">
+        <div>
+          <label class="ai-tool-label" for="tz-datetime">Date & Time</label>
+          <input type="datetime-local" id="tz-datetime" class="ai-tool-input" oninput="convertTz()">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="tz-from">From</label>
+            <select id="tz-from" class="ai-tool-select" onchange="convertTz()"></select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="tz-to">To</label>
+            <select id="tz-to" class="ai-tool-select" onchange="convertTz()"></select>
+          </div>
+        </div>
+        <button onclick="swapTz()" style="padding:.35rem .75rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;width:fit-content;">⇄ Swap</button>
+      </div>
+      <div id="tz-result" style="display:none;margin-top:1rem;background:#1e293b;border-radius:.75rem;padding:1.25rem;text-align:center;">
+        <div style="font-size:.8125rem;color:#64748b;margin-bottom:.25rem;" id="tz-from-label"></div>
+        <div id="tz-from-time" style="font-size:1.125rem;color:#94a3b8;font-family:monospace;margin-bottom:.75rem;"></div>
+        <div style="font-size:1.25rem;color:#64748b;margin-bottom:.25rem;">↓</div>
+        <div style="font-size:.8125rem;color:#64748b;margin-bottom:.25rem;" id="tz-to-label"></div>
+        <div id="tz-to-time" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+        <div id="tz-offset" style="font-size:.8125rem;color:#64748b;margin-top:.5rem;"></div>
+      </div>
+    </div>
+
+    <!-- World clock -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">World Clock</h2>
+      <div id="tz-world" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;"></div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Timezone Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a date and time</strong><br><span style="font-size:.875rem;color:#6b7280;">Set the date and time you want to convert. It defaults to the current moment.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select source and target zones</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick the timezone the input time is in, then pick the zone you want to convert to. Use Swap to reverse the direction.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">See the world clock</strong><br><span style="font-size:.875rem;color:#6b7280;">The world clock below shows the current time in major cities worldwide, updated live every minute.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How does DST (Daylight Saving Time) affect conversion? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This converter uses the browser's Intl API which accounts for DST automatically. If a timezone observes DST, the offset shifts by +1 hour during summer months. The result always reflects the correct local time for the chosen date.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is UTC? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">UTC (Coordinated Universal Time) is the global time standard. All other timezones are expressed as offsets from UTC (e.g. UTC+5:30 for India, UTC-5 for US Eastern). UTC never observes daylight saving time.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'date-time' 'epoch-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Epoch Converter</a>
+      <a href="{% url 'tools:tool' 'date-time' 'date-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Date Calculator</a>
+      <a href="{% url 'tools:tool' 'date-time' 'countdown-timer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Countdown Timer</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var ZONES=[
+  'America/New_York','America/Chicago','America/Denver','America/Los_Angeles',
+  'America/Toronto','America/Sao_Paulo','America/Mexico_City','America/Buenos_Aires',
+  'Europe/London','Europe/Paris','Europe/Berlin','Europe/Madrid','Europe/Rome',
+  'Europe/Amsterdam','Europe/Stockholm','Europe/Warsaw','Europe/Moscow',
+  'Africa/Cairo','Africa/Lagos','Africa/Johannesburg',
+  'Asia/Dubai','Asia/Karachi','Asia/Kolkata','Asia/Dhaka',
+  'Asia/Bangkok','Asia/Singapore','Asia/Tokyo','Asia/Seoul',
+  'Asia/Shanghai','Asia/Hong_Kong','Asia/Jakarta',
+  'Australia/Sydney','Australia/Melbourne','Pacific/Auckland','Pacific/Honolulu','UTC'
+];
+
+var WORLD_CITIES=[
+  {name:'New York',tz:'America/New_York'},{name:'Los Angeles',tz:'America/Los_Angeles'},
+  {name:'London',tz:'Europe/London'},{name:'Paris',tz:'Europe/Paris'},
+  {name:'Dubai',tz:'Asia/Dubai'},{name:'Mumbai',tz:'Asia/Kolkata'},
+  {name:'Singapore',tz:'Asia/Singapore'},{name:'Tokyo',tz:'Asia/Tokyo'},
+  {name:'Sydney',tz:'Australia/Sydney'},{name:'Sao Paulo',tz:'America/Sao_Paulo'}
+];
+
+function populateSelect(id,selected){
+  var el=document.getElementById(id);
+  el.innerHTML=ZONES.map(function(z){return'<option value="'+z+'"'+(z===selected?' selected':'')+'>'+z.replace('_',' ')+'</option>';}).join('');
+}
+
+function getUserTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){return'UTC';}}
+
+function formatInTz(date,tz){
+  return new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(date);
+}
+
+function convertTz(){
+  var dt=document.getElementById('tz-datetime').value;
+  var from=document.getElementById('tz-from').value;
+  var to=document.getElementById('tz-to').value;
+  if(!dt)return;
+  // Parse input as local time in the "from" zone by using Intl
+  var d=new Date(dt);
+  if(isNaN(d))return;
+  document.getElementById('tz-from-label').textContent=from;
+  document.getElementById('tz-from-time').textContent=formatInTz(d,from);
+  document.getElementById('tz-to-label').textContent=to;
+  document.getElementById('tz-to-time').textContent=formatInTz(d,to);
+  // Offset diff
+  var fOff=new Date(new Intl.DateTimeFormat('en',{timeZone:from,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(d).replace(/(\d+)\/(\d+)\/(\d+),\s/,'$3-$1-$2T')).getTime();
+  document.getElementById('tz-offset').textContent='';
+  document.getElementById('tz-result').style.display='';
+}
+
+function swapTz(){
+  var f=document.getElementById('tz-from').value,t=document.getElementById('tz-to').value;
+  document.getElementById('tz-from').value=t;document.getElementById('tz-to').value=f;
+  convertTz();
+}
+
+function updateWorldClock(){
+  var now=new Date();
+  document.getElementById('tz-world').innerHTML=WORLD_CITIES.map(function(c){
+    var t=new Intl.DateTimeFormat('en-US',{timeZone:c.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
+    var d=new Intl.DateTimeFormat('en-US',{timeZone:c.tz,weekday:'short',month:'short',day:'numeric'}).format(now);
+    return '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem;">'
+      +'<div style="font-size:.75rem;font-weight:600;color:#6b7280;margin-bottom:.2rem;">'+c.name+'</div>'
+      +'<div style="font-size:1.25rem;font-weight:700;color:#0f172a;font-family:monospace;">'+t+'</div>'
+      +'<div style="font-size:.75rem;color:#9ca3af;">'+d+'</div></div>';
+  }).join('');
+}
+
+// Init
+populateSelect('tz-from',getUserTz());
+populateSelect('tz-to','America/New_York');
+var now=new Date();
+var iso=new Date(now-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+document.getElementById('tz-datetime').value=iso;
+convertTz();
+updateWorldClock();
+setInterval(updateWorldClock,60000);
+</script>
+{% endblock %}

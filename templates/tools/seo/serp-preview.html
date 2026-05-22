@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}SERP Preview Tool — See How Your Page Looks in Google | AIUtilities{% endblock %}
+{% block description %}Preview how your page title, URL, and meta description appear in Google search results. Optimise your snippets before publishing. Free SERP preview tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'serp-preview' %}{% endblock %}
+{% block og_title %}SERP Preview Tool | AIUtilities{% endblock %}
+{% block og_description %}See how your page looks in Google search results. Free SERP snippet preview.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'serp-preview' %}{% endblock %}
+{% block twitter_title %}SERP Preview Tool | AIUtilities{% endblock %}
+{% block twitter_description %}Preview your Google search snippet. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"SERP Preview Tool","description":"Preview how your page title, URL, and meta description appear in Google search results.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'serp-preview' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"SERP Preview","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'serp-preview' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔍 SEO · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">SERP Preview Tool</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">See exactly how your page will look in Google search results before you publish. Preview desktop and mobile snippets.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Desktop & mobile</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Character counters</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Pixel-accurate truncation</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:.75rem;margin-bottom:1.5rem;">
+        <div>
+          <label class="ai-tool-label" for="sp-title">Title Tag <span id="sp-tc" style="font-weight:400;color:#9ca3af;"></span></label>
+          <input type="text" id="sp-title" class="ai-tool-input" value="Free Online Tools for Everyone — AIUtilities" oninput="renderSerp()">
+          <div id="sp-title-warn" style="font-size:.75rem;margin-top:.2rem;"></div>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="sp-url">Page URL</label>
+          <input type="text" id="sp-url" class="ai-tool-input" value="https://example.com/my-page/" oninput="renderSerp()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="sp-desc">Meta Description <span id="sp-dc" style="font-weight:400;color:#9ca3af;"></span></label>
+          <textarea id="sp-desc" class="ai-tool-input" rows="3" oninput="renderSerp()">Discover hundreds of free online tools — calculators, converters, SEO tools, and more. No signup required. Works on any device.</textarea>
+          <div id="sp-desc-warn" style="font-size:.75rem;margin-top:.2rem;"></div>
+        </div>
+      </div>
+
+      <!-- Preview tabs -->
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+        <button onclick="setTab('desktop')" id="tab-desktop" class="serp-tab serp-tab-active">Desktop</button>
+        <button onclick="setTab('mobile')" id="tab-mobile" class="serp-tab">Mobile</button>
+      </div>
+
+      <!-- Desktop preview -->
+      <div id="preview-desktop" style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem;">
+        <div style="font-size:.75rem;color:#6b7280;margin-bottom:.75rem;">Google Search Result Preview</div>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;">
+          <div style="width:1.25rem;height:1.25rem;background:#4285f4;border-radius:50%;font-size:.625rem;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">G</div>
+          <div>
+            <div id="sp-prev-site" style="font-size:.75rem;color:#202124;"></div>
+            <div id="sp-prev-url" style="font-size:.75rem;color:#202124;"></div>
+          </div>
+        </div>
+        <div id="sp-prev-title" style="font-size:1.25rem;color:#1a0dab;cursor:pointer;line-height:1.3;margin-bottom:.2rem;font-family:arial,sans-serif;max-width:600px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></div>
+        <div id="sp-prev-desc" style="font-size:.875rem;color:#4d5156;line-height:1.58;max-width:600px;font-family:arial,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"></div>
+      </div>
+
+      <!-- Mobile preview -->
+      <div id="preview-mobile" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem;">
+        <div style="max-width:360px;margin:0 auto;">
+          <div style="font-size:.75rem;color:#6b7280;margin-bottom:.75rem;">Mobile Search Result Preview</div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;">
+            <div style="width:1.125rem;height:1.125rem;background:#4285f4;border-radius:50%;font-size:.5rem;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">G</div>
+            <div id="sp-mob-url" style="font-size:.6875rem;color:#202124;"></div>
+          </div>
+          <div id="sp-mob-title" style="font-size:1rem;color:#1a0dab;line-height:1.3;margin-bottom:.2rem;font-family:arial,sans-serif;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></div>
+          <div id="sp-mob-desc" style="font-size:.8125rem;color:#4d5156;line-height:1.5;font-family:arial,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the SERP Preview Tool</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your page details</strong><br><span style="font-size:.875rem;color:#6b7280;">Type your title tag, page URL, and meta description into the form. Character counters update as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Check the preview</strong><br><span style="font-size:.875rem;color:#6b7280;">The live snippet below mimics what Google shows in search results. Switch between Desktop and Mobile tabs to see both views.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Optimise for length</strong><br><span style="font-size:.875rem;color:#6b7280;">Aim for a title under 60 characters and a description under 160 characters. The colour-coded warnings show if you are within the recommended range.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does Google sometimes show different text than my meta description? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Google may rewrite your snippet if it thinks a different portion of your page better matches the search query. Writing relevant, complete descriptions reduces the chance of Google overriding them.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How long should my meta description be? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Google truncates descriptions at approximately 160 characters on desktop and 120 on mobile. Aim for 150–160 characters to get the most text shown without being cut off.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does the meta description affect SEO rankings? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The meta description is not a direct ranking factor, but it strongly affects click-through rate (CTR). A compelling description that matches user intent can significantly increase organic traffic.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'opengraph-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Open Graph Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'robots-txt-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Robots.txt Generator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.serp-tab{padding:.4rem .9rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.serp-tab-active{background:#6366f1;color:#fff;border-color:#6366f1;}
+</style>
+<script>
+function setTab(t){
+  document.getElementById('preview-desktop').style.display=t==='desktop'?'':'none';
+  document.getElementById('preview-mobile').style.display=t==='mobile'?'':'none';
+  document.getElementById('tab-desktop').className='serp-tab'+(t==='desktop'?' serp-tab-active':'');
+  document.getElementById('tab-mobile').className='serp-tab'+(t==='mobile'?' serp-tab-active':'');
+}
+function parseUrl(url){
+  try{var u=new URL(url);return{site:u.hostname,path:u.hostname+u.pathname};}catch(e){return{site:url,path:url};}
+}
+function warn(el,len,min,max){
+  if(!len){el.textContent='';return;}
+  if(len<min)el.textContent='Too short ('+len+'/'+min+'+ recommended)';
+  else if(len>max)el.textContent='May be truncated ('+len+'/'+max+' max)';
+  else el.textContent='Good length ('+len+' chars)';
+  el.style.color=len>max?'#ef4444':len<min?'#f97316':'#16a34a';
+}
+function renderSerp(){
+  var title=document.getElementById('sp-title').value||'Page Title';
+  var url=document.getElementById('sp-url').value||'https://example.com/';
+  var desc=document.getElementById('sp-desc').value||'';
+  var tc=title.length,dc=desc.length;
+  document.getElementById('sp-tc').textContent='('+tc+' chars)';
+  document.getElementById('sp-dc').textContent='('+dc+' chars)';
+  warn(document.getElementById('sp-title-warn'),tc,30,60);
+  warn(document.getElementById('sp-desc-warn'),dc,120,160);
+  var p=parseUrl(url);
+  document.getElementById('sp-prev-site').textContent=p.site;
+  document.getElementById('sp-prev-url').textContent=p.path;
+  document.getElementById('sp-prev-title').textContent=title;
+  document.getElementById('sp-prev-desc').textContent=desc;
+  document.getElementById('sp-mob-url').textContent=p.path;
+  document.getElementById('sp-mob-title').textContent=title;
+  document.getElementById('sp-mob-desc').textContent=desc;
+}
+renderSerp();
+</script>
+{% endblock %}

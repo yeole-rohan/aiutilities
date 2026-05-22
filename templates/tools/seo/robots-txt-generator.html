@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Robots.txt Generator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate a robots.txt file visually. Control which crawlers can access which parts of your site. Copy the result instantly. Free online robots.txt generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'robots-txt-generator' %}{% endblock %}
+{% block og_title %}Robots.txt Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate a robots.txt file visually. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'robots-txt-generator' %}{% endblock %}
+{% block twitter_title %}Robots.txt Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Build a robots.txt file visually. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Robots.txt Generator","description":"Generate a robots.txt file by selecting crawlers and disallowed paths visually.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'robots-txt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"Robots.txt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'robots-txt-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔍 SEO · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Robots.txt Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Build a robots.txt file using a visual form. Control which bots can crawl which pages on your website.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Per-bot rules</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Sitemap entry</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Settings</h2>
+        <div style="display:grid;gap:1rem;">
+          <div>
+            <label class="ai-tool-label">Default rule</label>
+            <div style="display:flex;flex-direction:column;gap:.4rem;">
+              <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;"><input type="radio" name="rt-default" value="allow" checked onchange="buildRobots()"> Allow all bots (recommended)</label>
+              <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;"><input type="radio" name="rt-default" value="block" onchange="buildRobots()"> Block all bots</label>
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="rt-disallow">Disallowed paths <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(one per line)</span></label>
+            <textarea id="rt-disallow" class="ai-tool-input" rows="5" placeholder="/admin/&#10;/private/&#10;/api/&#10;/wp-admin/" oninput="buildRobots()"></textarea>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="rt-allow">Explicitly allowed paths <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(one per line)</span></label>
+            <textarea id="rt-allow" class="ai-tool-input" rows="3" placeholder="/api/public/" oninput="buildRobots()"></textarea>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="rt-sitemap">Sitemap URL</label>
+            <input type="text" id="rt-sitemap" class="ai-tool-input" placeholder="https://example.com/sitemap.xml" oninput="buildRobots()">
+          </div>
+          <div>
+            <label class="ai-tool-label">Block specific bots</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="GPTBot" onchange="buildRobots()"> GPTBot (ChatGPT)</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="anthropic-ai" onchange="buildRobots()"> Anthropic</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="CCBot" onchange="buildRobots()"> Common Crawl</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="SemrushBot" onchange="buildRobots()"> SEMrush</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="AhrefsBot" onchange="buildRobots()"> Ahrefs</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" class="rt-bot" value="MJ12bot" onchange="buildRobots()"> Majestic</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-tool-form-card" style="display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+          <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">robots.txt</h2>
+          <button onclick="copyRobots()" id="rt-copy-btn" style="padding:.3rem .75rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Copy</button>
+        </div>
+        <textarea id="rt-output" class="ai-tool-input" readonly style="font-family:monospace;font-size:.8125rem;background:#1e293b;color:#e2e8f0;border-color:#334155;flex:1;resize:none;min-height:22rem;"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Robots.txt Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Set the default rule</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose "Allow all bots" for a normal public site, or "Block all bots" to prevent crawling entirely (e.g. staging environments).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add disallowed paths and block specific bots</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter paths like /admin/ or /private/ to block crawling, and tick any bots you want to exclude entirely (GPTBot, SEMrush, etc.).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy and upload to your server root</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy, paste into a file named robots.txt, and upload it to the root of your domain so it is at yourdomain.com/robots.txt.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Where should I put robots.txt? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Robots.txt must be placed in the root of your domain at exactly https://yourdomain.com/robots.txt. It does not work in subdirectories.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does robots.txt prevent pages from being indexed? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Not directly. Disallowing a URL only tells bots not to crawl it; they may still index it if they find links pointing to it. To prevent indexing, use a noindex meta tag on the page itself.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Should I block AI bots? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Whether to block AI training bots is a personal or business decision. If you do not want your content used to train AI models, blocking GPTBot, CCBot, and similar bots is a reasonable step, though compliance is voluntary.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'xml-sitemap-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">XML Sitemap Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function buildRobots(){
+  var defaultRule=document.querySelector('input[name="rt-default"]:checked').value;
+  var disallow=document.getElementById('rt-disallow').value.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var allow=document.getElementById('rt-allow').value.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var sitemap=document.getElementById('rt-sitemap').value.trim();
+  var bots=Array.from(document.querySelectorAll('.rt-bot:checked')).map(function(c){return c.value;});
+  var lines=['# Generated by AIUtilities robots.txt Generator','# '+new Date().toISOString().split('T')[0],'','User-agent: *'];
+  if(defaultRule==='block'){lines.push('Disallow: /');}
+  else{
+    disallow.forEach(function(p){lines.push('Disallow: '+p);});
+    allow.forEach(function(p){lines.push('Allow: '+p);});
+    if(!disallow.length&&!allow.length)lines.push('Disallow:');
+  }
+  bots.forEach(function(b){lines.push('','User-agent: '+b,'Disallow: /');});
+  if(sitemap){lines.push('','Sitemap: '+sitemap);}
+  document.getElementById('rt-output').value=lines.join('\n');
+}
+function copyRobots(){
+  navigator.clipboard.writeText(document.getElementById('rt-output').value).then(function(){
+    var b=document.getElementById('rt-copy-btn');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+buildRobots();
+</script>
+{% endblock %}

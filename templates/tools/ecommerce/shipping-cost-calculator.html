@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Shipping Cost Calculator — Estimate USPS, UPS & FedEx Rates | AIUtilities{% endblock %}
+{% block description %}Estimate international and domestic shipping costs for USPS, UPS, and FedEx. Compare rates by weight, dimensions, and service level. Free online shipping calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}{% endblock %}
+{% block og_title %}Shipping Cost Calculator | AIUtilities{% endblock %}
+{% block og_description %}Estimate shipping costs for USPS, UPS, and FedEx. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}{% endblock %}
+{% block twitter_title %}Shipping Cost Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Estimate shipping costs instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Shipping Cost Calculator","description":"Estimate shipping costs for USPS, UPS, and FedEx by weight and service level.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"E-commerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Shipping Cost Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📦 Shipping · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Shipping Cost Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Estimate US domestic shipping costs across USPS, UPS, and FedEx service levels. Compare rates side by side.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ USPS / UPS / FedEx</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Compare rates</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Dimensional weight</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:1.5rem;">
+      <!-- Inputs -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Package Details</h2>
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="sc-weight">Weight (lbs)</label>
+            <input type="number" id="sc-weight" class="ai-tool-input" value="2" min="0.1" step="0.1" oninput="calcShipping()">
+          </div>
+          <div>
+            <label class="ai-tool-label">Dimensions (inches)</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;">
+              <input type="number" id="sc-l" class="ai-tool-input" placeholder="L" value="12" min="0" step="0.1" oninput="calcShipping()">
+              <input type="number" id="sc-w" class="ai-tool-input" placeholder="W" value="8" min="0" step="0.1" oninput="calcShipping()">
+              <input type="number" id="sc-h" class="ai-tool-input" placeholder="H" value="4" min="0" step="0.1" oninput="calcShipping()">
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="sc-zone">Shipping Zone (1–8)</label>
+            <select id="sc-zone" class="ai-tool-select" onchange="calcShipping()">
+              <option value="1">Zone 1–2 (local)</option>
+              <option value="2" selected>Zone 3–4 (regional)</option>
+              <option value="3">Zone 5–6 (cross-country)</option>
+              <option value="4">Zone 7–8 (distant)</option>
+            </select>
+          </div>
+          <div id="sc-dimweight" style="background:#f1f5f9;border-radius:.5rem;padding:.5rem .75rem;font-size:.8125rem;color:#6b7280;"></div>
+        </div>
+      </div>
+
+      <!-- Results table -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Rate Comparison</h2>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+            <thead>
+              <tr style="background:#f8fafc;">
+                <th style="text-align:left;padding:.5rem .75rem;color:#6b7280;font-weight:600;border-bottom:1px solid #e2e8f0;">Carrier / Service</th>
+                <th style="text-align:right;padding:.5rem .75rem;color:#6b7280;font-weight:600;border-bottom:1px solid #e2e8f0;">Transit</th>
+                <th style="text-align:right;padding:.5rem .75rem;color:#6b7280;font-weight:600;border-bottom:1px solid #e2e8f0;">Est. Rate</th>
+              </tr>
+            </thead>
+            <tbody id="sc-table">
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:.75rem;font-size:.75rem;color:#9ca3af;line-height:1.5;">Rates are approximations based on published base rates. Actual rates depend on your account discounts, fuel surcharges, and residential delivery fees. Always get a quote from the carrier before committing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Shipping Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter weight and dimensions</strong><br><span style="font-size:.875rem;color:#6b7280;">Input the package weight and dimensions. The tool calculates dimensional weight and uses whichever is greater.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose a shipping zone</strong><br><span style="font-size:.875rem;color:#6b7280;">Select the approximate zone based on how far the package is travelling. Zone 1–2 is local, zone 7–8 is cross-country distant.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Compare carriers</strong><br><span style="font-size:.875rem;color:#6b7280;">See estimated rates for each service level side by side to find the best balance of cost and transit time.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is dimensional weight? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Dimensional (DIM) weight is calculated as (L × W × H) / 139 for UPS and FedEx. If the DIM weight is greater than the actual weight, carriers charge based on DIM weight. This penalises light but bulky packages.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a shipping zone? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Zones (1–8) represent the distance between origin and destination. Zone 1 is the closest (same region) and Zone 8 is the farthest. Carriers use zip code pairs to determine the exact zone — rates increase with zone number.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Profit Margin Calculator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Amazon Fee Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'unit-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Unit Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Approximate rate tables [base, per-lb] by zone (0=local,1=regional,2=cross,3=distant)
+var RATES={
+  usps_ground:    {name:'USPS Ground Advantage',transit:'2-5 days',base:[4.5,5.2,6.1,7.4],perlb:[0.20,0.28,0.35,0.44]},
+  usps_priority:  {name:'USPS Priority Mail',transit:'1-3 days',base:[8.7,9.9,11.5,13.2],perlb:[0.35,0.48,0.62,0.80]},
+  usps_express:   {name:'USPS Priority Express',transit:'1-2 days',base:[26.9,29.5,33.1,38.0],perlb:[0.60,0.82,1.05,1.30]},
+  ups_ground:     {name:'UPS Ground',transit:'1-5 days',base:[9.2,10.4,12.1,14.6],perlb:[0.40,0.56,0.72,0.92]},
+  ups_2day:       {name:'UPS 2nd Day Air',transit:'2 days',base:[19.8,22.5,26.0,30.5],perlb:[0.85,1.15,1.48,1.85]},
+  ups_overnight:  {name:'UPS Next Day Air Saver',transit:'1 day',base:[34.5,39.0,45.0,53.0],perlb:[1.40,1.90,2.40,3.00]},
+  fedex_ground:   {name:'FedEx Ground',transit:'1-5 days',base:[9.0,10.2,11.8,14.2],perlb:[0.38,0.54,0.70,0.88]},
+  fedex_2day:     {name:'FedEx 2Day',transit:'2 days',base:[20.5,23.0,26.8,31.5],perlb:[0.88,1.20,1.52,1.92]},
+  fedex_overnight:{name:'FedEx Standard Overnight',transit:'1 day',base:[36.0,40.5,47.0,55.0],perlb:[1.45,1.96,2.48,3.10]}
+};
+
+function calcShipping(){
+  var w=parseFloat(document.getElementById('sc-weight').value)||0;
+  var l=parseFloat(document.getElementById('sc-l').value)||0;
+  var wi=parseFloat(document.getElementById('sc-w').value)||0;
+  var h=parseFloat(document.getElementById('sc-h').value)||0;
+  var z=parseInt(document.getElementById('sc-zone').value)||1;
+  // Dimensional weight (÷139 standard)
+  var dimW=l*wi*h>0?(l*wi*h)/139:0;
+  var billW=Math.max(w,dimW);
+  document.getElementById('sc-dimweight').textContent='Dimensional weight: '+dimW.toFixed(2)+' lbs | Billed weight: '+billW.toFixed(2)+' lbs';
+  var zi=z-1;
+  var rows='';
+  Object.values(RATES).forEach(function(r){
+    var est=r.base[zi]+r.perlb[zi]*billW;
+    rows+='<tr style="border-bottom:1px solid #f1f5f9;">'
+      +'<td style="padding:.5rem .75rem;color:#374151;">'+r.name+'</td>'
+      +'<td style="padding:.5rem .75rem;text-align:right;color:#6b7280;font-size:.8125rem;">'+r.transit+'</td>'
+      +'<td style="padding:.5rem .75rem;text-align:right;font-family:monospace;font-weight:700;color:#0f172a;">$'+est.toFixed(2)+'</td>'
+      +'</tr>';
+  });
+  document.getElementById('sc-table').innerHTML=rows;
+}
+calcShipping();
+</script>
+{% endblock %}

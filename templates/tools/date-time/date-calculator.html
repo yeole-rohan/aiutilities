@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Date Calculator — Calculate Days Between Dates | AIUtilities{% endblock %}
+{% block description %}Calculate the number of days, weeks, months, and years between two dates. Add or subtract days from a date. Free online date calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'date-calculator' %}{% endblock %}
+{% block og_title %}Date Calculator | AIUtilities{% endblock %}
+{% block og_description %}Calculate days between dates or add/subtract days from a date. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'date-calculator' %}{% endblock %}
+{% block twitter_title %}Date Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate days between any two dates. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Date Calculator","description":"Calculate the number of days, weeks, months, and years between two dates.","url":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'date-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Date & Time Tools","item":"{{ SITE_URL }}/tools/date-time/"},{"@type":"ListItem","position":3,"name":"Date Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'date-calculator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📅 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Date Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate how many days, weeks, and months are between two dates — or add and subtract days from any date.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+
+    <!-- Difference between dates -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Days Between Two Dates</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+        <div>
+          <label class="ai-tool-label" for="dc-from">Start Date</label>
+          <input type="date" id="dc-from" class="ai-tool-input" oninput="calcDiff()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="dc-to">End Date</label>
+          <input type="date" id="dc-to" class="ai-tool-input" oninput="calcDiff()">
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <button onclick="setDiffPreset('today-1y')" class="dc-preset">Last year</button>
+        <button onclick="setDiffPreset('today-6m')" class="dc-preset">Last 6 months</button>
+        <button onclick="setDiffPreset('today-30')" class="dc-preset">Last 30 days</button>
+        <button onclick="setDiffPreset('today-next1y')" class="dc-preset">Next year</button>
+      </div>
+      <div id="dc-diff-result" style="display:none;background:#1e293b;border-radius:.75rem;padding:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;text-align:center;">
+          <div><div id="dc-days" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div><div style="font-size:.75rem;color:#94a3b8;">Days</div></div>
+          <div><div id="dc-weeks" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div><div style="font-size:.75rem;color:#94a3b8;">Weeks</div></div>
+          <div><div id="dc-months" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div><div style="font-size:.75rem;color:#94a3b8;">Months</div></div>
+          <div><div id="dc-years" style="font-size:2rem;font-weight:800;color:#6366f1;font-family:monospace;"></div><div style="font-size:.75rem;color:#94a3b8;">Years</div></div>
+        </div>
+        <div id="dc-diff-note" style="text-align:center;margin-top:.75rem;font-size:.8125rem;color:#64748b;"></div>
+      </div>
+    </div>
+
+    <!-- Add/subtract days -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Add or Subtract Days</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 6rem;gap:.75rem;margin-bottom:.75rem;align-items:end;">
+        <div>
+          <label class="ai-tool-label" for="dc-base">Start Date</label>
+          <input type="date" id="dc-base" class="ai-tool-input" oninput="calcAdd()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="dc-add-days">Days</label>
+          <input type="number" id="dc-add-days" class="ai-tool-input" placeholder="30" oninput="calcAdd()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="dc-add-op">Op</label>
+          <select id="dc-add-op" class="ai-tool-select" onchange="calcAdd()">
+            <option value="add">Add</option>
+            <option value="sub">Subtract</option>
+          </select>
+        </div>
+      </div>
+      <div id="dc-add-result" style="display:none;background:#1e293b;border-radius:.75rem;padding:1rem;text-align:center;">
+        <div style="font-size:.8125rem;color:#64748b;margin-bottom:.25rem;" id="dc-add-label"></div>
+        <div id="dc-add-out" style="font-size:1.5rem;font-weight:800;color:#6366f1;font-family:monospace;"></div>
+        <div id="dc-add-dow" style="font-size:.875rem;color:#94a3b8;margin-top:.25rem;"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Date Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Calculate days between dates</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick two dates to instantly see the gap in days, weeks, months, and years. Use the quick presets for common ranges.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add or subtract days</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the second section to find a date that is N days before or after a starting date. Great for calculating deadlines.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does the calculator include the start or end date? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The difference calculation does not count either endpoint — it measures the gap between them. For example, Jan 1 to Jan 3 is 2 days. If you need to include both endpoints, add 1 to the result.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How are months calculated? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The months value is an approximation — it divides the total days by 30.44 (average days per month). For exact month counts, use a calendar-aware approach since months vary in length.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I calculate working days only? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This calculator shows calendar days (including weekends and holidays). For business-day calculations, multiply calendar days by approximately 5/7 as a rough estimate, or use a dedicated business-days tool.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'date-time' 'epoch-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Epoch Converter</a>
+      <a href="{% url 'tools:tool' 'date-time' 'countdown-timer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Countdown Timer</a>
+      <a href="{% url 'tools:tool' 'calculators' 'age-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Age Calculator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.dc-preset{padding:.3rem .65rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.dc-preset:hover{background:#f1f5f9;border-color:#6366f1;color:#6366f1;}
+</style>
+<script>
+var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function setDiffPreset(p){
+  var now=new Date();var from,to;
+  if(p==='today-1y'){from=new Date(now.getFullYear()-1,now.getMonth(),now.getDate());to=now;}
+  else if(p==='today-6m'){from=new Date(now.getFullYear(),now.getMonth()-6,now.getDate());to=now;}
+  else if(p==='today-30'){from=new Date(now-30*86400000);to=now;}
+  else{from=now;to=new Date(now.getFullYear()+1,now.getMonth(),now.getDate());}
+  document.getElementById('dc-from').value=from.toISOString().split('T')[0];
+  document.getElementById('dc-to').value=to.toISOString().split('T')[0];
+  calcDiff();
+}
+function calcDiff(){
+  var f=document.getElementById('dc-from').value;
+  var t=document.getElementById('dc-to').value;
+  if(!f||!t)return;
+  var fd=new Date(f),td=new Date(t);
+  var diff=Math.abs(td-fd);
+  var days=Math.round(diff/86400000);
+  document.getElementById('dc-days').textContent=days.toLocaleString();
+  document.getElementById('dc-weeks').textContent=Math.floor(days/7).toLocaleString();
+  document.getElementById('dc-months').textContent=(days/30.44).toFixed(1);
+  document.getElementById('dc-years').textContent=(days/365.25).toFixed(2);
+  var note=td>=fd?'':'Dates are in reverse order — showing absolute difference';
+  document.getElementById('dc-diff-note').textContent=note;
+  document.getElementById('dc-diff-result').style.display='';
+}
+function calcAdd(){
+  var base=document.getElementById('dc-base').value;
+  var days=parseInt(document.getElementById('dc-add-days').value);
+  var op=document.getElementById('dc-add-op').value;
+  if(!base||isNaN(days))return;
+  var d=new Date(base);
+  d.setDate(d.getDate()+(op==='add'?days:-days));
+  var iso=d.toISOString().split('T')[0];
+  var pretty=DAYS[d.getDay()]+', '+MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+  document.getElementById('dc-add-out').textContent=iso;
+  document.getElementById('dc-add-dow').textContent=pretty;
+  document.getElementById('dc-add-label').textContent=(op==='add'?'Adding ':'Subtracting ')+days+' day'+(days!==1?'s':'')+(op==='add'?' gives':' gives');
+  document.getElementById('dc-add-result').style.display='';
+}
+// init today's date in base field
+document.getElementById('dc-base').value=todayStr();
+</script>
+{% endblock %}

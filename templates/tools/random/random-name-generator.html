@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Random Name Generator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate random first names, last names, or full names. Choose gender, nationality style, and quantity. Great for testing, games, and fiction writing. Free online name generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-name-generator' %}{% endblock %}
+{% block og_title %}Random Name Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate random names by gender and style. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-name-generator' %}{% endblock %}
+{% block twitter_title %}Random Name Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate random names instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Random Name Generator","description":"Generate random first and last names for testing, fiction, and games.","url":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-name-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Random Tools","item":"{{ SITE_URL }}/tools/random/"},{"@type":"ListItem","position":3,"name":"Random Name Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-name-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎲 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Random Name Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate random names for testing, character creation, or games. Choose gender, style, and how many names you need.</p>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+        <div>
+          <label class="ai-tool-label">Gender</label>
+          <select id="nm-gender" class="ai-tool-select">
+            <option value="any">Any</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div>
+          <label class="ai-tool-label">Style</label>
+          <select id="nm-style" class="ai-tool-select">
+            <option value="western">Western / English</option>
+            <option value="latin">Latin / Spanish</option>
+            <option value="nordic">Nordic</option>
+            <option value="fantasy">Fantasy</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label">Format</label>
+          <select id="nm-format" class="ai-tool-select">
+            <option value="full">Full name</option>
+            <option value="first">First name only</option>
+            <option value="last">Last name only</option>
+          </select>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="nm-count">Count</label>
+          <input type="number" id="nm-count" class="ai-tool-input" value="10" min="1" max="200">
+        </div>
+      </div>
+      <button onclick="generateNames()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:1rem;">Generate Names</button>
+
+      <div id="nm-output-wrap" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <span id="nm-summary" style="font-size:.875rem;font-weight:600;color:#0f172a;"></span>
+          <button onclick="copyNames()" id="nm-copy" style="padding:.25rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+        <div id="nm-list" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Name Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose gender and style</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick a gender filter (or any) and select a naming style — Western, Latin, Nordic, or Fantasy.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set format and count</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose full name, first only, or last only. Set how many names you need (up to 200).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Generate and copy</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Generate. The names appear as tags. Click Copy to copy them all to your clipboard as a newline-separated list.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are the names real names? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The names are drawn from curated word lists of common first and last names in the selected style. They are all real-sounding names but the combinations are randomly generated, so they are unlikely to be real people.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What can I use random names for? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Common uses include: populating test databases, creating placeholder user accounts, writing fiction characters, generating NPC names for games, and anonymising datasets for demos.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'random' 'random-number-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Number Generator</a>
+      <a href="{% url 'tools:tool' 'random' 'random-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Picker</a>
+      <a href="{% url 'tools:tool' 'text' 'lorem-ipsum-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Lorem Ipsum Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var DATA={
+  western:{
+    male:['James','John','Robert','Michael','William','David','Richard','Joseph','Thomas','Charles','Christopher','Daniel','Paul','Mark','Donald','George','Kenneth','Steven','Edward','Brian','Anthony','Kevin','Jason','Matthew','Gary','Timothy','Jose','Larry','Jeffrey','Frank','Scott','Eric','Stephen','Andrew','Raymond','Gregory','Joshua','Jerry','Dennis','Walter','Patrick','Peter','Harold','Douglas','Henry','Carl','Arthur','Ryan','Roger','Joe'],
+    female:['Mary','Patricia','Jennifer','Linda','Barbara','Elizabeth','Susan','Jessica','Sarah','Karen','Lisa','Nancy','Betty','Margaret','Sandra','Ashley','Dorothy','Kimberly','Emily','Donna','Michelle','Carol','Amanda','Melissa','Deborah','Stephanie','Rebecca','Sharon','Laura','Cynthia','Kathleen','Amy','Angela','Shirley','Anna','Brenda','Pamela','Emma','Nicole','Helen','Samantha','Katherine','Christine','Debra','Rachel','Carolyn','Janet','Catherine','Maria','Heather'],
+    last:['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson','Thomas','Taylor','Moore','Jackson','Martin','Lee','Perez','Thompson','White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young','Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores','Green','Adams','Nelson','Baker','Hall','Rivera','Campbell','Mitchell','Carter','Roberts']
+  },
+  latin:{
+    male:['Alejandro','Carlos','Diego','Eduardo','Fernando','Gabriel','Hector','Ignacio','Javier','Luis','Manuel','Nicolas','Oscar','Pablo','Rafael','Sebastian','Victor','Xavier','Andres','Bernardo','Cesar','Damian','Emilio','Felipe','Gonzalo','Ignacio','Jorge','Marco','Miguel','Pedro','Ricardo','Roberto','Rodrigo','Santiago','Sergio','Tomas','Adrian','Antonio','Arturo','Camilo'],
+    female:['Sofia','Isabella','Valentina','Camila','Valeria','Luciana','Daniela','Gabriela','Maria','Ana','Paula','Fernanda','Carolina','Monica','Diana','Natalia','Andrea','Patricia','Gloria','Rosa','Elena','Laura','Adriana','Claudia','Cristina','Isabel','Luz','Marcela','Mariana','Paola','Sandra','Veronica','Alejandra','Alicia','Beatriz','Carmen','Catalina','Cecilia','Esperanza','Eva'],
+    last:['Garcia','Rodriguez','Martinez','Lopez','Gonzalez','Perez','Sanchez','Ramirez','Torres','Flores','Rivera','Morales','Ortiz','Gutierrez','Chavez','Ramos','Reyes','Cruz','Hernandez','Jimenez','Vargas','Romero','Diaz','Castillo','Moreno','Navarro','Ruiz','Vega','Guerrero','Mendez','Soto','Medina','Aguilar','Delgado','Rios','Herrera','Suarez','Serrano','Dominguez','Contreras']
+  },
+  nordic:{
+    male:['Erik','Lars','Olaf','Sven','Magnus','Bjorn','Gunnar','Harald','Leif','Sigurd','Thorvald','Ulf','Vidar','Axel','Emil','Gustav','Henrik','Isak','Johan','Karl','Mikael','Nils','Oscar','Per','Ragnar','Stefan','Tobias','Valdemar','Zacharias','Aleksander','Anders','Anton','Arvid','Casper','Christoffer','Edvard','Felix','Fredrick','Göran','Hans'],
+    female:['Astrid','Freya','Ingrid','Sigrid','Helga','Gudrun','Ragnhild','Solveig','Thyra','Unn','Bodil','Elin','Frida','Greta','Hanna','Ida','Johanna','Karin','Linnea','Maja','Nora','Petra','Ragna','Sara','Tilda','Ulrika','Vera','Ylva','Agnes','Birgit','Cecilia','Dagmar','Edith','Fiona','Gunhild','Helena','Iris','Josefin','Katarina','Lena'],
+    last:['Andersen','Hansen','Nilsson','Eriksson','Larsson','Olsson','Persson','Svensson','Gustafsson','Pettersson','Jonsson','Carlsson','Magnusson','Lindstrom','Johansson','Bergstrom','Lindqvist','Hedlund','Nyman','Lindberg','Lundgren','Berg','Fransson','Holmberg','Sundstrom','Blomqvist','Lind','Lundqvist','Hallberg','Ekstrom','Berglund','Forsberg','Henriksson','Sjostrom','Ahlberg','Akesson','Bjornsson','Dahl','Granberg','Isaksson']
+  },
+  fantasy:{
+    male:['Aeron','Blaze','Caelum','Dravok','Eldrin','Faelon','Gavriel','Hadrix','Iorek','Jareth','Kiran','Lyndor','Mordecai','Nyx','Oberon','Pyriel','Quillon','Riven','Sorin','Taevas','Uriel','Varyn','Wystan','Xander','Yareth','Zephyr','Aldric','Beren','Caspian','Draven','Eryndor','Falkor','Gareth','Hadeon','Izroth','Jarvan','Korath','Lysander','Malachar','Norrath'],
+    female:['Aelindra','Brynn','Caelia','Daenys','Elysia','Faelyn','Galadria','Hyria','Isolde','Jysella','Katrielle','Lyara','Miria','Nyxara','Oriana','Phaedra','Quira','Riven','Seraphel','Thandris','Ularia','Vael','Wylla','Xyra','Yrael','Zara','Alainn','Belaena','Cyrielle','Daeriel','Eryndra','Faelina','Galatea','Hypatia','Illyria','Jadis','Kiralee','Lyanna','Morwenna','Nyrielle'],
+    last:['Ashwood','Blackthorn','Coldfire','Dawnbringer','Evermoor','Frostweave','Grimshaw','Hollowmere','Ironveil','Jadeblade','Keldrath','Lightbane','Moonshadow','Nightwhisper','Oakheart','Pyrevane','Quicksilver','Ravenfall','Shadowmend','Thornwall','Umbraveil','Voidwalker','Willowmere','Xarath','Yewbark','Zephyrstone','Ambervane','Bridgethorn','Cinderveil','Duskmantle','Emberholt','Frostfall','Grimtide','Hawkwind','Iceveil','Jadehallow','Kindlewood','Lightfall','Moonveil','Nightborn']
+  }
+};
+
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function generateNames(){
+  var gender=document.getElementById('nm-gender').value;
+  var style=document.getElementById('nm-style').value;
+  var format=document.getElementById('nm-format').value;
+  var count=Math.min(parseInt(document.getElementById('nm-count').value)||10,200);
+  var pool=DATA[style];
+  var names=[];
+  for(var i=0;i<count;i++){
+    var g=gender==='any'?(Math.random()<.5?'male':'female'):gender;
+    var first=pick(pool[g]);
+    var last=pick(pool.last);
+    if(format==='full')names.push(first+' '+last);
+    else if(format==='first')names.push(first);
+    else names.push(last);
+  }
+  document.getElementById('nm-summary').textContent=count+' names generated';
+  var list=document.getElementById('nm-list');
+  list.innerHTML=names.map(function(n){
+    return '<span style="padding:.3rem .65rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.375rem;font-size:.875rem;color:#374151;cursor:default;">'+n+'</span>';
+  }).join('');
+  document.getElementById('nm-output-wrap').style.display='';
+  list._names=names;
+}
+function copyNames(){
+  var list=document.getElementById('nm-list');
+  var names=Array.from(list.querySelectorAll('span')).map(function(s){return s.textContent;});
+  navigator.clipboard.writeText(names.join('\n')).then(function(){
+    var b=document.getElementById('nm-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+generateNames();
+</script>
+{% endblock %}

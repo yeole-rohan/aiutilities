@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Random Number Generator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate random numbers in any range, with optional duplicates, decimals, or sorting. Generate single or multiple numbers instantly. Free online random number generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-number-generator' %}{% endblock %}
+{% block og_title %}Random Number Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate random numbers in any range. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-number-generator' %}{% endblock %}
+{% block twitter_title %}Random Number Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate random numbers instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Random Number Generator","description":"Generate random numbers in any range with optional duplicates, decimals, and sorting.","url":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-number-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Random Tools","item":"{{ SITE_URL }}/tools/random/"},{"@type":"ListItem","position":3,"name":"Random Number Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'random' 'random-number-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎲 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Random Number Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate one or many random numbers in any range. Supports decimals, no-duplicate mode, and sorting.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Any range</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple numbers</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No duplicates option</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+        <div>
+          <label class="ai-tool-label" for="rn-min">Minimum</label>
+          <input type="number" id="rn-min" class="ai-tool-input" value="1">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="rn-max">Maximum</label>
+          <input type="number" id="rn-max" class="ai-tool-input" value="100">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="rn-count">How many</label>
+          <input type="number" id="rn-count" class="ai-tool-input" value="1" min="1" max="1000">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="rn-decimals">Decimal places</label>
+          <input type="number" id="rn-decimals" class="ai-tool-input" value="0" min="0" max="10">
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;"><input type="checkbox" id="rn-unique"> No duplicates</label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;"><input type="checkbox" id="rn-sort"> Sort ascending</label>
+      </div>
+      <button onclick="generateNumbers()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:1rem;">Generate</button>
+
+      <!-- Big single number display -->
+      <div id="rn-single" style="text-align:center;padding:2rem;background:#1e293b;border-radius:.75rem;margin-bottom:1rem;display:none;">
+        <div id="rn-big" style="font-size:4rem;font-weight:800;color:#6366f1;font-family:monospace;line-height:1;"></div>
+      </div>
+
+      <!-- Multi number display -->
+      <div id="rn-multi" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <span style="font-size:.875rem;font-weight:600;color:#0f172a;" id="rn-summary"></span>
+          <button onclick="copyNumbers()" id="rn-copy" style="padding:.25rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+        <textarea id="rn-output" readonly style="width:100%;font-family:monospace;font-size:.875rem;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:.5rem;padding:.75rem;resize:none;height:8rem;box-sizing:border-box;"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Random Number Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Set your range</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the minimum and maximum values. The generator works with negative numbers and decimals too.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose quantity and options</strong><br><span style="font-size:.875rem;color:#6b7280;">Set how many numbers to generate. Enable "No duplicates" for lottery-style picks, or "Sort ascending" to get results in order.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Generate and copy</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Generate. Single results show in a large display. Multiple results are listed in a copyable text area.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is this truly random? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool uses the browser's built-in <code>Math.random()</code>, which is a pseudorandom number generator (PRNG). It is random enough for most everyday uses like games, decisions, and sampling — but not suitable for cryptographic purposes.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How does no-duplicates mode work? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The generator keeps track of already-picked numbers and skips repeats. Note that the count cannot exceed the number of distinct integers in your range when no-duplicates is enabled.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I simulate a dice roll? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — set min to 1 and max to 6 for a standard d6. For a d20, use 1–20. You can generate multiple dice rolls at once by increasing the count.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'random' 'random-name-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Name Generator</a>
+      <a href="{% url 'tools:tool' 'random' 'random-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Random Picker</a>
+      <a href="{% url 'tools:tool' 'text' 'lorem-ipsum-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Lorem Ipsum Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function generateNumbers(){
+  var min=parseFloat(document.getElementById('rn-min').value);
+  var max=parseFloat(document.getElementById('rn-max').value);
+  var count=parseInt(document.getElementById('rn-count').value)||1;
+  var dec=parseInt(document.getElementById('rn-decimals').value)||0;
+  var unique=document.getElementById('rn-unique').checked;
+  var sort=document.getElementById('rn-sort').checked;
+  if(isNaN(min)||isNaN(max)||min>max){alert('Check your min/max values.');return;}
+  count=Math.min(count,1000);
+  var nums=[];var seen={};var attempts=0;
+  while(nums.length<count&&attempts<50000){
+    attempts++;
+    var n=+(min+Math.random()*(max-min)).toFixed(dec);
+    if(unique){if(seen[n])continue;seen[n]=true;}
+    nums.push(n);
+  }
+  if(sort)nums.sort(function(a,b){return a-b;});
+  var single=document.getElementById('rn-single');
+  var multi=document.getElementById('rn-multi');
+  if(count===1){
+    document.getElementById('rn-big').textContent=nums[0];
+    single.style.display='';multi.style.display='none';
+  }else{
+    document.getElementById('rn-summary').textContent=nums.length+' numbers generated';
+    document.getElementById('rn-output').value=nums.join('\n');
+    single.style.display='none';multi.style.display='';
+  }
+}
+function copyNumbers(){
+  var t=document.getElementById('rn-output').value;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=document.getElementById('rn-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+generateNumbers();
+</script>
+{% endblock %}

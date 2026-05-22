@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}XML Sitemap Generator — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate a valid XML sitemap for your website. Add URLs with priority and change frequency, then download the sitemap file. Free online XML sitemap generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'xml-sitemap-generator' %}{% endblock %}
+{% block og_title %}XML Sitemap Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate a valid XML sitemap for your website. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'xml-sitemap-generator' %}{% endblock %}
+{% block twitter_title %}XML Sitemap Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate an XML sitemap for your website. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"XML Sitemap Generator","description":"Generate a valid XML sitemap for your website with priority and change frequency settings.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'xml-sitemap-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"XML Sitemap Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'xml-sitemap-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🗺️ SEO · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">XML Sitemap Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Build a valid XML sitemap for your website. Add URLs with priority and update frequency, then copy or download.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Valid XML</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Priority & frequency</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Download file</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- URL entries -->
+      <div class="ai-tool-form-card" style="display:flex;flex-direction:column;">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">URL Entries</h2>
+        <div id="sm-urls" style="display:grid;gap:.75rem;flex:1;"></div>
+        <button onclick="addUrl()" style="margin-top:.75rem;width:100%;padding:.5rem;border:1px dashed #d1d5db;background:transparent;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;">+ Add URL</button>
+      </div>
+      <!-- Output -->
+      <div class="ai-tool-form-card" style="display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+          <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">sitemap.xml</h2>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="copySitemap()" id="sm-copy" style="padding:.3rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+            <button onclick="downloadSitemap()" style="padding:.3rem .6rem;background:#0f172a;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Download</button>
+          </div>
+        </div>
+        <textarea id="sm-output" readonly style="flex:1;font-family:monospace;font-size:.7rem;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:.5rem;padding:.75rem;resize:none;min-height:28rem;"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the XML Sitemap Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Add your URLs</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter each page URL you want indexed. Set the priority (1.0 = highest) and how often the page changes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Review the XML</strong><br><span style="font-size:.875rem;color:#6b7280;">The sitemap updates live as you add URLs. Check the output panel to confirm the XML looks correct.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy or download</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy the XML to paste into your CMS, or download as sitemap.xml and upload to your website root.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Where do I upload my sitemap? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Upload sitemap.xml to the root of your domain so it is accessible at https://yourdomain.com/sitemap.xml. Then submit the URL in Google Search Console under Sitemaps and Bing Webmaster Tools.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does priority mean in a sitemap? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Priority (0.0–1.0) is a hint to crawlers about the relative importance of pages within your site. It does not affect rankings directly. Most pages should be 0.5; your homepage and key landing pages can be 1.0.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many URLs can a sitemap have? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A single sitemap file can contain up to 50,000 URLs and must be no larger than 50MB uncompressed. For larger sites, use a sitemap index file that points to multiple individual sitemaps.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'robots-txt-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Robots.txt Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var smEntries=[];
+var smId=0;
+
+function addUrl(url,priority,freq){
+  var id=smId++;
+  smEntries.push({id:id,url:url||'',priority:priority||'0.8',freq:freq||'monthly'});
+  renderEntries();buildSitemap();
+}
+function removeEntry(id){
+  smEntries=smEntries.filter(function(e){return e.id!==id;});
+  renderEntries();buildSitemap();
+}
+function updateEntry(id,field,val){
+  var e=smEntries.find(function(e){return e.id===id;});
+  if(e)e[field]=val;
+  buildSitemap();
+}
+function renderEntries(){
+  var c=document.getElementById('sm-urls');
+  c.innerHTML=smEntries.map(function(e){
+    return '<div style="border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem;">'
+      +'<div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem;">'
+      +'<input type="text" value="'+e.url+'" placeholder="https://example.com/page" class="ai-tool-input" style="flex:1;font-size:.8125rem;" oninput="updateEntry('+e.id+',\'url\',this.value)">'
+      +'<button onclick="removeEntry('+e.id+')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:0 .25rem;">&#215;</button>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">'
+      +'<select class="ai-tool-select" style="font-size:.75rem;" onchange="updateEntry('+e.id+',\'priority\',this.value)">'
+      +['1.0','0.9','0.8','0.7','0.6','0.5','0.4','0.3','0.2','0.1'].map(function(p){return'<option value="'+p+'"'+(e.priority===p?' selected':'')+'>Priority '+p+'</option>';}).join('')
+      +'</select>'
+      +'<select class="ai-tool-select" style="font-size:.75rem;" onchange="updateEntry('+e.id+',\'freq\',this.value)">'
+      +['always','hourly','daily','weekly','monthly','yearly','never'].map(function(f){return'<option value="'+f+'"'+(e.freq===f?' selected':'')+'>'+f.charAt(0).toUpperCase()+f.slice(1)+'</option>';}).join('')
+      +'</select>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+function buildSitemap(){
+  var today=new Date().toISOString().split('T')[0];
+  var lines=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+  smEntries.forEach(function(e){
+    if(!e.url)return;
+    lines.push('  <url>');
+    lines.push('    <loc>'+e.url.replace(/&/g,'&amp;')+'</loc>');
+    lines.push('    <lastmod>'+today+'</lastmod>');
+    lines.push('    <changefreq>'+e.freq+'</changefreq>');
+    lines.push('    <priority>'+e.priority+'</priority>');
+    lines.push('  </url>');
+  });
+  lines.push('</urlset>');
+  document.getElementById('sm-output').value=lines.join('\n');
+}
+function copySitemap(){
+  navigator.clipboard.writeText(document.getElementById('sm-output').value).then(function(){
+    var b=document.getElementById('sm-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+function downloadSitemap(){
+  var blob=new Blob([document.getElementById('sm-output').value],{type:'application/xml'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sitemap.xml';a.click();
+}
+// Init with 3 example entries
+addUrl('https://example.com/','1.0','weekly');
+addUrl('https://example.com/about/','0.7','monthly');
+addUrl('https://example.com/blog/','0.8','daily');
+</script>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Meta Tag Generator — Free SEO Meta Tags Tool | AIUtilities{% endblock %}
+{% block description %}Generate SEO-optimised meta tags for title, description, Open Graph, and Twitter Card. Copy ready-to-paste HTML. Free online meta tag generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'meta-tag-generator' %}{% endblock %}
+{% block og_title %}Meta Tag Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate SEO meta tags for title, description, OG, and Twitter Card. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'meta-tag-generator' %}{% endblock %}
+{% block twitter_title %}Meta Tag Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate SEO meta tags instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Meta Tag Generator","description":"Generate SEO meta tags for title, description, Open Graph, and Twitter Card.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'meta-tag-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"Meta Tag Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'meta-tag-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔍 SEO · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Meta Tag Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Fill in your page details and get ready-to-paste HTML meta tags for SEO, Open Graph, and Twitter Card.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ SEO meta tags</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Open Graph</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Twitter Card</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Inputs -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Page Details</h2>
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="mt-title">Page Title <span id="mt-title-count" style="font-weight:400;color:#9ca3af;"></span></label>
+            <input type="text" id="mt-title" class="ai-tool-input" placeholder="My Amazing Page Title" oninput="buildTags()">
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: 50–60 characters</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mt-desc">Meta Description <span id="mt-desc-count" style="font-weight:400;color:#9ca3af;"></span></label>
+            <textarea id="mt-desc" class="ai-tool-input" rows="3" placeholder="A concise description of your page content for search engines." oninput="buildTags()"></textarea>
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: 150–160 characters</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mt-url">Canonical URL</label>
+            <input type="text" id="mt-url" class="ai-tool-input" placeholder="https://example.com/my-page" oninput="buildTags()">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mt-image">OG Image URL</label>
+            <input type="text" id="mt-image" class="ai-tool-input" placeholder="https://example.com/og-image.jpg" oninput="buildTags()">
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: 1200×630px</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mt-type">OG Type</label>
+            <select id="mt-type" class="ai-tool-select" onchange="buildTags()">
+              <option value="website">website</option>
+              <option value="article">article</option>
+              <option value="product">product</option>
+              <option value="profile">profile</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="mt-robots">Robots</label>
+            <select id="mt-robots" class="ai-tool-select" onchange="buildTags()">
+              <option value="index, follow">index, follow (default)</option>
+              <option value="noindex, follow">noindex, follow</option>
+              <option value="index, nofollow">index, nofollow</option>
+              <option value="noindex, nofollow">noindex, nofollow</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Output -->
+      <div class="ai-tool-form-card" style="display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+          <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">Generated Tags</h2>
+          <button onclick="copyTags()" id="mt-copy-btn" style="padding:.3rem .75rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Copy HTML</button>
+        </div>
+        <textarea id="mt-output" class="ai-tool-input" rows="20" readonly style="font-family:monospace;font-size:.75rem;background:#1e293b;color:#e2e8f0;border-color:#334155;flex:1;resize:none;"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Meta Tag Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Fill in your page details</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter your page title, description, canonical URL, OG image, and select the page type and robots preference.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Tags generate instantly</strong><br><span style="font-size:.875rem;color:#6b7280;">The output panel updates in real time with complete HTML for SEO, Open Graph, and Twitter Card tags.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy and paste into your &lt;head&gt;</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Copy HTML" and paste the tags inside the &lt;head&gt; section of your HTML page.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the ideal meta title length? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Google typically displays 50–60 characters of a title tag. Titles longer than ~60 characters may be truncated in search results. Include your primary keyword near the beginning.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is Open Graph? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Open Graph (OG) tags control how your page appears when shared on Facebook, LinkedIn, Slack, and other platforms. The og:title, og:description, and og:image tags define the title, text, and preview image shown in link previews.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What size should my OG image be? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The recommended OG image size is 1200×630 pixels (1.91:1 ratio). Use JPEG or PNG format. Minimum size is 600×315px but larger images look sharper on high-DPI displays.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does noindex mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">noindex tells search engines not to include this page in their index. Use it for admin pages, duplicate content, or pages under construction. nofollow tells crawlers not to follow links on the page.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+      <a href="{% url 'tools:tool' 'seo' 'opengraph-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Open Graph Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'robots-txt-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Robots.txt Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function buildTags(){
+  var title=document.getElementById('mt-title').value;
+  var desc=document.getElementById('mt-desc').value;
+  var url=document.getElementById('mt-url').value;
+  var image=document.getElementById('mt-image').value;
+  var type=document.getElementById('mt-type').value;
+  var robots=document.getElementById('mt-robots').value;
+  document.getElementById('mt-title-count').textContent='('+title.length+' chars)';
+  document.getElementById('mt-desc-count').textContent='('+desc.length+' chars)';
+  var lines=['<!-- SEO Meta Tags -->'];
+  if(title)lines.push('<title>'+esc(title)+'</title>');
+  if(desc)lines.push('<meta name="description" content="'+esc(desc)+'">');
+  lines.push('<meta name="robots" content="'+robots+'">');
+  if(url)lines.push('<link rel="canonical" href="'+esc(url)+'">');
+  lines.push('','<!-- Open Graph -->');
+  if(title)lines.push('<meta property="og:title" content="'+esc(title)+'">');
+  if(desc)lines.push('<meta property="og:description" content="'+esc(desc)+'">');
+  lines.push('<meta property="og:type" content="'+type+'">');
+  if(url)lines.push('<meta property="og:url" content="'+esc(url)+'">');
+  if(image)lines.push('<meta property="og:image" content="'+esc(image)+'">');
+  lines.push('','<!-- Twitter Card -->');
+  lines.push('<meta name="twitter:card" content="summary_large_image">');
+  if(title)lines.push('<meta name="twitter:title" content="'+esc(title)+'">');
+  if(desc)lines.push('<meta name="twitter:description" content="'+esc(desc)+'">');
+  if(image)lines.push('<meta name="twitter:image" content="'+esc(image)+'">');
+  document.getElementById('mt-output').value=lines.join('\n');
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function copyTags(){
+  navigator.clipboard.writeText(document.getElementById('mt-output').value).then(function(){
+    var b=document.getElementById('mt-copy-btn');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy HTML';},1500);
+  });
+}
+buildTags();
+</script>
+{% endblock %}

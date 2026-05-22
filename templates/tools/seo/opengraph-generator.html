@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Open Graph Generator — Free OG Meta Tag Tool | AIUtilities{% endblock %}
+{% block description %}Generate Open Graph meta tags for Facebook, LinkedIn, and Slack previews. Preview how your link will look when shared. Free online OG tag generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'opengraph-generator' %}{% endblock %}
+{% block og_title %}Open Graph Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate OG meta tags and preview link cards for social media. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'opengraph-generator' %}{% endblock %}
+{% block twitter_title %}Open Graph Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate Open Graph meta tags. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Open Graph Generator","description":"Generate Open Graph meta tags for social media link previews.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'opengraph-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"Open Graph Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'opengraph-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔗 Social Preview · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Open Graph Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate Open Graph meta tags and preview how your link will appear when shared on Facebook, LinkedIn, and Slack.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Live preview</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Twitter Card too</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ One-click copy</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Form -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Page Details</h2>
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="og-title">Title <span id="og-tc" style="font-weight:400;color:#9ca3af;"></span></label>
+            <input type="text" id="og-title" class="ai-tool-input" placeholder="Your page title" oninput="buildOG()">
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: up to 60 characters</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="og-desc">Description <span id="og-dc" style="font-weight:400;color:#9ca3af;"></span></label>
+            <textarea id="og-desc" class="ai-tool-input" rows="3" placeholder="A brief description of your page." oninput="buildOG()"></textarea>
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: up to 200 characters</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="og-url">Page URL</label>
+            <input type="text" id="og-url" class="ai-tool-input" placeholder="https://example.com/my-page" oninput="buildOG()">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="og-image">Image URL</label>
+            <input type="text" id="og-image" class="ai-tool-input" placeholder="https://example.com/og-image.jpg" oninput="buildOG()">
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem;">Recommended: 1200×630px</div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="og-type">Type</label>
+            <select id="og-type" class="ai-tool-select" onchange="buildOG()">
+              <option value="website">website</option>
+              <option value="article">article</option>
+              <option value="product">product</option>
+              <option value="profile">profile</option>
+              <option value="video">video.other</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="og-sitename">Site Name</label>
+            <input type="text" id="og-sitename" class="ai-tool-input" placeholder="My Website" oninput="buildOG()">
+          </div>
+        </div>
+      </div>
+      <!-- Output + preview -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <!-- Preview card -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;">
+          <div style="font-size:.75rem;color:#6b7280;padding:.5rem .75rem;background:#f1f5f9;border-bottom:1px solid #e2e8f0;">Link Preview (Facebook/LinkedIn style)</div>
+          <div id="og-img-preview" style="background:#f1f5f9;height:10rem;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.875rem;">Image will appear here</div>
+          <div style="padding:.75rem;">
+            <div id="og-prev-domain" style="font-size:.6875rem;color:#6b7280;text-transform:uppercase;margin-bottom:.2rem;"></div>
+            <div id="og-prev-title" style="font-size:.9375rem;font-weight:700;color:#0f172a;line-height:1.3;margin-bottom:.25rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"></div>
+            <div id="og-prev-desc" style="font-size:.8125rem;color:#6b7280;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"></div>
+          </div>
+        </div>
+        <!-- Code output -->
+        <div class="ai-tool-form-card" style="padding:.75rem;flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <span style="font-size:.875rem;font-weight:600;color:#0f172a;">Generated Tags</span>
+            <button onclick="copyOG()" id="og-copy" style="padding:.25rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy HTML</button>
+          </div>
+          <textarea id="og-output" readonly style="width:100%;font-family:monospace;font-size:.7rem;background:#1e293b;color:#e2e8f0;border:none;border-radius:.5rem;padding:.5rem;resize:none;height:12rem;box-sizing:border-box;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Open Graph Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Fill in your page info</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the title, description, URL, image, type, and site name. The live preview updates as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Check the preview card</strong><br><span style="font-size:.875rem;color:#6b7280;">See how your link will look when shared on social platforms. Adjust text length so nothing gets cut off.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy and paste into your HTML head</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy HTML and paste the tags inside your page head section.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which platforms use Open Graph tags? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Facebook, LinkedIn, Slack, Discord, WhatsApp, and most modern platforms read OG tags. Twitter/X uses its own Twitter Card tags (also generated here), though it falls back to OG tags if Twitter Card tags are absent.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is my OG image not showing? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Platforms cache OG data. After adding tags, use the Facebook Sharing Debugger or LinkedIn Post Inspector to force a re-scrape. Also ensure your image is publicly accessible (not behind a login) and at least 200×200px.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the best OG image size? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use 1200×630px (1.91:1 ratio) for best results across all platforms. Minimum is 600×315px. Keep important content away from the edges as some platforms crop images.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+      <a href="{% url 'tools:tool' 'seo' 'robots-txt-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Robots.txt Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function buildOG(){
+  var title=document.getElementById('og-title').value;
+  var desc=document.getElementById('og-desc').value;
+  var url=document.getElementById('og-url').value;
+  var image=document.getElementById('og-image').value;
+  var type=document.getElementById('og-type').value;
+  var site=document.getElementById('og-sitename').value;
+  document.getElementById('og-tc').textContent='('+title.length+' chars)';
+  document.getElementById('og-dc').textContent='('+desc.length+' chars)';
+  // Preview
+  try{var u=new URL(url);document.getElementById('og-prev-domain').textContent=u.hostname;}catch(e){document.getElementById('og-prev-domain').textContent='';}
+  document.getElementById('og-prev-title').textContent=title||'Your Page Title';
+  document.getElementById('og-prev-desc').textContent=desc||'Your page description will appear here.';
+  var imgDiv=document.getElementById('og-img-preview');
+  if(image){imgDiv.innerHTML='<img src="'+esc(image)+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML=\'<span style=color:#94a3b8>Image not found</span>\'">';}
+  else{imgDiv.innerHTML='<span style="color:#94a3b8;font-size:.875rem;">Image will appear here</span>';}
+  // Tags
+  var lines=['<!-- Open Graph / Facebook -->'];
+  lines.push('<meta property="og:type" content="'+esc(type)+'">');
+  if(url)lines.push('<meta property="og:url" content="'+esc(url)+'">');
+  if(title)lines.push('<meta property="og:title" content="'+esc(title)+'">');
+  if(desc)lines.push('<meta property="og:description" content="'+esc(desc)+'">');
+  if(image)lines.push('<meta property="og:image" content="'+esc(image)+'">');
+  if(site)lines.push('<meta property="og:site_name" content="'+esc(site)+'">');
+  lines.push('','<!-- Twitter Card -->');
+  lines.push('<meta name="twitter:card" content="summary_large_image">');
+  if(url)lines.push('<meta name="twitter:url" content="'+esc(url)+'">');
+  if(title)lines.push('<meta name="twitter:title" content="'+esc(title)+'">');
+  if(desc)lines.push('<meta name="twitter:description" content="'+esc(desc)+'">');
+  if(image)lines.push('<meta name="twitter:image" content="'+esc(image)+'">');
+  document.getElementById('og-output').value=lines.join('\n');
+}
+function copyOG(){
+  navigator.clipboard.writeText(document.getElementById('og-output').value).then(function(){
+    var b=document.getElementById('og-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy HTML';},1500);
+  });
+}
+buildOG();
+</script>
+{% endblock %}

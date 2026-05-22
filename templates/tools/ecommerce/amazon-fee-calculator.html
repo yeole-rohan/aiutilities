@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Amazon Fee Calculator — FBA & FBM Fee Estimator | AIUtilities{% endblock %}
+{% block description %}Calculate Amazon seller fees including referral fees, FBA fulfillment fees, and storage costs. Estimate net profit for any product. Free online Amazon fee calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}{% endblock %}
+{% block og_title %}Amazon Fee Calculator | AIUtilities{% endblock %}
+{% block og_description %}Calculate Amazon FBA and FBM fees and estimate your net profit. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}{% endblock %}
+{% block twitter_title %}Amazon Fee Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Estimate Amazon seller fees and profit. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Amazon Fee Calculator","description":"Calculate Amazon seller fees including referral fees, FBA fulfillment, and storage costs.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"E-commerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Amazon Fee Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🛒 E-commerce · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Amazon Fee Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Estimate Amazon referral fees, FBA fulfillment fees, and your net profit before you list. Updated for 2025 fee schedules.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ FBA & FBM</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All categories</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Net profit</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Inputs -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Product Details</h2>
+        <div style="display:grid;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="amz-price">Selling Price ($)</label>
+            <input type="number" id="amz-price" class="ai-tool-input" value="29.99" min="0" step="0.01" oninput="calcAmz()">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="amz-cost">Product Cost ($)</label>
+            <input type="number" id="amz-cost" class="ai-tool-input" value="8.00" min="0" step="0.01" oninput="calcAmz()">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="amz-cat">Category</label>
+            <select id="amz-cat" class="ai-tool-select" onchange="calcAmz()">
+              <option value="0.15">Most categories (15%)</option>
+              <option value="0.08">Books, Music, Video (8%)</option>
+              <option value="0.06">Electronics (6–8%)</option>
+              <option value="0.17">Clothing &amp; Accessories (17%)</option>
+              <option value="0.12">Health &amp; Beauty (12%)</option>
+              <option value="0.15">Home &amp; Kitchen (15%)</option>
+              <option value="0.12">Sports &amp; Outdoors (12%)</option>
+              <option value="0.15">Toys &amp; Games (15%)</option>
+              <option value="0.08">Computers (8%)</option>
+              <option value="0.20">Jewelry (20%)</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label">Fulfillment</label>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="setFulfill('fba')" id="btn-fba" class="amz-tab amz-active">FBA</button>
+              <button onclick="setFulfill('fbm')" id="btn-fbm" class="amz-tab">FBM</button>
+            </div>
+          </div>
+          <div id="fba-fields">
+            <label class="ai-tool-label" for="amz-size">FBA Size Tier</label>
+            <select id="amz-size" class="ai-tool-select" onchange="calcAmz()">
+              <option value="3.22">Small Standard (&lt;16oz) — $3.22</option>
+              <option value="4.75">Large Standard (&lt;3lb) — $4.75</option>
+              <option value="6.92">Large Standard (&lt;20lb) — $6.92</option>
+              <option value="9.73">Small Oversize — $9.73</option>
+              <option value="19.05">Medium Oversize — $19.05</option>
+              <option value="89.98">Large Oversize — $89.98+</option>
+            </select>
+          </div>
+          <div id="fbm-fields" style="display:none;">
+            <label class="ai-tool-label" for="amz-ship">Shipping Cost ($)</label>
+            <input type="number" id="amz-ship" class="ai-tool-input" value="4.50" min="0" step="0.01" oninput="calcAmz()">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="amz-ads">Advertising Spend ($, optional)</label>
+            <input type="number" id="amz-ads" class="ai-tool-input" placeholder="0.00" min="0" step="0.01" oninput="calcAmz()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="ai-tool-form-card">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Fee Breakdown</h2>
+        <div style="display:grid;gap:.5rem;" id="amz-breakdown">
+          <div class="amz-row"><span>Selling Price</span><span id="amz-r-price" class="amz-val"></span></div>
+          <div class="amz-row"><span>Referral Fee</span><span id="amz-r-ref" class="amz-val amz-neg"></span></div>
+          <div class="amz-row" id="amz-row-fba"><span>FBA Fee</span><span id="amz-r-fba" class="amz-val amz-neg"></span></div>
+          <div class="amz-row" id="amz-row-fbm"><span>Shipping</span><span id="amz-r-ship" class="amz-val amz-neg"></span></div>
+          <div class="amz-row"><span>Product Cost</span><span id="amz-r-cost" class="amz-val amz-neg"></span></div>
+          <div class="amz-row" id="amz-row-ads" style="display:none;"><span>Ad Spend</span><span id="amz-r-ads" class="amz-val amz-neg"></span></div>
+          <div style="border-top:2px solid #e2e8f0;margin:.25rem 0;"></div>
+          <div class="amz-row" style="font-weight:700;"><span>Net Profit</span><span id="amz-r-net" class="amz-val"></span></div>
+          <div class="amz-row"><span>Net Margin</span><span id="amz-r-margin" class="amz-val"></span></div>
+          <div class="amz-row"><span>ROI</span><span id="amz-r-roi" class="amz-val"></span></div>
+        </div>
+        <div style="margin-top:1rem;background:#fef9c3;border:1px solid #fde047;border-radius:.5rem;padding:.75rem;font-size:.75rem;color:#713f12;">
+          <strong>Note:</strong> These are estimates. Amazon fees change periodically. Always verify current rates in Seller Central before making decisions.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Amazon Fee Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your price and cost</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the selling price you plan to charge and your product cost (what you pay to source or manufacture it).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select category and fulfillment</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose the closest product category (affects referral fee %) and whether you use FBA or fulfill yourself (FBM).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Review the fee breakdown</strong><br><span style="font-size:.875rem;color:#6b7280;">See each fee itemised, your net profit, margin, and ROI. Adjust inputs to find the optimal price point.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the Amazon referral fee? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The referral fee is a percentage of the sale price that Amazon charges every seller. It varies by category — 15% is the most common rate, but it ranges from 6% (some electronics) to 20% (fine jewelry). There is typically a minimum fee of $0.30.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is FBA or FBM better? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">FBA (Fulfillment by Amazon) gives you Prime eligibility and hands off logistics but adds fulfillment and storage fees. FBM (Fulfilled by Merchant) gives you more control and avoids FBA fees but requires your own shipping and loses Prime badge. The best choice depends on your margins, volume, and product type.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Profit Margin Calculator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Shipping Cost Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.amz-tab{padding:.35rem .9rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.amz-active{background:#6366f1;color:#fff;border-color:#6366f1;}
+.amz-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;font-size:.875rem;color:#374151;border-bottom:1px solid #f1f5f9;}
+.amz-val{font-family:monospace;font-weight:600;}
+.amz-neg{color:#ef4444;}
+</style>
+<script>
+var amzFulfill='fba';
+function setFulfill(f){
+  amzFulfill=f;
+  document.getElementById('btn-fba').className='amz-tab'+(f==='fba'?' amz-active':'');
+  document.getElementById('btn-fbm').className='amz-tab'+(f==='fbm'?' amz-active':'');
+  document.getElementById('fba-fields').style.display=f==='fba'?'':'none';
+  document.getElementById('fbm-fields').style.display=f==='fbm'?'':'none';
+  document.getElementById('amz-row-fba').style.display=f==='fba'?'':'none';
+  document.getElementById('amz-row-fbm').style.display=f==='fbm'?'':'none';
+  calcAmz();
+}
+function fmt(n){return(n>=0?'$':'-$')+Math.abs(n).toFixed(2);}
+function fmtPct(n){return n.toFixed(1)+'%';}
+function calcAmz(){
+  var price=parseFloat(document.getElementById('amz-price').value)||0;
+  var cost=parseFloat(document.getElementById('amz-cost').value)||0;
+  var refPct=parseFloat(document.getElementById('amz-cat').value)||0.15;
+  var ads=parseFloat(document.getElementById('amz-ads').value)||0;
+  var refFee=Math.max(price*refPct,0.30);
+  var fulfillFee=0;
+  if(amzFulfill==='fba'){
+    fulfillFee=parseFloat(document.getElementById('amz-size').value)||3.22;
+  }else{
+    fulfillFee=parseFloat(document.getElementById('amz-ship').value)||0;
+  }
+  var net=price-refFee-fulfillFee-cost-ads;
+  var margin=price>0?(net/price)*100:0;
+  var roi=cost>0?(net/cost)*100:0;
+  document.getElementById('amz-r-price').textContent=fmt(price);
+  document.getElementById('amz-r-ref').textContent='-'+fmt(refFee);
+  document.getElementById('amz-r-fba').textContent='-'+fmt(fulfillFee);
+  document.getElementById('amz-r-ship').textContent='-'+fmt(fulfillFee);
+  document.getElementById('amz-r-cost').textContent='-'+fmt(cost);
+  document.getElementById('amz-r-ads').textContent='-'+fmt(ads);
+  document.getElementById('amz-row-ads').style.display=ads>0?'':'none';
+  var netEl=document.getElementById('amz-r-net');
+  netEl.textContent=fmt(net);
+  netEl.style.color=net>=0?'#22c55e':'#ef4444';
+  document.getElementById('amz-r-margin').textContent=fmtPct(margin);
+  document.getElementById('amz-r-roi').textContent=fmtPct(roi);
+}
+calcAmz();
+</script>
+{% endblock %}
