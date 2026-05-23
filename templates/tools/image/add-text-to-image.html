@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Add Text to Image — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Add custom text overlays to any image. Control font, size, color, position, and shadow. Download instantly. Runs in your browser — no upload. Free online tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'add-text-to-image' %}{% endblock %}
+{% block og_title %}Add Text to Image | AIUtilities{% endblock %}
+{% block og_description %}Add text overlays to images with custom font, color, and position. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'add-text-to-image' %}{% endblock %}
+{% block twitter_title %}Add Text to Image | AIUtilities{% endblock %}
+{% block twitter_description %}Add custom text to images. Free, browser-based tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Add Text to Image","description":"Add custom text overlays to any image with full control over font, color, size, and position.","url":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'add-text-to-image' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Image Tools","item":"{{ SITE_URL }}/tools/image/"},{"@type":"ListItem","position":3,"name":"Add Text to Image","item":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'add-text-to-image' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🖼️ Image · No upload · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Add Text to Image</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Overlay custom text on any image — control font, size, color, alignment, and shadow. Download the result instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Font & color control</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Shadow & opacity</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:60rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div id="ati-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;" onclick="document.getElementById('ati-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:.5rem;">📝</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop image here or click to upload</div>
+        <div style="font-size:.8125rem;color:#9ca3af;">Then configure text below to overlay it on your image</div>
+        <input type="file" id="ati-file" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+      </div>
+    </div>
+
+    <div id="ati-editor" class="ai-tool-form-card" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:1.5rem;">
+        <div>
+          <canvas id="ati-canvas" style="width:100%;border-radius:.5rem;border:1px solid #e2e8f0;"></canvas>
+        </div>
+        <div style="display:grid;gap:.75rem;align-content:start;">
+          <div>
+            <label class="ai-tool-label" for="ati-text">Text</label>
+            <textarea id="ati-text" class="ai-tool-input" rows="3" placeholder="Your text here" oninput="render()">Hello World</textarea>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="ati-font">Font</label>
+            <select id="ati-font" class="ai-tool-input" onchange="render()">
+              <option value="Arial">Arial</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Impact">Impact</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+            </select>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="ati-size">Font size: <span id="ati-size-lbl">48</span>px</label>
+            <input type="range" id="ati-size" min="8" max="300" value="48" style="width:100%;" oninput="document.getElementById('ati-size-lbl').textContent=this.value;render()">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+            <div>
+              <label class="ai-tool-label" for="ati-color">Text color</label>
+              <input type="color" id="ati-color" value="#ffffff" style="height:2.5rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;width:100%;" oninput="render()">
+            </div>
+            <div>
+              <label class="ai-tool-label" for="ati-opacity">Opacity: <span id="ati-op-lbl">100</span>%</label>
+              <input type="range" id="ati-opacity" min="0" max="100" value="100" style="width:100%;margin-top:.6rem;" oninput="document.getElementById('ati-op-lbl').textContent=this.value;render()">
+            </div>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="ati-align">Text alignment</label>
+            <select id="ati-align" class="ai-tool-input" onchange="render()">
+              <option value="left">Left</option>
+              <option value="center" selected>Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+            <div>
+              <label class="ai-tool-label" for="ati-x">X position: <span id="ati-x-lbl">50</span>%</label>
+              <input type="range" id="ati-x" min="0" max="100" value="50" style="width:100%;" oninput="document.getElementById('ati-x-lbl').textContent=this.value;render()">
+            </div>
+            <div>
+              <label class="ai-tool-label" for="ati-y">Y position: <span id="ati-y-lbl">50</span>%</label>
+              <input type="range" id="ati-y" min="0" max="100" value="50" style="width:100%;" oninput="document.getElementById('ati-y-lbl').textContent=this.value;render()">
+            </div>
+          </div>
+          <div>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;"><input type="checkbox" id="ati-shadow" checked onchange="render()"> Drop shadow</label>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="ati-bold" style="display:flex;gap:.75rem;">
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;"><input type="checkbox" id="ati-bold" onchange="render()"> Bold</label>
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer;"><input type="checkbox" id="ati-italic" onchange="render()"> Italic</label>
+            </label>
+          </div>
+          <div>
+            <label class="ai-tool-label" for="ati-outfmt">Download as</label>
+            <select id="ati-outfmt" class="ai-tool-input">
+              <option value="image/jpeg">JPG</option>
+              <option value="image/png">PNG</option>
+            </select>
+          </div>
+          <button onclick="download()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Download Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Add Text to Image Tool</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your image</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop any image onto the upload area. Your image stays in your browser — nothing is sent to a server.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Customize your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Type your text, choose a font, size, color, and position using the sliders. Enable bold, italic, or drop shadow as needed.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The canvas preview updates live. Click Download Image to save as JPG or PNG.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I add multiple lines of text? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes. Press Enter in the text field to add line breaks. Each line is rendered separately and aligned according to your chosen alignment setting.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I make the text more readable on bright images? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Enable the Drop Shadow option and use a dark or white color with high contrast. For very busy backgrounds, use a large font with bold enabled and a contrasting outline.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What format should I download in? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use PNG to preserve transparency and get the sharpest text. Use JPG for smaller file sizes when sharing on social media or via email.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'image-cropper' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Cropper</a>
+      <a href="{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">YouTube Thumbnail Maker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var imgObj=null;
+function handleDrop(e){e.preventDefault();document.getElementById('ati-drop').style.borderColor='#cbd5e1';var f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImage(f);}
+function loadImage(file){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){imgObj=img;document.getElementById('ati-editor').style.display='';render();};
+    img.src=ev.target.result;
+  };reader.readAsDataURL(file);
+}
+function render(){
+  if(!imgObj)return;
+  var canvas=document.getElementById('ati-canvas');
+  canvas.width=imgObj.naturalWidth;canvas.height=imgObj.naturalHeight;
+  var ctx=canvas.getContext('2d');
+  ctx.drawImage(imgObj,0,0);
+  var text=document.getElementById('ati-text').value;
+  var font=document.getElementById('ati-font').value;
+  var size=parseInt(document.getElementById('ati-size').value);
+  var color=document.getElementById('ati-color').value;
+  var opacity=parseInt(document.getElementById('ati-opacity').value)/100;
+  var align=document.getElementById('ati-align').value;
+  var xPct=parseInt(document.getElementById('ati-x').value)/100;
+  var yPct=parseInt(document.getElementById('ati-y').value)/100;
+  var shadow=document.getElementById('ati-shadow').checked;
+  var bold=document.getElementById('ati-bold').checked?'bold ':'';
+  var italic=document.getElementById('ati-italic').checked?'italic ':'';
+  ctx.globalAlpha=opacity;
+  ctx.font=bold+italic+size+'px '+font;
+  ctx.textAlign=align;
+  ctx.textBaseline='middle';
+  var x=canvas.width*xPct;
+  var y=canvas.height*yPct;
+  if(shadow){ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=size*0.15;ctx.shadowOffsetX=size*0.05;ctx.shadowOffsetY=size*0.05;}
+  ctx.fillStyle=color;
+  var lines=text.split('\n');
+  var lineH=size*1.3;
+  var totalH=(lines.length-1)*lineH;
+  lines.forEach(function(line,i){ctx.fillText(line,x,y-totalH/2+i*lineH);});
+  ctx.globalAlpha=1;ctx.shadowColor='transparent';
+}
+function download(){
+  if(!imgObj){alert('Upload an image first.');return;}
+  var fmt=document.getElementById('ati-outfmt').value;
+  var ext=fmt==='image/png'?'png':'jpg';
+  var a=document.createElement('a');a.href=document.getElementById('ati-canvas').toDataURL(fmt,0.92);a.download='image-with-text.'+ext;a.click();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Bcrypt Generator & Hash Checker — Free Online Tool | AIUtilities{% endblock %}
+{% block description %}Generate bcrypt password hashes and verify passwords against existing hashes. Choose cost factor 4–14. Runs entirely in your browser. Free online bcrypt tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'bcrypt-generator' %}{% endblock %}
+{% block og_title %}Bcrypt Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate and verify bcrypt password hashes. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'bcrypt-generator' %}{% endblock %}
+{% block twitter_title %}Bcrypt Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate bcrypt hashes. Free online tool.{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Bcrypt Generator","description":"Generate and verify bcrypt password hashes in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'bcrypt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Security Tools","item":"{{ SITE_URL }}/tools/security/"},{"@type":"ListItem","position":3,"name":"Bcrypt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'bcrypt-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔒 Security · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Bcrypt Hash Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Generate secure bcrypt hashes and verify passwords against existing hashes — entirely in your browser, nothing sent to a server.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Cost factor 4–14</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Hash & verify</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+
+    <!-- Hash generator -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Generate Bcrypt Hash</h2>
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="bc-pass">Password</label>
+          <input type="text" id="bc-pass" class="ai-tool-input" placeholder="Enter password to hash" style="font-family:monospace;">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-cost">Cost Factor: <span id="bc-cost-val">10</span> <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(higher = slower & more secure)</span></label>
+          <input type="range" id="bc-cost" min="4" max="14" value="10" oninput="document.getElementById('bc-cost-val').textContent=this.value;" style="width:100%;">
+        </div>
+      </div>
+      <button onclick="hashPassword()" id="bc-hash-btn" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:.75rem;">Generate Hash</button>
+      <div id="bc-hash-result" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">
+          <span style="font-size:.875rem;font-weight:600;color:#0f172a;">Bcrypt Hash</span>
+          <button onclick="copyHash()" id="bc-copy" style="padding:.2rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+        <div id="bc-hash-out" style="font-family:monospace;font-size:.8125rem;background:#1e293b;color:#6366f1;padding:.75rem;border-radius:.5rem;word-break:break-all;"></div>
+        <div id="bc-time" style="font-size:.75rem;color:#9ca3af;margin-top:.3rem;"></div>
+      </div>
+    </div>
+
+    <!-- Verify -->
+    <div class="ai-tool-form-card">
+      <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Verify Password</h2>
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="bc-vpass">Password to verify</label>
+          <input type="text" id="bc-vpass" class="ai-tool-input" placeholder="Enter the original password" style="font-family:monospace;">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-vhash">Bcrypt hash</label>
+          <input type="text" id="bc-vhash" class="ai-tool-input" placeholder="$2b$10$..." style="font-family:monospace;font-size:.8125rem;">
+        </div>
+      </div>
+      <button onclick="verifyPassword()" id="bc-verify-btn" style="width:100%;padding:.75rem;background:#0f172a;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Verify</button>
+      <div id="bc-verify-result" style="display:none;margin-top:.75rem;padding:.75rem 1rem;border-radius:.5rem;text-align:center;font-weight:700;font-size:1rem;"></div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Bcrypt Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your password</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the plain-text password you want to hash. Choose a cost factor — 10 is the industry standard; higher is slower but more resistant to brute force.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Generate and copy the hash</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Generate Hash. The bcrypt hash is computed entirely in your browser and displayed. Copy it to use in your application.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Verify a password</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the Verify section to check if a plain-text password matches an existing bcrypt hash — useful for debugging authentication issues.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is bcrypt? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Bcrypt is a password hashing algorithm designed by Niels Provos and David Mazières in 1999. It incorporates a salt to protect against rainbow table attacks and an adaptive cost factor that can be increased over time to remain resistant to brute-force attacks as hardware improves.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does the same password produce different hashes? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Bcrypt automatically generates a random salt for each hash. This means the same password hashed twice will produce two different hash strings — but both will verify correctly against the original password. The salt is stored inside the hash string.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What cost factor should I use in production? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The OWASP recommendation is cost factor 10 as a minimum. Each increment doubles the computation time. Choose the highest factor your server can handle in under 100ms per login — typically 10–12 for most applications.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'security' 'md5-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MD5 Generator</a>
+      <a href="{% url 'tools:tool' 'security' 'sha-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SHA Generator</a>
+      <a href="{% url 'tools:tool' 'random' 'random-password-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Password Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function hashPassword(){
+  var pw=document.getElementById('bc-pass').value;
+  var cost=parseInt(document.getElementById('bc-cost').value)||10;
+  if(!pw){alert('Enter a password first.');return;}
+  var btn=document.getElementById('bc-hash-btn');
+  btn.textContent='Hashing…';btn.disabled=true;
+  var t0=Date.now();
+  dcodeIO.bcrypt.hash(pw,cost,null,function(err,hash){
+    btn.textContent='Generate Hash';btn.disabled=false;
+    if(err){alert('Error: '+err);return;}
+    document.getElementById('bc-hash-out').textContent=hash;
+    document.getElementById('bc-time').textContent='Generated in '+(Date.now()-t0)+' ms (cost '+cost+')';
+    document.getElementById('bc-hash-result').style.display='';
+  });
+}
+function copyHash(){
+  navigator.clipboard.writeText(document.getElementById('bc-hash-out').textContent).then(function(){
+    var b=document.getElementById('bc-copy');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);
+  });
+}
+function verifyPassword(){
+  var pw=document.getElementById('bc-vpass').value;
+  var hash=document.getElementById('bc-vhash').value.trim();
+  if(!pw||!hash){alert('Enter both password and hash.');return;}
+  var btn=document.getElementById('bc-verify-btn');
+  btn.textContent='Verifying…';btn.disabled=true;
+  dcodeIO.bcrypt.compare(pw,hash,function(err,result){
+    btn.textContent='Verify';btn.disabled=false;
+    var el=document.getElementById('bc-verify-result');
+    el.style.display='';
+    if(err){el.textContent='Invalid hash format';el.style.background='#fef2f2';el.style.color='#ef4444';return;}
+    if(result){el.textContent='✓ Password matches!';el.style.background='#f0fdf4';el.style.color='#16a34a';}
+    else{el.textContent='✗ Password does not match';el.style.background='#fef2f2';el.style.color='#ef4444';}
+  });
+}
+</script>
+{% endblock %}

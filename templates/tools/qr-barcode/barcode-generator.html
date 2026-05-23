@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Barcode Generator — Create Barcodes Online Free | AIUtilities{% endblock %}
+{% block description %}Generate CODE128, EAN-13, EAN-8, UPC-A, CODE39, and ITF barcodes online. Customize size and color. Download as SVG or PNG. Free online barcode generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-generator' %}{% endblock %}
+{% block og_title %}Barcode Generator | AIUtilities{% endblock %}
+{% block og_description %}Generate CODE128, EAN-13, UPC-A, CODE39, and more. Free online barcode maker.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-generator' %}{% endblock %}
+{% block twitter_title %}Barcode Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Create barcodes online. Multiple formats. Free.{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Barcode Generator","description":"Generate CODE128, EAN-13, UPC-A, CODE39, and other barcode formats in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"QR & Barcode","item":"{{ SITE_URL }}/tools/qr-barcode/"},{"@type":"ListItem","position":3,"name":"Barcode Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📊 QR & Barcode · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Barcode Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Create professional barcodes in multiple formats — CODE128, EAN-13, UPC-A, CODE39, and more. Download as SVG or PNG.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 6 barcode formats</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ SVG & PNG download</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom colors & size</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="bc-format">Barcode format</label>
+          <select id="bc-format" class="ai-tool-input" onchange="updatePlaceholder();generate()">
+            <option value="CODE128">CODE128 (auto, any text)</option>
+            <option value="EAN13">EAN-13 (12 digits)</option>
+            <option value="EAN8">EAN-8 (7 digits)</option>
+            <option value="UPC">UPC-A (11 digits)</option>
+            <option value="CODE39">CODE39 (alphanumeric)</option>
+            <option value="ITF14">ITF-14 (13 digits)</option>
+          </select>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-value">Barcode value</label>
+          <input type="text" id="bc-value" class="ai-tool-input" placeholder="Enter value…" oninput="generate()" style="font-family:monospace;">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-height">Bar height: <span id="bc-height-lbl">100</span>px</label>
+          <input type="range" id="bc-height" min="30" max="300" value="100" style="width:100%;" oninput="document.getElementById('bc-height-lbl').textContent=this.value;generate()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-width">Bar width: <span id="bc-width-lbl">2</span></label>
+          <input type="range" id="bc-width" min="1" max="5" value="2" step="0.5" style="width:100%;" oninput="document.getElementById('bc-width-lbl').textContent=this.value;generate()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-color">Bar color</label>
+          <input type="color" id="bc-color" value="#000000" style="height:2.5rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;width:100%;" oninput="generate()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-bg">Background color</label>
+          <input type="color" id="bc-bg" value="#ffffff" style="height:2.5rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;width:100%;" oninput="generate()">
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" id="bc-show-text" checked onchange="generate()"> Show text label</label>
+
+      <div id="bc-preview" style="text-align:center;padding:1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;margin-bottom:1rem;min-height:5rem;">
+        <svg id="bc-svg"></svg>
+      </div>
+      <div id="bc-error" style="display:none;color:#ef4444;font-size:.875rem;text-align:center;margin-bottom:.75rem;"></div>
+
+      <div style="display:flex;gap:.75rem;">
+        <button onclick="downloadSVG()" style="flex:1;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.9375rem;font-weight:700;cursor:pointer;">Download SVG</button>
+        <button onclick="downloadPNG()" style="flex:1;padding:.75rem;background:#0f172a;color:#fff;border:none;border-radius:.5rem;font-size:.9375rem;font-weight:700;cursor:pointer;">Download PNG</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Barcode Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Select a barcode format</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose the format that matches your use case. CODE128 works for any text. EAN-13 and UPC-A are used for retail products.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter the value and customize</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the barcode data. Adjust height, bar width, and colors. The live preview updates instantly.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download as SVG or PNG</strong><br><span style="font-size:.875rem;color:#6b7280;">SVG is best for print (infinitely scalable). PNG is ideal for embedding in documents, websites, or emails.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What barcode format should I use for retail? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">EAN-13 is the standard for retail products globally. UPC-A is used in North America. Both require a registered GS1 prefix for commercial use. CODE128 is best for internal tracking where no registry is required.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between SVG and PNG? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">SVG is a vector format that scales to any size without pixelation — ideal for printing labels. PNG is a raster image; for print use, make the bar width larger before downloading to get enough resolution.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does EAN-13 say "invalid" for some numbers? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">EAN-13 requires exactly 12 digits (the 13th is a check digit added automatically). Enter only the first 12 digits — the library computes the correct check digit for you.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">QR Code Generator</a>
+      <a href="{% url 'tools:tool' 'qr-barcode' 'barcode-reader' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Barcode Reader</a>
+      <a href="{% url 'tools:tool' 'qr-barcode' 'qr-code-reader' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">QR Code Reader</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var PLACEHOLDERS={CODE128:'Any text or number',EAN13:'123456789012',EAN8:'1234567',UPC:'12345678901',CODE39:'HELLO-WORLD',ITF14:'1234567890123'};
+function updatePlaceholder(){
+  var fmt=document.getElementById('bc-format').value;
+  document.getElementById('bc-value').placeholder=PLACEHOLDERS[fmt]||'Enter value';
+}
+function generate(){
+  var val=document.getElementById('bc-value').value.trim();
+  var fmt=document.getElementById('bc-format').value;
+  var h=parseInt(document.getElementById('bc-height').value);
+  var w=parseFloat(document.getElementById('bc-width').value);
+  var color=document.getElementById('bc-color').value;
+  var bg=document.getElementById('bc-bg').value;
+  var showText=document.getElementById('bc-show-text').checked;
+  var errEl=document.getElementById('bc-error');
+  errEl.style.display='none';
+  if(!val){document.getElementById('bc-svg').innerHTML='';return;}
+  try{
+    JsBarcode('#bc-svg',val,{format:fmt,width:w,height:h,lineColor:color,background:bg,displayValue:showText,margin:10,valid:function(v){if(!v){errEl.textContent='Invalid value for this barcode format.';errEl.style.display='';}}});
+  }catch(e){errEl.textContent=e.message||'Invalid barcode value.';errEl.style.display='';}
+}
+function downloadSVG(){
+  var svg=document.getElementById('bc-svg');
+  if(!svg.innerHTML){alert('Generate a barcode first.');return;}
+  var blob=new Blob([svg.outerHTML],{type:'image/svg+xml'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='barcode.svg';a.click();
+}
+function downloadPNG(){
+  var svg=document.getElementById('bc-svg');
+  if(!svg.innerHTML){alert('Generate a barcode first.');return;}
+  var canvas=document.createElement('canvas');
+  var svgData=new XMLSerializer().serializeToString(svg);
+  var img=new Image();
+  var svgBlob=new Blob([svgData],{type:'image/svg+xml;charset=utf-8'});
+  img.onload=function(){canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);var a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='barcode.png';a.click();};
+  img.src=URL.createObjectURL(svgBlob);
+}
+updatePlaceholder();generate();
+</script>
+{% endblock %}

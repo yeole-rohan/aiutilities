@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Image Converter — Convert JPG PNG WebP GIF Online Free | AIUtilities{% endblock %}
+{% block description %}Convert images between JPG, PNG, WebP, and GIF formats instantly in your browser. No upload, no account. Free online image format converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-converter' %}{% endblock %}
+{% block og_title %}Image Converter | AIUtilities{% endblock %}
+{% block og_description %}Convert images between JPG, PNG, WebP, GIF in your browser. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-converter' %}{% endblock %}
+{% block twitter_title %}Image Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert image formats online. Free, no upload.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Image Converter","description":"Convert images between JPG, PNG, WebP, and GIF formats in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Image Tools","item":"{{ SITE_URL }}/tools/image/"},{"@type":"ListItem","position":3,"name":"Image Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-converter' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🖼️ Image · No upload · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Image Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert images between JPG, PNG, WebP, and GIF — entirely in your browser, no account required.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ JPG · PNG · WebP · GIF</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Quality control</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div id="ico-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('ico-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🔄</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop image here or click to upload</div>
+        <div style="font-size:.8125rem;color:#9ca3af;">Supports JPG, PNG, WebP, GIF, BMP, AVIF</div>
+        <input type="file" id="ico-file" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+      </div>
+    </div>
+
+    <div id="ico-controls" class="ai-tool-form-card" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div style="text-align:center;">
+          <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.4rem;text-transform:uppercase;">Original</div>
+          <img id="ico-orig" style="max-width:100%;max-height:160px;object-fit:contain;border:1px solid #e2e8f0;border-radius:.5rem;">
+          <div id="ico-orig-info" style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;"></div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.4rem;text-transform:uppercase;">Output</div>
+          <img id="ico-out" style="max-width:100%;max-height:160px;object-fit:contain;border:1px solid #e2e8f0;border-radius:.5rem;">
+          <div id="ico-out-info" style="font-size:.75rem;color:#9ca3af;margin-top:.25rem;"></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="ico-fmt">Convert to</label>
+          <select id="ico-fmt" class="ai-tool-input" onchange="doConvert()">
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="ico-quality">Quality: <span id="ico-qlabel">92</span>% <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(JPG/WebP only)</span></label>
+          <input type="range" id="ico-quality" min="1" max="100" value="92" style="width:100%;" oninput="document.getElementById('ico-qlabel').textContent=this.value;doConvert()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="ico-bg">Background color <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(for transparent PNGs converted to JPG)</span></label>
+          <input type="color" id="ico-bg" value="#ffffff" style="height:2.5rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;width:100%;" oninput="doConvert()">
+        </div>
+      </div>
+      <button onclick="downloadConverted()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Download Converted Image</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Image Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your image</strong><br><span style="font-size:.875rem;color:#6b7280;">Drag and drop or click to upload. JPG, PNG, WebP, GIF, BMP, and AVIF files are all accepted.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose the output format</strong><br><span style="font-size:.875rem;color:#6b7280;">Select JPG, PNG, or WebP. If your image has transparency and you convert to JPG, choose a background fill color.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the converted file</strong><br><span style="font-size:.875rem;color:#6b7280;">A live preview updates as you change settings. Click Download to save the converted image to your device.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which format should I choose? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use JPG for photos, PNG for images with transparency or sharp-edged graphics, and WebP for web use when file size matters. WebP offers the best compression for web photos.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I convert a GIF? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes, but only the first frame of the GIF will be converted, since HTML5 canvas does not support multi-frame animation. The result will be a static image.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will transparency be preserved? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">PNG and WebP support transparency. JPG does not — transparent areas will be filled with the background color you choose. PNG→PNG preserves transparency fully.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Compressor</a>
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'heic-to-jpg' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HEIC to JPG</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var imgObj=null,convDataURL=null,origFile=null;
+function handleDrop(e){e.preventDefault();document.getElementById('ico-drop').style.borderColor='#cbd5e1';var f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImage(f);}
+function loadImage(file){
+  origFile=file;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      imgObj=img;
+      document.getElementById('ico-orig').src=ev.target.result;
+      document.getElementById('ico-orig-info').textContent=img.naturalWidth+'×'+img.naturalHeight+' · '+(file.size/1024).toFixed(0)+' KB · '+file.type.split('/')[1].toUpperCase();
+      document.getElementById('ico-controls').style.display='';
+      doConvert();
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);
+}
+function doConvert(){
+  if(!imgObj)return;
+  var fmt=document.getElementById('ico-fmt').value;
+  var q=parseInt(document.getElementById('ico-quality').value)/100;
+  var bg=document.getElementById('ico-bg').value;
+  var canvas=document.createElement('canvas');canvas.width=imgObj.naturalWidth;canvas.height=imgObj.naturalHeight;
+  var ctx=canvas.getContext('2d');
+  if(fmt==='image/jpeg'){ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);}
+  ctx.drawImage(imgObj,0,0);
+  convDataURL=canvas.toDataURL(fmt,q);
+  document.getElementById('ico-out').src=convDataURL;
+  var ext=fmt==='image/png'?'PNG':fmt==='image/webp'?'WebP':'JPG';
+  var kb=Math.round(convDataURL.length*0.75/1024);
+  document.getElementById('ico-out-info').textContent=imgObj.naturalWidth+'×'+imgObj.naturalHeight+' · ~'+kb+' KB · '+ext;
+}
+function downloadConverted(){
+  if(!convDataURL){alert('Upload an image first.');return;}
+  var fmt=document.getElementById('ico-fmt').value;
+  var ext=fmt==='image/png'?'png':fmt==='image/webp'?'webp':'jpg';
+  var a=document.createElement('a');a.href=convDataURL;a.download='converted.'+ext;a.click();
+}
+</script>
+{% endblock %}

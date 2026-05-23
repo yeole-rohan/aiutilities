@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}JPG to PDF Converter — Convert Images to PDF Free | AIUtilities{% endblock %}
+{% block description %}Convert one or multiple JPG, PNG, or WebP images into a single PDF document. Arrange image order, choose page size, and download instantly. Free online JPG to PDF tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'jpg-to-pdf' %}{% endblock %}
+{% block og_title %}JPG to PDF | AIUtilities{% endblock %}
+{% block og_description %}Convert JPG and PNG images to a PDF document. Free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'jpg-to-pdf' %}{% endblock %}
+{% block twitter_title %}JPG to PDF | AIUtilities{% endblock %}
+{% block twitter_description %}Convert images to PDF free. No upload to server.{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"JPG to PDF Converter","description":"Convert JPG, PNG, and WebP images into a single PDF document in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'jpg-to-pdf' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"PDF Tools","item":"{{ SITE_URL }}/tools/pdf/"},{"@type":"ListItem","position":3,"name":"JPG to PDF","item":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'jpg-to-pdf' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📄 PDF · No upload · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">JPG to PDF Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert one or multiple images into a PDF document — entirely in your browser. Supports JPG, PNG, and WebP.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple images</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Page size options</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div id="j2p-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('j2p-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🖼️➜📄</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop images here or click to upload</div>
+        <div style="font-size:.8125rem;color:#9ca3af;">JPG, PNG, WebP supported · Multiple files accepted</div>
+        <input type="file" id="j2p-file" accept="image/*" multiple style="display:none" onchange="addFiles(this.files)">
+      </div>
+    </div>
+
+    <div id="j2p-controls" class="ai-tool-form-card" style="display:none;">
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Images <span id="j2p-count" style="font-weight:400;color:#9ca3af;"></span></h3>
+      <div id="j2p-list" style="display:grid;gap:.5rem;margin-bottom:1rem;"></div>
+      <button onclick="document.getElementById('j2p-file').click()" style="padding:.4rem 1rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;margin-bottom:1.25rem;">+ Add more images</button>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="j2p-size">Page size</label>
+          <select id="j2p-size" class="ai-tool-input">
+            <option value="a4">A4 (210×297 mm)</option>
+            <option value="letter">Letter (8.5×11 in)</option>
+            <option value="auto">Fit image (auto)</option>
+          </select>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="j2p-orient">Orientation</label>
+          <select id="j2p-orient" class="ai-tool-input">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" id="j2p-margins" checked> Add margins</label>
+
+      <button onclick="generatePDF()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Generate & Download PDF</button>
+      <div id="j2p-progress" style="text-align:center;font-size:.8125rem;color:#9ca3af;margin-top:.5rem;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the JPG to PDF Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your images</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop one or more JPG, PNG, or WebP images into the upload area. Each image becomes one page in the PDF.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose page size and order</strong><br><span style="font-size:.875rem;color:#6b7280;">Select A4, Letter, or auto-fit. Remove any images you don't need using the ✕ buttons. Images appear in upload order.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Generate and download the PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Generate & Download PDF. The PDF is built in your browser using jsPDF and downloaded instantly — nothing is uploaded.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many images can I convert at once? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">There is no hard limit, but very large batches (50+ high-resolution images) may be slow on mobile devices due to browser memory constraints. For large batches, consider splitting into multiple conversions.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will image quality be reduced? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1pm;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Images are embedded into the PDF at their original resolution. The PDF file size will be similar to or slightly larger than the combined source images.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are my photos uploaded to a server? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No. All processing is done entirely in your browser using the jsPDF library. Your images never leave your device.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Compressor</a>
+      <a href="{% url 'tools:tool' 'image' 'image-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Converter</a>
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var fileList=[];
+function handleDrop(e){e.preventDefault();document.getElementById('j2p-drop').style.borderColor='#cbd5e1';addFiles(e.dataTransfer.files);}
+function addFiles(files){
+  Array.from(files).forEach(function(f){if(f.type.startsWith('image/')){fileList.push(f);}});
+  renderList();
+  if(fileList.length)document.getElementById('j2p-controls').style.display='';
+}
+function removeFile(idx){fileList.splice(idx,1);renderList();if(!fileList.length)document.getElementById('j2p-controls').style.display='none';}
+function renderList(){
+  document.getElementById('j2p-count').textContent='('+fileList.length+' image'+(fileList.length!==1?'s':'')+')';
+  var el=document.getElementById('j2p-list');el.innerHTML='';
+  fileList.forEach(function(f,i){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.375rem;';
+    row.innerHTML='<div style="width:2.5rem;height:2.5rem;background:#e2e8f0;border-radius:.25rem;overflow:hidden;flex-shrink:0;"><img id="thumb-'+i+'" style="width:100%;height:100%;object-fit:cover;"></div>'+
+      '<div style="flex:1;font-size:.875rem;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+f.name+'</div>'+
+      '<div style="font-size:.75rem;color:#9ca3af;white-space:nowrap;">'+(f.size/1024).toFixed(0)+' KB</div>'+
+      '<button onclick="removeFile('+i+')" style="padding:.2rem .5rem;background:#fee2e2;color:#ef4444;border:none;border-radius:.25rem;cursor:pointer;font-size:.8125rem;">✕</button>';
+    el.appendChild(row);
+    var reader=new FileReader();
+    (function(idx){reader.onload=function(ev){var img=document.getElementById('thumb-'+idx);if(img)img.src=ev.target.result;};})(i);
+    reader.readAsDataURL(f);
+  });
+}
+function generatePDF(){
+  if(!fileList.length){alert('Please upload at least one image.');return;}
+  var prog=document.getElementById('j2p-progress');prog.textContent='Generating PDF…';
+  var size=document.getElementById('j2p-size').value;
+  var orient=document.getElementById('j2p-orient').value;
+  var margins=document.getElementById('j2p-margins').checked?10:0;
+  var loaded=0;var imgDatas=new Array(fileList.length);
+  fileList.forEach(function(f,i){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var img=new Image();
+      img.onload=function(){imgDatas[i]={url:ev.target.result,w:img.naturalWidth,h:img.naturalHeight};loaded++;if(loaded===fileList.length)buildPDF(imgDatas,size,orient,margins);};
+      img.src=ev.target.result;
+    };reader.readAsDataURL(f);
+  });
+}
+function buildPDF(imgs,size,orient,margin){
+  var {jsPDF}=window.jspdf;
+  var firstImg=imgs[0];
+  var pdfOpt={unit:'mm',compress:true};
+  if(size==='auto'){pdfOpt.format=[firstImg.w*0.2646,firstImg.h*0.2646];pdfOpt.orientation=firstImg.w>firstImg.h?'landscape':'portrait';}
+  else{pdfOpt.format=size;pdfOpt.orientation=orient;}
+  var doc=new jsPDF(pdfOpt);
+  imgs.forEach(function(img,i){
+    if(i>0){
+      if(size==='auto'){doc.addPage([img.w*0.2646,img.h*0.2646],img.w>img.h?'landscape':'portrait');}
+      else{doc.addPage(size,orient);}
+    }
+    var pw=doc.internal.pageSize.getWidth();var ph=doc.internal.pageSize.getHeight();
+    var aw=pw-margin*2;var ah=ph-margin*2;
+    var scale=Math.min(aw/(img.w*0.2646),ah/(img.h*0.2646));
+    var iw=img.w*0.2646*scale;var ih=img.h*0.2646*scale;
+    var x=margin+(aw-iw)/2;var y=margin+(ah-ih)/2;
+    var fmt=img.url.startsWith('data:image/png')?'PNG':'JPEG';
+    doc.addImage(img.url,fmt,x,y,iw,ih);
+  });
+  doc.save('images.pdf');
+  document.getElementById('j2p-progress').textContent='PDF downloaded!';
+}
+</script>
+{% endblock %}

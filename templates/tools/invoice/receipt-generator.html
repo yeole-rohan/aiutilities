@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Receipt Generator — Create Free Receipts Online | AIUtilities{% endblock %}
+{% block description %}Create professional payment receipts online with itemised line items, payment method, and totals. Print or save as PDF instantly. Free receipt generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'receipt-generator' %}{% endblock %}
+{% block og_title %}Receipt Generator | AIUtilities{% endblock %}
+{% block og_description %}Create payment receipts online. Print or save PDF. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'receipt-generator' %}{% endblock %}
+{% block twitter_title %}Receipt Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate receipts free online. PDF ready.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Receipt Generator","description":"Create professional payment receipts with itemised items and totals. Print or save as PDF.","url":"{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'receipt-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Invoice Tools","item":"{{ SITE_URL }}/tools/invoice/"},{"@type":"ListItem","position":3,"name":"Receipt Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'receipt-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧾 Invoice · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Receipt Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Create professional payment receipts with itemised line items, payment method, and totals. Print or download as PDF.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ PDF / Print</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Payment method</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Tax & totals</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+        <div>
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Business Info</h3>
+          <div style="display:grid;gap:.5rem;">
+            <input type="text" id="rc-biz" class="ai-tool-input" placeholder="Business name">
+            <textarea id="rc-addr" class="ai-tool-input" rows="2" placeholder="Address"></textarea>
+            <input type="text" id="rc-phone" class="ai-tool-input" placeholder="Phone / Email">
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Receipt Details</h3>
+          <div style="display:grid;gap:.5rem;">
+            <input type="text" id="rc-num" class="ai-tool-input" value="REC-001" placeholder="Receipt #">
+            <input type="date" id="rc-date" class="ai-tool-input">
+            <input type="text" id="rc-customer" class="ai-tool-input" placeholder="Customer name (optional)">
+            <select id="rc-payment" class="ai-tool-input">
+              <option value="Cash">Cash</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Items</h3>
+      <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr auto;gap:.5rem;margin-bottom:.5rem;font-size:.75rem;font-weight:600;color:#9ca3af;padding:0 .25rem;">
+        <div>Item</div><div>Qty</div><div>Price</div><div>Total</div><div></div>
+      </div>
+      <div id="rc-items"></div>
+      <button onclick="addItem()" style="margin-top:.75rem;padding:.4rem 1rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;">+ Add item</button>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <div style="min-width:14rem;">
+          <div style="display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid #e2e8f0;font-size:.875rem;">
+            <span style="color:#6b7280;">Subtotal</span><span id="rc-sub" style="font-weight:600;">$0.00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid #e2e8f0;font-size:.875rem;">
+            <div style="display:flex;align-items:center;gap:.3rem;">
+              <span style="color:#6b7280;">Tax</span>
+              <input type="number" id="rc-tax" value="0" min="0" max="100" step="0.1" style="width:3rem;padding:.2rem .3rem;border:1px solid #e2e8f0;border-radius:.25rem;font-size:.8125rem;" oninput="calc()">
+              <span style="font-size:.75rem;color:#9ca3af;">%</span>
+            </div>
+            <span id="rc-tax-amt">$0.00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-weight:700;font-size:1rem;">
+            <span>Total</span><span id="rc-total" style="color:#6366f1;">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <label class="ai-tool-label" for="rc-note">Thank you message</label>
+        <input type="text" id="rc-note" class="ai-tool-input" value="Thank you for your business!" placeholder="Thank you message">
+      </div>
+
+      <button onclick="printReceipt()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1.25rem;">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Receipt Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter business and receipt details</strong><br><span style="font-size:.875rem;color:#6b7280;">Fill in your business name, address, receipt number, date, and the customer's payment method.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add purchased items</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "+ Add item" to add purchased items with quantity and price. Tax is calculated automatically from the subtotal.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Print or save as PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Print / Save PDF to open the print dialog. Choose "Save as PDF" in the Destination field to download a PDF copy.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between a receipt and an invoice? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">An invoice is a request for payment sent before payment is made. A receipt is proof of payment issued after payment has been received. Receipts confirm the transaction is complete.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is this receipt legally valid? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A receipt's legal standing depends on local regulations. For most informal transactions, this receipt is sufficient. For tax purposes or formal business use, consult an accountant about your jurisdiction's requirements.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my data stored? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No. All data is held in your browser only. Nothing is sent to a server. Print or save the PDF before leaving the page.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'invoice' 'invoice-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Invoice Generator</a>
+      <a href="{% url 'tools:tool' 'invoice' 'estimate-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Estimate Generator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Profit Margin Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var items=[];
+function init(){document.getElementById('rc-date').value=new Date().toISOString().split('T')[0];addItem();addItem();}
+function addItem(){var id='i'+Date.now()+Math.random().toString(36).slice(2);items.push({id:id});renderItems();}
+function removeItem(id){items=items.filter(function(i){return i.id!==id;});renderItems();calc();}
+function renderItems(){
+  var c=document.getElementById('rc-items');c.innerHTML='';
+  items.forEach(function(it){
+    var row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:3fr 1fr 1fr 1fr auto;gap:.5rem;margin-bottom:.4rem;';
+    row.innerHTML='<input type="text" class="ai-tool-input" placeholder="Item name" style="font-size:.875rem;padding:.4rem .5rem;">'+
+      '<input type="number" class="ai-tool-input rc-qty" placeholder="1" min="0" step="any" style="font-size:.875rem;padding:.4rem .5rem;" oninput="calcRow(this)">'+
+      '<input type="number" class="ai-tool-input rc-price" placeholder="0.00" min="0" step="0.01" style="font-size:.875rem;padding:.4rem .5rem;" oninput="calcRow(this)">'+
+      '<input type="text" class="ai-tool-input rc-total" readonly style="font-size:.875rem;padding:.4rem .5rem;background:#f8fafc;font-weight:600;">'+
+      '<button onclick="removeItem(\''+it.id+'\')" style="padding:.4rem .6rem;background:#fee2e2;color:#ef4444;border:none;border-radius:.375rem;cursor:pointer;font-size:.875rem;">✕</button>';
+    row.dataset.id=it.id;c.appendChild(row);
+  });
+}
+function calcRow(el){
+  var row=el.closest('div[data-id]');if(!row)return;
+  var qty=parseFloat(row.querySelector('.rc-qty').value)||0;
+  var price=parseFloat(row.querySelector('.rc-price').value)||0;
+  row.querySelector('.rc-total').value='$'+(qty*price).toFixed(2);calc();
+}
+function calc(){
+  var sub=0;
+  document.querySelectorAll('#rc-items div[data-id]').forEach(function(row){
+    var qty=parseFloat(row.querySelector('.rc-qty').value)||0;
+    var price=parseFloat(row.querySelector('.rc-price').value)||0;
+    sub+=qty*price;
+  });
+  var taxPct=parseFloat(document.getElementById('rc-tax').value)||0;
+  var taxAmt=sub*taxPct/100;
+  document.getElementById('rc-sub').textContent='$'+sub.toFixed(2);
+  document.getElementById('rc-tax-amt').textContent='$'+taxAmt.toFixed(2);
+  document.getElementById('rc-total').textContent='$'+(sub+taxAmt).toFixed(2);
+}
+function printReceipt(){
+  var biz=document.getElementById('rc-biz').value||'Business Name';
+  var addr=document.getElementById('rc-addr').value||'';
+  var phone=document.getElementById('rc-phone').value||'';
+  var num=document.getElementById('rc-num').value||'REC-001';
+  var date=document.getElementById('rc-date').value||'';
+  var customer=document.getElementById('rc-customer').value||'';
+  var payment=document.getElementById('rc-payment').value;
+  var note=document.getElementById('rc-note').value||'Thank you!';
+  var rows='';var sub=0;
+  document.querySelectorAll('#rc-items div[data-id]').forEach(function(row){
+    var desc=row.querySelector('input[placeholder="Item name"]').value||'';
+    var qty=parseFloat(row.querySelector('.rc-qty').value)||0;
+    var price=parseFloat(row.querySelector('.rc-price').value)||0;
+    var total=qty*price;sub+=total;
+    if(desc||qty||price)rows+='<tr><td style="padding:.4rem;border-bottom:1px solid #f1f5f9;">'+desc+'</td><td style="padding:.4rem;text-align:center;border-bottom:1px solid #f1f5f9;">'+qty+'</td><td style="padding:.4rem;text-align:right;border-bottom:1px solid #f1f5f9;">$'+price.toFixed(2)+'</td><td style="padding:.4rem;text-align:right;border-bottom:1px solid #f1f5f9;font-weight:600;">$'+total.toFixed(2)+'</td></tr>';
+  });
+  var taxPct=parseFloat(document.getElementById('rc-tax').value)||0;
+  var taxAmt=sub*taxPct/100;
+  var html='<!DOCTYPE html><html><head><title>Receipt '+num+'</title><style>body{font-family:Arial,sans-serif;max-width:400px;margin:0 auto;padding:1.5rem;color:#1e293b;font-size:13px;}table{width:100%;border-collapse:collapse;}</style></head><body>'+
+    '<div style="text-align:center;margin-bottom:1.5rem;"><h2 style="margin:0;font-size:1.25rem;color:#0f172a;">'+biz+'</h2>'+
+    (addr?'<div style="color:#6b7280;">'+addr.replace(/\n/g,'<br>')+'</div>':'')+
+    (phone?'<div style="color:#6b7280;">'+phone+'</div>':'')+
+    '<h3 style="margin:.75rem 0 .25rem;color:#6366f1;text-transform:uppercase;letter-spacing:.1em;">RECEIPT</h3>'+
+    '<div style="color:#6b7280;">#'+num+' &nbsp;·&nbsp; '+date+'</div>'+
+    (customer?'<div style="color:#6b7280;">Customer: '+customer+'</div>':'')+
+    '</div>'+
+    '<table><thead><tr><th style="text-align:left;padding:.4rem;border-bottom:2px solid #0f172a;">Item</th><th style="text-align:center;padding:.4rem;border-bottom:2px solid #0f172a;">Qty</th><th style="text-align:right;padding:.4rem;border-bottom:2px solid #0f172a;">Price</th><th style="text-align:right;padding:.4rem;border-bottom:2px solid #0f172a;">Total</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div style="text-align:right;margin-top:1rem;">'+
+    '<div style="display:flex;justify-content:space-between;"><span>Subtotal</span><span>$'+sub.toFixed(2)+'</span></div>'+
+    (taxPct?'<div style="display:flex;justify-content:space-between;"><span>Tax ('+taxPct+'%)</span><span>$'+taxAmt.toFixed(2)+'</span></div>':'')+
+    '<div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.125rem;border-top:2px solid #0f172a;margin-top:.4rem;padding-top:.4rem;"><span>Total</span><span>$'+(sub+taxAmt).toFixed(2)+'</span></div>'+
+    '<div style="font-size:.8125rem;color:#6b7280;margin-top:.4rem;">Paid by: '+payment+'</div>'+
+    '</div>'+
+    '<div style="text-align:center;margin-top:1.5rem;font-size:.875rem;color:#6b7280;border-top:1px dashed #e2e8f0;padding-top:1rem;">'+note+'</div>'+
+    '</body></html>';
+  var w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();w.print();
+}
+init();
+</script>
+{% endblock %}

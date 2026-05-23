@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Image Compressor — Reduce Image File Size Online Free | AIUtilities{% endblock %}
+{% block description %}Compress JPG, PNG, and WebP images without visible quality loss. Runs entirely in your browser. See before/after file size instantly. Free online image compressor.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-compressor' %}{% endblock %}
+{% block og_title %}Image Compressor | AIUtilities{% endblock %}
+{% block og_description %}Compress JPG, PNG, WebP images in your browser. Free, no upload.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-compressor' %}{% endblock %}
+{% block twitter_title %}Image Compressor | AIUtilities{% endblock %}
+{% block twitter_description %}Reduce image file size online. Free, no upload.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Image Compressor","description":"Compress JPG, PNG, and WebP images without visible quality loss in your browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-compressor' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Image Tools","item":"{{ SITE_URL }}/tools/image/"},{"@type":"ListItem","position":3,"name":"Image Compressor","item":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-compressor' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🖼️ Image · No upload · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Image Compressor</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Reduce image file sizes without visible quality loss — processed entirely in your browser with instant before/after comparison.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ JPG · PNG · WebP</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Before / after size</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div id="ic-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('ic-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:.5rem;">📦</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop image here or click to upload</div>
+        <div style="font-size:.8125rem;color:#9ca3af;">JPG, PNG, WebP supported</div>
+        <input type="file" id="ic-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="loadImage(this.files[0])">
+      </div>
+    </div>
+
+    <div id="ic-controls" class="ai-tool-form-card" style="display:none;">
+      <div style="display:grid;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label class="ai-tool-label" for="ic-quality">Quality: <span id="ic-qlabel">80</span>% <span style="font-weight:400;font-size:.75rem;color:#9ca3af;">(lower = smaller file)</span></label>
+          <input type="range" id="ic-quality" min="1" max="100" value="80" style="width:100%;" oninput="document.getElementById('ic-qlabel').textContent=this.value;updatePreview()">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="ic-fmt">Output format</label>
+          <select id="ic-fmt" class="ai-tool-input" onchange="updatePreview()">
+            <option value="image/jpeg">JPG (best compression)</option>
+            <option value="image/webp">WebP (modern, smaller)</option>
+            <option value="image/png">PNG (lossless)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div style="text-align:center;">
+          <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em;">Original</div>
+          <img id="ic-orig-img" style="width:100%;max-height:200px;object-fit:contain;border:1px solid #e2e8f0;border-radius:.5rem;">
+          <div id="ic-orig-size" style="font-size:.8125rem;color:#6b7280;margin-top:.3rem;"></div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em;">Compressed</div>
+          <img id="ic-out-img" style="width:100%;max-height:200px;object-fit:contain;border:1px solid #e2e8f0;border-radius:.5rem;">
+          <div id="ic-out-size" style="font-size:.8125rem;color:#6b7280;margin-top:.3rem;"></div>
+        </div>
+      </div>
+
+      <div id="ic-savings" style="text-align:center;font-weight:700;font-size:1.125rem;color:#16a34a;margin-bottom:1rem;"></div>
+      <button onclick="downloadCompressed()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Download Compressed Image</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Image Compressor</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your image</strong><br><span style="font-size:.875rem;color:#6b7280;">Drag and drop a JPG, PNG, or WebP image, or click the upload area to browse your files.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Adjust quality and format</strong><br><span style="font-size:.875rem;color:#6b7280;">Move the quality slider — 70–85% is the sweet spot for JPG. The live preview shows the compressed result and how many KB you save.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the result</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Download Compressed Image to save the optimised file to your device.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What quality setting should I use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">For web images, 70–85% quality is usually indistinguishable from 100% but saves 50–70% of the file size. For print use 90%+. Photographs tolerate lower quality than graphics with sharp edges.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why doesn't PNG get smaller? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">PNG is a lossless format — the quality slider has no effect. For significant PNG compression, convert to JPG (lossy) or WebP instead. PNG is best for screenshots, logos, and graphics with transparency.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is WebP and why is it better? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">WebP is a modern image format developed by Google that achieves 25–35% smaller file sizes than JPG at the same quality level. All modern browsers support it, making it ideal for web images.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'image-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Converter</a>
+      <a href="{% url 'tools:tool' 'image' 'image-cropper' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Cropper</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var origFile=null,origDataURL=null,compDataURL=null;
+function handleDrop(e){e.preventDefault();document.getElementById('ic-drop').style.borderColor='#cbd5e1';var f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImage(f);}
+function loadImage(file){
+  origFile=file;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    origDataURL=ev.target.result;
+    document.getElementById('ic-orig-img').src=origDataURL;
+    document.getElementById('ic-orig-size').textContent='Original: '+(file.size/1024).toFixed(1)+' KB';
+    document.getElementById('ic-controls').style.display='';
+    updatePreview();
+  };reader.readAsDataURL(file);
+}
+function updatePreview(){
+  if(!origDataURL)return;
+  var img=new Image();
+  img.onload=function(){
+    var canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+    canvas.getContext('2d').drawImage(img,0,0);
+    var fmt=document.getElementById('ic-fmt').value;
+    var q=parseInt(document.getElementById('ic-quality').value)/100;
+    compDataURL=canvas.toDataURL(fmt,q);
+    document.getElementById('ic-out-img').src=compDataURL;
+    var origKB=origFile.size/1024;
+    var compKB=Math.round(compDataURL.length*0.75/1024);
+    var saved=((1-compKB/origKB)*100).toFixed(0);
+    document.getElementById('ic-out-size').textContent='Compressed: ~'+compKB+' KB';
+    if(saved>0){document.getElementById('ic-savings').textContent='Saved ~'+saved+'% ('+Math.round(origKB-compKB)+' KB)';}
+    else{document.getElementById('ic-savings').textContent='No reduction — try a lower quality or different format';}
+  };img.src=origDataURL;
+}
+function downloadCompressed(){
+  if(!compDataURL){alert('Please upload an image first.');return;}
+  var fmt=document.getElementById('ic-fmt').value;
+  var ext=fmt==='image/png'?'png':fmt==='image/webp'?'webp':'jpg';
+  var a=document.createElement('a');a.href=compDataURL;a.download='compressed.'+ext;a.click();
+}
+</script>
+{% endblock %}

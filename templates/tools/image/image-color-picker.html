@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Image Color Picker — Extract Colors from Any Image | AIUtilities{% endblock %}
+{% block description %}Click anywhere on an image to extract the exact hex, RGB, and HSL color code. Works entirely in your browser. Free online image color picker tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-color-picker' %}{% endblock %}
+{% block og_title %}Image Color Picker | AIUtilities{% endblock %}
+{% block og_description %}Extract hex, RGB, and HSL colors from any image. Free, browser-based.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-color-picker' %}{% endblock %}
+{% block twitter_title %}Image Color Picker | AIUtilities{% endblock %}
+{% block twitter_description %}Pick colors from any image. Free online tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Image Color Picker","description":"Extract hex, RGB, and HSL color codes from any image by clicking on it.","url":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-color-picker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Image Tools","item":"{{ SITE_URL }}/tools/image/"},{"@type":"ListItem","position":3,"name":"Image Color Picker","item":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'image-color-picker' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎨 Image · No upload · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Image Color Picker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Upload any image and click anywhere on it to instantly extract the exact hex, RGB, and HSL color codes.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ HEX · RGB · HSL</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Color history</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div id="icp-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;" onclick="document.getElementById('icp-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🖼️</div>
+        <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop image here or click to upload</div>
+        <div style="font-size:.8125rem;color:#9ca3af;">Then click anywhere on the image to pick a color</div>
+        <input type="file" id="icp-file" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+      </div>
+    </div>
+
+    <div id="icp-main" style="display:none;display:none;">
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;">
+        <div class="ai-tool-form-card" style="padding:.75rem;">
+          <div style="position:relative;cursor:crosshair;">
+            <canvas id="icp-canvas" style="width:100%;border-radius:.5rem;" onclick="pickColor(event)"></canvas>
+            <div id="icp-cursor" style="position:absolute;pointer-events:none;display:none;width:20px;height:20px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #000;transform:translate(-50%,-50%);"></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:1rem;align-content:start;">
+          <div class="ai-tool-form-card">
+            <div id="icp-swatch" style="width:100%;height:5rem;border-radius:.5rem;background:#e2e8f0;margin-bottom:.75rem;"></div>
+            <div id="icp-hex-row" style="display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;background:#f8fafc;border-radius:.375rem;margin-bottom:.4rem;">
+              <span style="font-size:.75rem;font-weight:600;color:#9ca3af;width:2.5rem;">HEX</span>
+              <span id="icp-hex" style="font-family:monospace;font-size:.875rem;color:#0f172a;flex:1;text-align:center;">—</span>
+              <button onclick="copyVal('icp-hex')" style="font-size:.7rem;padding:.15rem .4rem;background:#6366f1;color:#fff;border:none;border-radius:.25rem;cursor:pointer;">Copy</button>
+            </div>
+            <div id="icp-rgb-row" style="display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;background:#f8fafc;border-radius:.375rem;margin-bottom:.4rem;">
+              <span style="font-size:.75rem;font-weight:600;color:#9ca3af;width:2.5rem;">RGB</span>
+              <span id="icp-rgb" style="font-family:monospace;font-size:.8125rem;color:#0f172a;flex:1;text-align:center;">—</span>
+              <button onclick="copyVal('icp-rgb')" style="font-size:.7rem;padding:.15rem .4rem;background:#6366f1;color:#fff;border:none;border-radius:.25rem;cursor:pointer;">Copy</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;background:#f8fafc;border-radius:.375rem;">
+              <span style="font-size:.75rem;font-weight:600;color:#9ca3af;width:2.5rem;">HSL</span>
+              <span id="icp-hsl" style="font-family:monospace;font-size:.8125rem;color:#0f172a;flex:1;text-align:center;">—</span>
+              <button onclick="copyVal('icp-hsl')" style="font-size:.7rem;padding:.15rem .4rem;background:#6366f1;color:#fff;border:none;border-radius:.25rem;cursor:pointer;">Copy</button>
+            </div>
+          </div>
+          <div class="ai-tool-form-card">
+            <div style="font-size:.875rem;font-weight:600;color:#0f172a;margin-bottom:.5rem;">Color History</div>
+            <div id="icp-history" style="display:flex;flex-wrap:wrap;gap:.375rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Image Color Picker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload an image</strong><br><span style="font-size:.875rem;color:#6b7280;">Drag and drop any image or click the upload area. Your image is loaded directly into your browser — nothing is sent to a server.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click to pick a color</strong><br><span style="font-size:.875rem;color:#6b7280;">Click anywhere on the image. The exact hex, RGB, and HSL values for that pixel appear instantly in the panel.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the color code</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy next to any color format. Your history of picked colors is shown as swatches — click any to re-copy.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is the colour slightly different from what I see? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Screens can display colors differently based on your monitor's color profile and gamma settings. The tool reads raw pixel values from the image data, which may differ from how it appears visually on your calibrated display.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What file types are supported? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Any image format your browser can display works — JPG, PNG, WebP, GIF, SVG, AVIF, and more. The image is drawn to a canvas element and pixel data is read using the HTML5 Canvas API.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How is HSL different from RGB? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">RGB (Red, Green, Blue) describes a colour by its light components. HSL (Hue, Saturation, Lightness) describes it more intuitively — hue is the colour angle (0–360°), saturation is the intensity, and lightness is how bright or dark it is. HSL is easier for designers to reason about.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'color' 'hex-to-rgb' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hex to RGB</a>
+      <a href="{% url 'tools:tool' 'color' 'palette-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Palette Generator</a>
+      <a href="{% url 'tools:tool' 'color' 'gradient-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Gradient Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var history=[];
+function handleDrop(e){e.preventDefault();document.getElementById('icp-drop').style.borderColor='#cbd5e1';var f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImage(f);}
+function loadImage(file){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.getElementById('icp-canvas');
+      canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+      canvas.getContext('2d').drawImage(img,0,0);
+      document.getElementById('icp-drop').style.display='none';
+      var main=document.getElementById('icp-main');main.style.display='';
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);
+}
+function pickColor(e){
+  var canvas=document.getElementById('icp-canvas');
+  var rect=canvas.getBoundingClientRect();
+  var scaleX=canvas.width/rect.width;
+  var scaleY=canvas.height/rect.height;
+  var x=Math.floor((e.clientX-rect.left)*scaleX);
+  var y=Math.floor((e.clientY-rect.top)*scaleY);
+  var px=canvas.getContext('2d').getImageData(x,y,1,1).data;
+  var r=px[0],g=px[1],b=px[2];
+  var hex='#'+[r,g,b].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+  var hsl=rgbToHsl(r,g,b);
+  document.getElementById('icp-swatch').style.background=hex;
+  document.getElementById('icp-hex').textContent=hex;
+  document.getElementById('icp-rgb').textContent='rgb('+r+', '+g+', '+b+')';
+  document.getElementById('icp-hsl').textContent='hsl('+hsl[0]+', '+hsl[1]+'%, '+hsl[2]+'%)';
+  addHistory(hex);
+}
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  var max=Math.max(r,g,b),min=Math.min(r,g,b);
+  var h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    var d=max-min;s=l>.5?d/(2-max-min):d/(max+min);
+    if(max===r)h=((g-b)/d+(g<b?6:0))/6;
+    else if(max===g)h=((b-r)/d+2)/6;
+    else h=((r-g)/d+4)/6;
+  }
+  return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+function addHistory(hex){
+  if(history[0]===hex)return;
+  history.unshift(hex);if(history.length>20)history.pop();
+  var el=document.getElementById('icp-history');el.innerHTML='';
+  history.forEach(function(c){
+    var s=document.createElement('div');
+    s.title=c;s.style.cssText='width:1.75rem;height:1.75rem;border-radius:.25rem;background:'+c+';border:1px solid rgba(0,0,0,.1);cursor:pointer;';
+    s.onclick=function(){navigator.clipboard.writeText(c);};
+    el.appendChild(s);
+  });
+}
+function copyVal(id){
+  var txt=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(txt);
+}
+</script>
+{% endblock %}

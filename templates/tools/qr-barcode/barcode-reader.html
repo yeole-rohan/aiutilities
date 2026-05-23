@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Barcode Reader — Scan Barcodes Online Free | AIUtilities{% endblock %}
+{% block description %}Read and decode barcodes from images or your webcam. Supports CODE128, EAN-13, UPC-A, QR codes, and more. Free online barcode scanner.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-reader' %}{% endblock %}
+{% block og_title %}Barcode Reader | AIUtilities{% endblock %}
+{% block og_description %}Scan barcodes from images or webcam. Supports EAN, UPC, CODE128. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-reader' %}{% endblock %}
+{% block twitter_title %}Barcode Reader | AIUtilities{% endblock %}
+{% block twitter_description %}Decode barcodes from images or webcam. Free online scanner.{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Barcode Reader","description":"Scan and decode barcodes from uploaded images or webcam. Supports CODE128, EAN, UPC, QR codes, and more.","url":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-reader' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"QR & Barcode","item":"{{ SITE_URL }}/tools/qr-barcode/"},{"@type":"ListItem","position":3,"name":"Barcode Reader","item":"{{ SITE_URL }}{% url 'tools:tool' 'qr-barcode' 'barcode-reader' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📷 QR & Barcode · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Barcode Reader</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Scan and decode barcodes from any image or your webcam. Supports CODE128, EAN-13, UPC-A, QR codes, and many more formats.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 15+ barcode formats</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Upload or webcam</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Client-side only</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+        <button onclick="setMode('upload')" id="brr-tab-upload" class="brr-tab brr-tab-active">Upload Image</button>
+        <button onclick="setMode('camera')" id="brr-tab-camera" class="brr-tab">Use Webcam</button>
+      </div>
+
+      <!-- Upload -->
+      <div id="brr-upload-area">
+        <div id="brr-drop" style="border:2px dashed #cbd5e1;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;" onclick="document.getElementById('brr-file').click()" ondragover="event.preventDefault();this.style.borderColor='#6366f1'" ondragleave="this.style.borderColor='#cbd5e1'" ondrop="handleDrop(event)">
+          <div style="font-size:2rem;margin-bottom:.5rem;">📤</div>
+          <div style="font-weight:600;color:#0f172a;margin-bottom:.25rem;">Drop barcode image here or click to upload</div>
+          <div style="font-size:.8125rem;color:#9ca3af;">JPG, PNG, WebP, GIF supported</div>
+          <input type="file" id="brr-file" accept="image/*" style="display:none" onchange="decodeFromFile(this.files[0])">
+        </div>
+      </div>
+
+      <!-- Camera -->
+      <div id="brr-camera-area" style="display:none;">
+        <div style="border-radius:.75rem;overflow:hidden;background:#000;">
+          <video id="brr-video" autoplay playsinline style="width:100%;border-radius:.75rem;"></video>
+        </div>
+        <div style="text-align:center;margin-top:.75rem;display:flex;gap:.5rem;justify-content:center;">
+          <button onclick="startCamera()" id="brr-start-btn" style="padding:.5rem 1.25rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;cursor:pointer;font-weight:600;">Start Camera</button>
+          <button onclick="stopCamera()" id="brr-stop-btn" style="display:none;padding:.5rem 1.25rem;background:#ef4444;color:#fff;border:none;border-radius:.5rem;cursor:pointer;font-weight:600;">Stop</button>
+        </div>
+        <div id="brr-cam-status" style="text-align:center;font-size:.8125rem;color:#9ca3af;margin-top:.5rem;">Point your camera at a barcode</div>
+      </div>
+    </div>
+
+    <div id="brr-result" class="ai-tool-form-card" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">Decoded Content</h2>
+        <div style="display:flex;gap:.5rem;">
+          <span id="brr-format-badge" style="padding:.2rem .6rem;background:#f1f5f9;border-radius:999px;font-size:.75rem;color:#6b7280;"></span>
+          <button onclick="copyResult()" style="padding:.25rem .6rem;background:#6366f1;color:#fff;border:none;border-radius:.375rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+      </div>
+      <div id="brr-text" style="font-family:monospace;font-size:.875rem;background:#f8fafc;padding:.75rem;border-radius:.5rem;border:1px solid #e2e8f0;word-break:break-all;"></div>
+    </div>
+
+    <div id="brr-error" class="ai-tool-form-card" style="display:none;background:#fef2f2;border:1px solid #fecaca;">
+      <div style="color:#ef4444;font-weight:600;font-size:.875rem;">No barcode found. Try a clearer, well-lit image with the barcode in focus.</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Barcode Reader</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload or scan</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop a barcode image to decode it instantly, or click Use Webcam to scan a physical barcode in real time.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The decoded value appears along with the barcode format type (EAN-13, CODE128, etc.).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the value</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Copy to copy the barcode value to your clipboard for use in other applications.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What barcode formats are supported? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">EAN-8, EAN-13, UPC-A, UPC-E, CODE39, CODE93, CODE128, Codabar, ITF, DataMatrix, PDF417, Aztec, and QR codes — powered by the ZXing multi-format decoding library.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is my barcode not being detected? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The most common causes are blur, low contrast, or the barcode being too small in the image. Take a photo with good lighting and ensure the barcode fills at least 30% of the image frame.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is this barcode reader private? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1pm;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes. All decoding runs in your browser using the ZXing library. No images or barcode data are sent to any server.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'qr-barcode' 'barcode-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Barcode Generator</a>
+      <a href="{% url 'tools:tool' 'qr-barcode' 'qr-code-reader' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">QR Code Reader</a>
+      <a href="{% url 'tools:tool' 'qr-barcode' 'qr-code-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">QR Code Generator</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.brr-tab{padding:.4rem .9rem;border:1px solid #d1d5db;background:#fff;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#374151;}
+.brr-tab-active{background:#6366f1;color:#fff;border-color:#6366f1;}
+</style>
+<script>
+var reader=null,stream=null;
+function setMode(m){
+  document.getElementById('brr-upload-area').style.display=m==='upload'?'':'none';
+  document.getElementById('brr-camera-area').style.display=m==='camera'?'':'none';
+  document.getElementById('brr-tab-upload').className='brr-tab'+(m==='upload'?' brr-tab-active':'');
+  document.getElementById('brr-tab-camera').className='brr-tab'+(m==='camera'?' brr-tab-active':'');
+  if(m==='upload')stopCamera();
+}
+function handleDrop(e){e.preventDefault();document.getElementById('brr-drop').style.borderColor='#cbd5e1';var f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))decodeFromFile(f);}
+function decodeFromFile(file){
+  var url=URL.createObjectURL(file);
+  var codeReader=new ZXing.BrowserMultiFormatReader();
+  document.getElementById('brr-result').style.display='none';document.getElementById('brr-error').style.display='none';
+  codeReader.decodeFromImageUrl(url).then(function(result){
+    document.getElementById('brr-text').textContent=result.getText();
+    document.getElementById('brr-format-badge').textContent=result.getBarcodeFormat().toString();
+    document.getElementById('brr-result').style.display='';
+  }).catch(function(){document.getElementById('brr-error').style.display='';});
+}
+function startCamera(){
+  reader=new ZXing.BrowserMultiFormatReader();
+  reader.decodeFromVideoDevice(null,'brr-video',function(result,err){
+    if(result){
+      document.getElementById('brr-text').textContent=result.getText();
+      document.getElementById('brr-format-badge').textContent=result.getBarcodeFormat().toString();
+      document.getElementById('brr-result').style.display='';
+      document.getElementById('brr-cam-status').textContent='✓ Barcode detected — scanning paused';
+    }
+  });
+  document.getElementById('brr-start-btn').style.display='none';
+  document.getElementById('brr-stop-btn').style.display='';
+  document.getElementById('brr-cam-status').textContent='Scanning… point at a barcode';
+}
+function stopCamera(){
+  if(reader){reader.reset();reader=null;}
+  document.getElementById('brr-start-btn').style.display='';
+  document.getElementById('brr-stop-btn').style.display='none';
+  document.getElementById('brr-cam-status').textContent='Camera stopped';
+}
+function copyResult(){navigator.clipboard.writeText(document.getElementById('brr-text').textContent);}
+</script>
+{% endblock %}

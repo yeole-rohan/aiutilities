@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Estimate Generator — Create Free Quotes & Estimates Online | AIUtilities{% endblock %}
+{% block description %}Create professional quotes and estimates with itemised services, labour, and materials. Add expiry date and terms. Print or save as PDF. Free estimate generator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'estimate-generator' %}{% endblock %}
+{% block og_title %}Estimate Generator | AIUtilities{% endblock %}
+{% block og_description %}Create professional estimates and quotes online. PDF ready. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'estimate-generator' %}{% endblock %}
+{% block twitter_title %}Estimate Generator | AIUtilities{% endblock %}
+{% block twitter_description %}Generate estimates and quotes free online. PDF download.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Estimate Generator","description":"Create professional estimates and quotes with itemised services, labour, and materials.","url":"{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'estimate-generator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Invoice Tools","item":"{{ SITE_URL }}/tools/invoice/"},{"@type":"ListItem","position":3,"name":"Estimate Generator","item":"{{ SITE_URL }}{% url 'tools:tool' 'invoice' 'estimate-generator' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📋 Invoice · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Estimate Generator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Create professional project estimates and quotes with itemised labour, materials, and an expiry date. Download as PDF.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ PDF / Print</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Expiry date</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Tax & totals</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+        <div>
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">From (Your Business)</h3>
+          <div style="display:grid;gap:.5rem;">
+            <input type="text" id="est-from-name" class="ai-tool-input" placeholder="Business name">
+            <textarea id="est-from-addr" class="ai-tool-input" rows="2" placeholder="Address"></textarea>
+            <input type="text" id="est-from-contact" class="ai-tool-input" placeholder="Phone / Email">
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Prepared For (Client)</h3>
+          <div style="display:grid;gap:.5rem;">
+            <input type="text" id="est-to-name" class="ai-tool-input" placeholder="Client name / company">
+            <textarea id="est-to-addr" class="ai-tool-input" rows="2" placeholder="Address"></textarea>
+            <input type="text" id="est-to-email" class="ai-tool-input" placeholder="Email">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;">
+        <div>
+          <label class="ai-tool-label" for="est-num">Estimate #</label>
+          <input type="text" id="est-num" class="ai-tool-input" value="EST-001">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="est-date">Date</label>
+          <input type="date" id="est-date" class="ai-tool-input">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="est-expiry">Valid Until</label>
+          <input type="date" id="est-expiry" class="ai-tool-input">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="est-proj">Project / Job</label>
+          <input type="text" id="est-proj" class="ai-tool-input" placeholder="Project name">
+        </div>
+      </div>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Line Items</h3>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:.5rem;margin-bottom:.5rem;font-size:.75rem;font-weight:600;color:#9ca3af;padding:0 .25rem;">
+        <div>Description</div><div>Category</div><div>Qty</div><div>Unit Price</div><div>Total</div><div></div>
+      </div>
+      <div id="est-items"></div>
+      <button onclick="addItem()" style="margin-top:.75rem;padding:.4rem 1rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;">+ Add line item</button>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end;">
+        <div style="min-width:16rem;">
+          <div style="display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid #e2e8f0;font-size:.875rem;">
+            <span style="color:#6b7280;">Subtotal</span><span id="est-sub" style="font-weight:600;">$0.00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid #e2e8f0;font-size:.875rem;">
+            <div style="display:flex;align-items:center;gap:.3rem;">
+              <span style="color:#6b7280;">Tax</span>
+              <input type="number" id="est-tax" value="0" min="0" max="100" step="0.1" style="width:3rem;padding:.2rem .3rem;border:1px solid #e2e8f0;border-radius:.25rem;font-size:.8125rem;" oninput="calc()">
+              <span style="font-size:.75rem;color:#9ca3af;">%</span>
+            </div>
+            <span id="est-tax-amt">$0.00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-weight:700;font-size:1rem;">
+            <span>Estimated Total</span><span id="est-total" style="color:#6366f1;">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;gap:.5rem;margin-top:1rem;">
+        <div>
+          <label class="ai-tool-label" for="est-scope">Scope of Work</label>
+          <textarea id="est-scope" class="ai-tool-input" rows="2" placeholder="Describe what is included in this estimate…"></textarea>
+        </div>
+        <div>
+          <label class="ai-tool-label" for="est-terms">Terms & Conditions</label>
+          <textarea id="est-terms" class="ai-tool-input" rows="2" placeholder="e.g. 50% deposit required. Prices valid until expiry date."></textarea>
+        </div>
+      </div>
+
+      <button onclick="printEstimate()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1.25rem;">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Estimate Generator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your details and the client's info</strong><br><span style="font-size:.875rem;color:#6b7280;">Fill in your business details, the client's information, an estimate number, date, and the expiry date for the quote.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add itemised line items</strong><br><span style="font-size:.875rem;color:#6b7280;">Add labour, materials, or services with a category tag. Set quantity and unit price — totals are computed automatically.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Print or export the estimate</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Print / Save PDF to open your browser's print dialog. Choose "Save as PDF" to download a professional-looking PDF estimate.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the difference between an estimate and a quote? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">An estimate is an approximate price that may change. A quote is a fixed price commitment. Estimates are common in construction and services where exact costs are hard to predict upfront. Use estimates for complex jobs and formal quotes for simpler, well-defined projects.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Should I include tax in the estimate? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Best practice is to show the pre-tax subtotal, tax amount separately, and the total including tax. This helps clients understand the full cost and simplifies your record-keeping.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How long should an estimate be valid? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Typically 30 days is standard, though it depends on your industry and how quickly material costs change. Construction estimates may be valid for 7–14 days due to volatile material prices. Set the "Valid Until" date accordingly.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'invoice' 'invoice-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Invoice Generator</a>
+      <a href="{% url 'tools:tool' 'invoice' 'receipt-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Receipt Generator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Profit Margin Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var items=[];
+function init(){
+  var today=new Date();var exp=new Date(today);exp.setDate(exp.getDate()+30);
+  document.getElementById('est-date').value=today.toISOString().split('T')[0];
+  document.getElementById('est-expiry').value=exp.toISOString().split('T')[0];
+  addItem();addItem();
+}
+function addItem(){var id='e'+Date.now()+Math.random().toString(36).slice(2);items.push({id:id});renderItems();}
+function removeItem(id){items=items.filter(function(i){return i.id!==id;});renderItems();calc();}
+function renderItems(){
+  var c=document.getElementById('est-items');c.innerHTML='';
+  items.forEach(function(it){
+    var row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:.5rem;margin-bottom:.4rem;';
+    row.innerHTML='<input type="text" class="ai-tool-input" placeholder="Description" style="font-size:.875rem;padding:.4rem .5rem;">'+
+      '<select class="ai-tool-input" style="font-size:.8125rem;padding:.4rem .5rem;"><option>Labour</option><option>Materials</option><option>Equipment</option><option>Other</option></select>'+
+      '<input type="number" class="ai-tool-input est-qty" placeholder="1" min="0" step="any" style="font-size:.875rem;padding:.4rem .5rem;" oninput="calcRow(this)">'+
+      '<input type="number" class="ai-tool-input est-price" placeholder="0.00" min="0" step="0.01" style="font-size:.875rem;padding:.4rem .5rem;" oninput="calcRow(this)">'+
+      '<input type="text" class="ai-tool-input est-total" readonly style="font-size:.875rem;padding:.4rem .5rem;background:#f8fafc;font-weight:600;">'+
+      '<button onclick="removeItem(\''+it.id+'\')" style="padding:.4rem .6rem;background:#fee2e2;color:#ef4444;border:none;border-radius:.375rem;cursor:pointer;font-size:.875rem;">✕</button>';
+    row.dataset.id=it.id;c.appendChild(row);
+  });
+}
+function calcRow(el){
+  var row=el.closest('div[data-id]');if(!row)return;
+  var qty=parseFloat(row.querySelector('.est-qty').value)||0;
+  var price=parseFloat(row.querySelector('.est-price').value)||0;
+  row.querySelector('.est-total').value='$'+(qty*price).toFixed(2);calc();
+}
+function calc(){
+  var sub=0;
+  document.querySelectorAll('#est-items div[data-id]').forEach(function(row){
+    var qty=parseFloat(row.querySelector('.est-qty').value)||0;
+    var price=parseFloat(row.querySelector('.est-price').value)||0;
+    sub+=qty*price;
+  });
+  var taxPct=parseFloat(document.getElementById('est-tax').value)||0;
+  var taxAmt=sub*taxPct/100;
+  document.getElementById('est-sub').textContent='$'+sub.toFixed(2);
+  document.getElementById('est-tax-amt').textContent='$'+taxAmt.toFixed(2);
+  document.getElementById('est-total').textContent='$'+(sub+taxAmt).toFixed(2);
+}
+function printEstimate(){
+  var fromName=document.getElementById('est-from-name').value||'Your Business';
+  var fromAddr=document.getElementById('est-from-addr').value||'';
+  var fromContact=document.getElementById('est-from-contact').value||'';
+  var toName=document.getElementById('est-to-name').value||'Client';
+  var toAddr=document.getElementById('est-to-addr').value||'';
+  var toEmail=document.getElementById('est-to-email').value||'';
+  var num=document.getElementById('est-num').value||'EST-001';
+  var date=document.getElementById('est-date').value||'';
+  var expiry=document.getElementById('est-expiry').value||'';
+  var proj=document.getElementById('est-proj').value||'';
+  var scope=document.getElementById('est-scope').value||'';
+  var terms=document.getElementById('est-terms').value||'';
+  var rows='';var sub=0;
+  document.querySelectorAll('#est-items div[data-id]').forEach(function(row){
+    var desc=row.querySelector('input[placeholder="Description"]').value||'';
+    var cat=row.querySelector('select').value;
+    var qty=parseFloat(row.querySelector('.est-qty').value)||0;
+    var price=parseFloat(row.querySelector('.est-price').value)||0;
+    var total=qty*price;sub+=total;
+    if(desc||qty||price)rows+='<tr><td style="padding:.4rem .6rem;border-bottom:1px solid #f1f5f9;">'+desc+'</td><td style="padding:.4rem .6rem;border-bottom:1px solid #f1f5f9;color:#6b7280;">'+cat+'</td><td style="padding:.4rem .6rem;border-bottom:1px solid #f1f5f9;text-align:center;">'+qty+'</td><td style="padding:.4rem .6rem;border-bottom:1px solid #f1f5f9;text-align:right;">$'+price.toFixed(2)+'</td><td style="padding:.4rem .6rem;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:600;">$'+total.toFixed(2)+'</td></tr>';
+  });
+  var taxPct=parseFloat(document.getElementById('est-tax').value)||0;
+  var taxAmt=sub*taxPct/100;var total=sub+taxAmt;
+  var html='<!DOCTYPE html><html><head><title>Estimate '+num+'</title><style>body{font-family:Arial,sans-serif;color:#1e293b;margin:0;padding:2cm;font-size:13px;}table{width:100%;border-collapse:collapse;}th{background:#6366f1;color:#fff;padding:.5rem .6rem;text-align:left;}</style></head><body>'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:2rem;"><div><h1 style="font-size:1.75rem;font-weight:900;color:#6366f1;margin:0 0 .25rem;">ESTIMATE</h1><div style="color:#6b7280;">#'+num+(proj?' &nbsp;·&nbsp; '+proj:'')+'</div>'+
+    '<div style="color:#6b7280;margin-top:.25rem;">Date: '+date+' &nbsp;|&nbsp; Valid until: '+expiry+'</div></div>'+
+    '<div style="text-align:right;"><div style="font-size:1rem;font-weight:700;">'+fromName+'</div>'+fromAddr.replace(/\n/g,'<br>')+'<br>'+fromContact+'</div></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:2rem;"><div><div style="font-size:.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;margin-bottom:.3rem;">Prepared For</div><div style="font-weight:600;">'+toName+'</div>'+toAddr.replace(/\n/g,'<br>')+'<br>'+toEmail+'</div></div>'+
+    (scope?'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.375rem;padding:.75rem 1rem;margin-bottom:1.5rem;font-size:.875rem;"><strong>Scope of Work:</strong><br>'+scope+'</div>':'')+
+    '<table style="margin-bottom:1.5rem;"><thead><tr><th>Description</th><th>Category</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Unit Price</th><th style="text-align:right;">Total</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;"><div style="min-width:14rem;font-size:.875rem;">'+
+    '<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #e2e8f0;"><span>Subtotal</span><span>$'+sub.toFixed(2)+'</span></div>'+
+    (taxPct?'<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #e2e8f0;"><span>Tax ('+taxPct+'%)</span><span>$'+taxAmt.toFixed(2)+'</span></div>':'')+
+    '<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:1.125rem;font-weight:700;"><span>Estimated Total</span><span style="color:#6366f1;">$'+total.toFixed(2)+'</span></div>'+
+    '</div></div>'+(terms?'<div style="font-size:.8125rem;color:#6b7280;border-top:1px solid #e2e8f0;padding-top:1rem;"><strong>Terms:</strong> '+terms+'</div>':'')+
+    '</body></html>';
+  var w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();w.print();
+}
+init();
+</script>
+{% endblock %}

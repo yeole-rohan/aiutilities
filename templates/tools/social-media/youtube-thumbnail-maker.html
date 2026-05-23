@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}YouTube Thumbnail Maker — Create Thumbnails Free Online | AIUtilities{% endblock %}
+{% block description %}Create eye-catching YouTube thumbnails at 1280×720. Add text, change background, customize fonts and colors. Download as JPG or PNG. Free online thumbnail maker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}{% endblock %}
+{% block og_title %}YouTube Thumbnail Maker | AIUtilities{% endblock %}
+{% block og_description %}Design YouTube thumbnails at 1280×720. Add text and backgrounds. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}{% endblock %}
+{% block twitter_title %}YouTube Thumbnail Maker | AIUtilities{% endblock %}
+{% block twitter_description %}Create YouTube thumbnails free. No design skills needed.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"YouTube Thumbnail Maker","description":"Create YouTube thumbnails at 1280×720 with custom text, background images, and colors.","url":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Social Media Tools","item":"{{ SITE_URL }}/tools/social-media/"},{"@type":"ListItem","position":3,"name":"YouTube Thumbnail Maker","item":"{{ SITE_URL }}{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">▶️ Social Media · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">YouTube Thumbnail Maker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Design professional YouTube thumbnails at the perfect 1280×720 resolution with custom text, images, and gradients.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 1280×720 px</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom background</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ JPG / PNG download</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:64rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;">
+      <div class="ai-tool-form-card" style="padding:.75rem;">
+        <div style="font-size:.75rem;color:#9ca3af;margin-bottom:.5rem;">Preview (1280×720)</div>
+        <canvas id="yt-canvas" width="1280" height="720" style="width:100%;border-radius:.5rem;border:1px solid #e2e8f0;"></canvas>
+      </div>
+
+      <div style="display:grid;gap:1rem;align-content:start;">
+        <div class="ai-tool-form-card">
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Background</h3>
+          <div style="display:grid;gap:.5rem;">
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="radio" name="yt-bg" value="color" checked onchange="render()"> Solid color</label>
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="radio" name="yt-bg" value="gradient" onchange="render()"> Gradient</label>
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.8125rem;cursor:pointer;"><input type="radio" name="yt-bg" value="image" onchange="render()"> Image</label>
+          </div>
+          <div id="yt-bg-color" style="margin-top:.5rem;">
+            <input type="color" id="yt-color1" value="#1e1b4b" style="height:2rem;width:100%;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;" oninput="render()">
+          </div>
+          <div id="yt-bg-gradient" style="display:none;margin-top:.5rem;display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;">
+              <input type="color" id="yt-grad1" value="#4f46e5" style="height:2rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;" oninput="render()">
+              <input type="color" id="yt-grad2" value="#7c3aed" style="height:2rem;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;" oninput="render()">
+            </div>
+          </div>
+          <div id="yt-bg-image" style="display:none;margin-top:.5rem;">
+            <button onclick="document.getElementById('yt-img').click()" style="width:100%;padding:.4rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6b7280;">Upload background image</button>
+            <input type="file" id="yt-img" accept="image/*" style="display:none" onchange="loadBgImage(this.files[0])">
+          </div>
+        </div>
+
+        <div class="ai-tool-form-card">
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Main Title</h3>
+          <textarea id="yt-title" class="ai-tool-input" rows="2" placeholder="Your video title" oninput="render()" style="margin-bottom:.5rem;">How I Made $10K</textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+            <div>
+              <label style="font-size:.75rem;color:#6b7280;">Font size: <span id="yt-ts-lbl">96</span>px</label>
+              <input type="range" id="yt-title-size" min="24" max="200" value="96" style="width:100%;" oninput="document.getElementById('yt-ts-lbl').textContent=this.value;render()">
+            </div>
+            <div>
+              <label style="font-size:.75rem;color:#6b7280;">Color</label>
+              <input type="color" id="yt-title-color" value="#ffffff" style="height:2rem;width:100%;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;" oninput="render()">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem;">
+            <label style="display:flex;align-items:center;gap:.3rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" id="yt-bold" checked onchange="render()"> Bold</label>
+            <label style="display:flex;align-items:center;gap:.3rem;font-size:.8125rem;cursor:pointer;"><input type="checkbox" id="yt-shadow" checked onchange="render()"> Shadow</label>
+          </div>
+        </div>
+
+        <div class="ai-tool-form-card">
+          <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Subtitle</h3>
+          <input type="text" id="yt-sub" class="ai-tool-input" placeholder="Optional subtitle" value="In 30 Days" oninput="render()" style="margin-bottom:.5rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+            <div>
+              <label style="font-size:.75rem;color:#6b7280;">Size: <span id="yt-ss-lbl">52</span>px</label>
+              <input type="range" id="yt-sub-size" min="12" max="120" value="52" style="width:100%;" oninput="document.getElementById('yt-ss-lbl').textContent=this.value;render()">
+            </div>
+            <div>
+              <label style="font-size:.75rem;color:#6b7280;">Color</label>
+              <input type="color" id="yt-sub-color" value="#fbbf24" style="height:2rem;width:100%;border:1px solid #e2e8f0;border-radius:.375rem;cursor:pointer;" oninput="render()">
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-tool-form-card">
+          <label class="ai-tool-label" for="yt-outfmt">Download as</label>
+          <select id="yt-outfmt" class="ai-tool-input" style="margin-bottom:.75rem;">
+            <option value="image/jpeg">JPG (smaller)</option>
+            <option value="image/png">PNG (lossless)</option>
+          </select>
+          <button onclick="download()" style="width:100%;padding:.75rem;background:#ff0000;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">Download Thumbnail</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the YouTube Thumbnail Maker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose a background</strong><br><span style="font-size:.875rem;color:#6b7280;">Select a solid color, gradient, or upload your own background image. The thumbnail is always created at 1280×720 pixels.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add your title and subtitle</strong><br><span style="font-size:.875rem;color:#6b7280;">Type your main title and optional subtitle. Adjust font size, color, bold, and drop shadow with the live canvas preview.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download and upload to YouTube</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Download Thumbnail and save it. Upload it when publishing or editing your YouTube video in YouTube Studio.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What size should a YouTube thumbnail be? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">YouTube recommends 1280×720 pixels (16:9 aspect ratio) with a minimum width of 640 pixels. The maximum file size is 2 MB. JPG, PNG, GIF, and WebP are accepted formats.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What makes a good YouTube thumbnail? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">High contrast colors, large readable text, and a clear focal point. Thumbnails are often viewed at small sizes, so avoid clutter. A face with a strong expression and bold text typically increases click-through rate.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Should I use JPG or PNG for thumbnails? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">JPG produces smaller file sizes and is fine for most thumbnails. Use PNG if you need lossless quality or transparency. YouTube accepts both — just stay under the 2 MB limit.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'add-text-to-image' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Add Text to Image</a>
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'image-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Compressor</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var bgImg=null;
+document.querySelectorAll('input[name="yt-bg"]').forEach(function(r){r.addEventListener('change',function(){
+  var v=this.value;
+  document.getElementById('yt-bg-color').style.display=v==='color'?'':'none';
+  document.getElementById('yt-bg-gradient').style.display=v==='gradient'?'':'none';
+  document.getElementById('yt-bg-image').style.display=v==='image'?'':'none';
+  render();
+});});
+
+function loadBgImage(file){var reader=new FileReader();reader.onload=function(ev){var img=new Image();img.onload=function(){bgImg=img;render();};img.src=ev.target.result;};reader.readAsDataURL(file);}
+
+function render(){
+  var canvas=document.getElementById('yt-canvas');
+  var ctx=canvas.getContext('2d');
+  var W=1280,H=720;
+  var bgType=document.querySelector('input[name="yt-bg"]:checked').value;
+  ctx.clearRect(0,0,W,H);
+
+  if(bgType==='color'){ctx.fillStyle=document.getElementById('yt-color1').value;ctx.fillRect(0,0,W,H);}
+  else if(bgType==='gradient'){
+    var g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,document.getElementById('yt-grad1').value);
+    g.addColorStop(1,document.getElementById('yt-grad2').value);
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }else if(bgType==='image'&&bgImg){
+    ctx.drawImage(bgImg,0,0,W,H);
+  }else{ctx.fillStyle='#111827';ctx.fillRect(0,0,W,H);}
+
+  var titleText=document.getElementById('yt-title').value;
+  var subText=document.getElementById('yt-sub').value;
+  var titleSize=parseInt(document.getElementById('yt-title-size').value);
+  var subSize=parseInt(document.getElementById('yt-sub-size').value);
+  var titleColor=document.getElementById('yt-title-color').value;
+  var subColor=document.getElementById('yt-sub-color').value;
+  var bold=document.getElementById('yt-bold').checked?'bold ':'';
+  var shadow=document.getElementById('yt-shadow').checked;
+
+  if(shadow){ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=20;ctx.shadowOffsetX=4;ctx.shadowOffsetY=4;}
+  ctx.textAlign='center';ctx.textBaseline='middle';
+
+  if(titleText){
+    ctx.font=bold+titleSize+'px Impact,Arial Black,sans-serif';
+    ctx.fillStyle=titleColor;
+    var lines=titleText.split('\n');
+    var totalH=(lines.length-1)*titleSize*1.2;
+    var centerY=subText?H*0.42:H/2;
+    lines.forEach(function(l,i){ctx.fillText(l,W/2,centerY-totalH/2+i*titleSize*1.2);});
+  }
+  if(subText){
+    ctx.font=subSize+'px Arial,sans-serif';
+    ctx.fillStyle=subColor;
+    var titleLines=(titleText||'').split('\n').length;
+    var titleBottom=H*0.42+(titleLines-0.5)*titleSize*1.2;
+    ctx.fillText(subText,W/2,titleBottom+subSize);
+  }
+  ctx.shadowColor='transparent';
+}
+function download(){
+  var fmt=document.getElementById('yt-outfmt').value;
+  var ext=fmt==='image/png'?'png':'jpg';
+  var a=document.createElement('a');a.href=document.getElementById('yt-canvas').toDataURL(fmt,0.92);a.download='youtube-thumbnail.'+ext;a.click();
+}
+render();
+</script>
+{% endblock %}

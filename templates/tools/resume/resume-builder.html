@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Resume Builder — Create a Free Resume Online | AIUtilities{% endblock %}
+{% block description %}Build a professional resume with work experience, education, skills, and summary. Preview and print instantly. No account required. Free online resume builder.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'resume-builder' %}{% endblock %}
+{% block og_title %}Resume Builder | AIUtilities{% endblock %}
+{% block og_description %}Build a professional resume and download as PDF. Free, no signup.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'resume' 'resume-builder' %}{% endblock %}
+{% block twitter_title %}Resume Builder | AIUtilities{% endblock %}
+{% block twitter_description %}Create a professional resume free online. PDF download.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Resume Builder","description":"Create a professional resume with work experience, education, and skills. Download as PDF.","url":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'resume-builder' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Resume Tools","item":"{{ SITE_URL }}/tools/resume/"},{"@type":"ListItem","position":3,"name":"Resume Builder","item":"{{ SITE_URL }}{% url 'tools:tool' 'resume' 'resume-builder' %}"}]}]}
+</script>
+{% endblock %}
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📄 Resume · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Resume Builder</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Build a professional resume with work experience, education, and skills. Print directly or save as PDF — no account required.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No account</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ PDF / Print ready</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Clean design</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:60rem;margin:0 auto;display:grid;gap:1.5rem;">
+    <div class="ai-tool-form-card">
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Personal Information</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem;">
+        <input type="text" id="cv-name" class="ai-tool-input" placeholder="Full Name" style="font-size:1.125rem;font-weight:700;">
+        <input type="text" id="cv-title" class="ai-tool-input" placeholder="Job Title / Profession">
+        <input type="text" id="cv-email" class="ai-tool-input" placeholder="Email">
+        <input type="text" id="cv-phone" class="ai-tool-input" placeholder="Phone">
+        <input type="text" id="cv-location" class="ai-tool-input" placeholder="City, Country">
+        <input type="text" id="cv-linkedin" class="ai-tool-input" placeholder="LinkedIn / Portfolio URL">
+      </div>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Professional Summary</h3>
+      <textarea id="cv-summary" class="ai-tool-input" rows="3" placeholder="Brief summary of your background and key skills…" style="margin-bottom:1.5rem;"></textarea>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Work Experience</h3>
+      <div id="cv-exp-list"></div>
+      <button onclick="addExp()" style="padding:.4rem 1rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;margin-bottom:1.5rem;">+ Add Experience</button>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Education</h3>
+      <div id="cv-edu-list"></div>
+      <button onclick="addEdu()" style="padding:.4rem 1rem;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:.375rem;font-size:.8125rem;cursor:pointer;color:#6366f1;margin-bottom:1.5rem;">+ Add Education</button>
+
+      <h3 style="font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Skills</h3>
+      <textarea id="cv-skills" class="ai-tool-input" rows="2" placeholder="e.g. Python, Project Management, Excel, Communication, Agile…" style="margin-bottom:1.5rem;"></textarea>
+
+      <button onclick="printResume()" style="width:100%;padding:.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:1rem;font-weight:700;cursor:pointer;">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Resume Builder</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Fill in your details</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter your name, contact information, and a professional summary. Add each work experience and education entry using the + buttons.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add skills</strong><br><span style="font-size:.875rem;color:#6b7280;">List your technical and soft skills separated by commas. These are displayed as neat tags on the printed resume.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Print or save as PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Click Print / Save PDF to open the print dialog. Select "Save as PDF" as the destination to download a one-page PDF resume.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my resume data saved? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No. All data is held in your browser only and is lost when you close or refresh the page. Always print or save as PDF before leaving. Nothing is sent to any server.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How do I save the resume as a PDF? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Click "Print / Save PDF", then in the print dialog change the Destination to "Save as PDF". In Chrome/Edge you can also set the margins to None for maximum content width.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What format is best for submitting resumes? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">PDF is the universally accepted format for resumes. It preserves your formatting exactly across all devices and operating systems. Always submit PDF unless the job posting specifically requests a Word document.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'invoice' 'invoice-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Invoice Generator</a>
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var expItems=[],eduItems=[];
+function addExp(){var id='ex'+Date.now();expItems.push({id:id});renderExp();}
+function removeExp(id){expItems=expItems.filter(function(i){return i.id!==id;});renderExp();}
+function renderExp(){
+  var c=document.getElementById('cv-exp-list');c.innerHTML='';
+  expItems.forEach(function(it){
+    var d=document.createElement('div');
+    d.style.cssText='background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem;margin-bottom:.75rem;';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;"><span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Work Experience</span><button onclick="removeExp(\''+it.id+'\')" style="padding:.2rem .5rem;background:#fee2e2;color:#ef4444;border:none;border-radius:.25rem;cursor:pointer;font-size:.75rem;">Remove</button></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+      '<input type="text" class="ai-tool-input ex-title" placeholder="Job Title" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ex-company" placeholder="Company" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ex-dates" placeholder="Jan 2020 – Dec 2022" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ex-location" placeholder="City, Country" style="font-size:.875rem;">'+
+      '</div>'+
+      '<textarea class="ai-tool-input ex-bullets" rows="3" placeholder="• Key achievement or responsibility&#10;• Another achievement…" style="font-size:.875rem;"></textarea>';
+    d.dataset.id=it.id;c.appendChild(d);
+  });
+}
+function addEdu(){var id='ed'+Date.now();eduItems.push({id:id});renderEdu();}
+function removeEdu(id){eduItems=eduItems.filter(function(i){return i.id!==id;});renderEdu();}
+function renderEdu(){
+  var c=document.getElementById('cv-edu-list');c.innerHTML='';
+  eduItems.forEach(function(it){
+    var d=document.createElement('div');
+    d.style.cssText='background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem;margin-bottom:.75rem;';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;"><span style="font-size:.8125rem;font-weight:600;color:#6b7280;">Education</span><button onclick="removeEdu(\''+it.id+'\')" style="padding:.2rem .5rem;background:#fee2e2;color:#ef4444;border:none;border-radius:.25rem;cursor:pointer;font-size:.75rem;">Remove</button></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">'+
+      '<input type="text" class="ai-tool-input ed-degree" placeholder="Degree / Qualification" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ed-school" placeholder="School / University" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ed-dates" placeholder="2016 – 2020" style="font-size:.875rem;">'+
+      '<input type="text" class="ai-tool-input ed-gpa" placeholder="GPA / Honours (optional)" style="font-size:.875rem;">'+
+      '</div>';
+    d.dataset.id=it.id;c.appendChild(d);
+  });
+}
+function printResume(){
+  var name=document.getElementById('cv-name').value||'Your Name';
+  var title=document.getElementById('cv-title').value||'';
+  var email=document.getElementById('cv-email').value||'';
+  var phone=document.getElementById('cv-phone').value||'';
+  var loc=document.getElementById('cv-location').value||'';
+  var url=document.getElementById('cv-linkedin').value||'';
+  var summary=document.getElementById('cv-summary').value||'';
+  var skillsRaw=document.getElementById('cv-skills').value||'';
+  var skills=skillsRaw.split(',').map(function(s){return s.trim();}).filter(Boolean);
+
+  var expHtml='';
+  document.querySelectorAll('#cv-exp-list div[data-id]').forEach(function(row){
+    var t=row.querySelector('.ex-title').value;var co=row.querySelector('.ex-company').value;
+    var d=row.querySelector('.ex-dates').value;var l=row.querySelector('.ex-location').value;
+    var b=row.querySelector('.ex-bullets').value;
+    if(t||co){
+      expHtml+='<div style="margin-bottom:1rem;">'+
+        '<div style="display:flex;justify-content:space-between;"><div style="font-weight:700;color:#0f172a;">'+t+'</div><div style="font-size:.8125rem;color:#6b7280;">'+d+'</div></div>'+
+        '<div style="display:flex;justify-content:space-between;margin-bottom:.3rem;"><div style="color:#6366f1;font-size:.875rem;">'+co+'</div><div style="font-size:.8125rem;color:#9ca3af;">'+l+'</div></div>'+
+        (b?'<div style="font-size:.8125rem;color:#374151;white-space:pre-line;">'+b+'</div>':'')+
+        '</div>';
+    }
+  });
+  var eduHtml='';
+  document.querySelectorAll('#cv-edu-list div[data-id]').forEach(function(row){
+    var deg=row.querySelector('.ed-degree').value;var sch=row.querySelector('.ed-school').value;
+    var d=row.querySelector('.ed-dates').value;var gpa=row.querySelector('.ed-gpa').value;
+    if(deg||sch){
+      eduHtml+='<div style="margin-bottom:.75rem;">'+
+        '<div style="display:flex;justify-content:space-between;"><div style="font-weight:700;color:#0f172a;">'+deg+'</div><div style="font-size:.8125rem;color:#6b7280;">'+d+'</div></div>'+
+        '<div style="color:#6366f1;font-size:.875rem;">'+sch+(gpa?' &nbsp;·&nbsp; '+gpa:'')+'</div>'+
+        '</div>';
+    }
+  });
+  var skillTags=skills.map(function(s){return '<span style="display:inline-block;padding:.2rem .6rem;background:#ede9fe;color:#4f46e5;border-radius:999px;font-size:.75rem;margin:.15rem;">'+s+'</span>';}).join('');
+  var html='<!DOCTYPE html><html><head><title>'+name+' — Resume</title><style>body{font-family:Arial,sans-serif;color:#1e293b;margin:0;padding:1.5cm;font-size:13px;}h2{font-size:.8125rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #e2e8f0;padding-bottom:.3rem;margin:1.25rem 0 .75rem;}</style></head><body>'+
+    '<div style="text-align:center;margin-bottom:1.5rem;">'+
+    '<h1 style="font-size:1.75rem;font-weight:900;color:#0f172a;margin:0 0 .2rem;">'+name+'</h1>'+
+    (title?'<div style="color:#6366f1;font-size:1rem;font-weight:600;">'+title+'</div>':'')+
+    '<div style="font-size:.8125rem;color:#6b7280;margin-top:.4rem;">'+(email?email+' &nbsp;·&nbsp; ':''+(phone?phone+' &nbsp;·&nbsp; ':'')+(loc?loc:''))+'</div>'+
+    (url?'<div style="font-size:.8125rem;color:#6366f1;">'+url+'</div>':'')+
+    '</div>'+
+    (summary?'<h2>Summary</h2><p style="font-size:.875rem;color:#374151;line-height:1.6;margin:0;">'+summary+'</p>':'')+
+    (expHtml?'<h2>Work Experience</h2>'+expHtml:'')+
+    (eduHtml?'<h2>Education</h2>'+eduHtml:'')+
+    (skillTags?'<h2>Skills</h2><div style="margin-top:.25rem;">'+skillTags+'</div>':'')+
+    '</body></html>';
+  var w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();w.print();
+}
+addExp();addEdu();
+</script>
+{% endblock %}
