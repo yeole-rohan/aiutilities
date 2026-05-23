@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Keyword Density Checker — Analyse Keyword Frequency Free | AIUtilities{% endblock %}
+{% block description %}Check keyword density and frequency in any text or article. Get a ranked table of all keywords with counts and percentages. Free online keyword density analyzer.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'keyword-density-checker' %}{% endblock %}
+{% block og_title %}Keyword Density Checker — Analyse Text Keyword Frequency | AIUtilities{% endblock %}
+{% block og_description %}Analyse keyword frequency and density in any text — free, instant, browser-based.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'seo' 'keyword-density-checker' %}{% endblock %}
+{% block twitter_title %}Keyword Density Checker | AIUtilities{% endblock %}
+{% block twitter_description %}Check keyword density and frequency in any text — free online tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Keyword Density Checker","description":"Analyse keyword frequency and density in any text or article.","url":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'keyword-density-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"SEO Tools","item":"{{ SITE_URL }}/tools/seo/"},{"@type":"ListItem","position":3,"name":"Keyword Density Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'seo' 'keyword-density-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📈 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Keyword Density Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste any article or web page text to see a ranked frequency table of every keyword — with word count, occurrence count, and density percentage.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Frequency table</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Density %</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Stop word filter</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Article / Text</label>
+        <textarea id="text-input" class="ai-tool-input" rows="8" placeholder="Paste your article, blog post, or any text here…" style="resize:vertical;font-size:.9375rem;line-height:1.6;"></textarea>
+      </div>
+      <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          <input type="checkbox" id="filter-stop" checked style="width:1rem;height:1rem;"> Filter common stop words
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;color:#374151;cursor:pointer;">
+          Min length: <input type="number" id="min-len" value="3" min="1" max="10" style="width:3rem;padding:.2rem .4rem;border:1px solid #d1d5db;border-radius:.375rem;text-align:center;">
+        </label>
+        <span style="margin-left:auto;font-size:.8125rem;color:#9ca3af;" id="word-total"></span>
+      </div>
+      <button type="button" onclick="analyze()" class="ai-tool-btn">Analyze Text</button>
+
+      <div id="result" style="display:none;margin-top:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+          <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">Keyword Frequency</h3>
+          <span id="shown-count" style="font-size:.8125rem;color:#6b7280;"></span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+          <thead><tr style="background:#f8fafc;"><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">#</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Keyword</th><th style="padding:.5rem .75rem;text-align:center;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Count</th><th style="padding:.5rem .75rem;text-align:right;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Density</th></tr></thead>
+          <tbody id="result-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Check Keyword Density?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">On-Page SEO</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Check if your target keyword appears at an appropriate density (1–3% is typical). Too low and the page may not rank — too high risks keyword stuffing penalties.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Content Optimization</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Identify which topics dominate your content and where to add related keywords, synonyms, or LSI terms to improve topical depth.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Competitor Analysis</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Paste a competitor's content to see which keywords they emphasize — useful for understanding their on-page strategy and finding gaps.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Content Auditing</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Quickly assess old blog posts or landing pages to see if they're optimized for the right keywords before a site migration or refresh.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Check Keyword Density</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy any article, blog post, product description, or web page content and paste it in the text box.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set options</strong><br><span style="font-size:.875rem;color:#6b7280;">Toggle stop word filtering (removes common words like "the", "and", "is") and set a minimum word length to focus on meaningful keywords.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the frequency table</strong><br><span style="font-size:.875rem;color:#6b7280;">The top 50 keywords are ranked by frequency with their count and density percentage. Use this to optimize your content.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is ideal keyword density for SEO? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">There is no magic number, but most SEO experts suggest 1–3% for your primary keyword. Focus on natural writing first — Google prioritizes context and topical relevance over exact keyword repetition.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What are stop words? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Stop words are common words like "the", "and", "is", "in", "a". They appear in almost every text and don't carry SEO value. Filtering them shows only meaningful keywords.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it support multi-word keyword phrases? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Currently the tool analyzes single words (unigrams). For specific keyword phrase tracking (e.g., "keyword density checker"), search the page text manually using Ctrl+F or a dedicated rank tracker.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'character-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Character Counter</a>
+      <a href="{% url 'tools:tool' 'seo' 'meta-tag-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Meta Tag Generator</a>
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var STOP = new Set('a,an,the,and,or,but,in,on,at,to,for,of,with,by,from,up,about,as,into,through,during,before,after,above,below,between,each,is,are,was,were,be,been,being,have,has,had,do,does,did,will,would,could,should,may,might,shall,can,need,dare,ought,used,it,its,this,that,these,those,i,me,my,we,our,you,your,he,his,she,her,they,their,what,which,who,whom,whose,how,when,where,why,all,both,some,any,few,more,most,other,such,no,not,only,own,same,so,than,too,very,s,t,just,don,now,d,ll,m,o,re,ve,y,ain,aren,couldn,didn,doesn,hadn,hasn,haven,isn,ma,mightn,mustn,needn,shan,shouldn,wasn,weren,won,wouldn'.split(','));
+
+function analyze() {
+  var text = document.getElementById('text-input').value;
+  var filterStop = document.getElementById('filter-stop').checked;
+  var minLen = parseInt(document.getElementById('min-len').value) || 3;
+  var words = text.toLowerCase().match(/[a-z']+/g) || [];
+  var total = words.length;
+  document.getElementById('word-total').textContent = total + ' words';
+  var freq = {};
+  words.forEach(function(w) {
+    w = w.replace(/^'+|'+$/g, '');
+    if (w.length < minLen) return;
+    if (filterStop && STOP.has(w)) return;
+    freq[w] = (freq[w] || 0) + 1;
+  });
+  var sorted = Object.keys(freq).sort(function(a,b) { return freq[b]-freq[a]; }).slice(0,50);
+  if (!sorted.length) { document.getElementById('result').style.display='none'; return; }
+  var html = sorted.map(function(w, i) {
+    var cnt = freq[w];
+    var pct = total > 0 ? (cnt / total * 100).toFixed(2) : '0.00';
+    return '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.4rem .75rem;color:#9ca3af;">' + (i+1) + '</td><td style="padding:.4rem .75rem;color:#0f172a;font-weight:500;">' + w + '</td><td style="padding:.4rem .75rem;text-align:center;color:#374151;">' + cnt + '</td><td style="padding:.4rem .75rem;text-align:right;color:#6366f1;font-weight:600;">' + pct + '%</td></tr>';
+  }).join('');
+  document.getElementById('result-body').innerHTML = html;
+  document.getElementById('shown-count').textContent = 'Top ' + sorted.length + ' keywords';
+  document.getElementById('result').style.display = 'block';
+}
+</script>
+{% endblock %}

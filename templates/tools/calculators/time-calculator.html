@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Time Calculator — Add & Subtract Time Durations Free | AIUtilities{% endblock %}
+{% block description %}Add and subtract time durations — hours, minutes, and seconds. Calculate total time, find the difference, or convert between units. Free and instant.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'time-calculator' %}{% endblock %}
+{% block og_title %}Time Calculator — Add & Subtract Time Durations | AIUtilities{% endblock %}
+{% block og_description %}Add, subtract, and calculate time durations in hours, minutes, and seconds — free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'time-calculator' %}{% endblock %}
+{% block twitter_title %}Time Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Add and subtract time durations — hours, minutes, seconds. Free online.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Time Calculator","description":"Add and subtract time durations in hours, minutes, and seconds.","url":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'time-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"{{ SITE_URL }}/tools/calculators/"},{"@type":"ListItem","position":3,"name":"Time Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'calculators' 'time-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">⏱️ Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Time Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Add or subtract multiple time durations in hours, minutes, and seconds. Get the total in H:MM:SS, decimal hours, and total minutes instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Add & subtract</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple durations</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant result</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div id="rows-container"></div>
+      <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <button type="button" onclick="addRow('+')" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">+ Add time</button>
+        <button type="button" onclick="addRow('-')" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">− Subtract time</button>
+        <button type="button" onclick="calculate()" class="ai-tool-btn" style="width:auto;flex:1;">Calculate</button>
+      </div>
+      <div id="result" style="display:none;padding:1.25rem;background:#f0fdf4;border:1px solid #86efac;border-radius:.5rem;">
+        <div style="font-size:1.75rem;font-weight:800;color:#15803d;font-family:monospace;text-align:center;" id="result-hms"></div>
+        <div style="text-align:center;margin-top:.5rem;font-size:.875rem;color:#374151;" id="result-extra"></div>
+      </div>
+      <div id="err" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Uses</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Track Work Hours</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Add up daily work sessions — useful for freelancers, consultants, and remote workers who track time across multiple tasks.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Video Editing</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Calculate total video duration by summing clip lengths, or find how long a section is after a trim or cut.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Sports & Fitness</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Add lap times, training session durations, or race segments to get total times and averages.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Project Planning</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Sum estimated task durations to calculate total project time, then subtract already-completed work.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Time Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your time durations</strong><br><span style="font-size:.875rem;color:#6b7280;">Each row has hours, minutes, and seconds fields. Fill in the values for each time segment you want to calculate.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Add or subtract rows</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "+ Add time" to add a positive duration or "− Subtract time" to subtract a duration from the total.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">See the result</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Calculate" to see the total in H:MM:SS format, decimal hours, and total minutes.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I enter more than 59 minutes or seconds? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — you can enter any number. 90 minutes is automatically converted to 1 hour 30 minutes. The calculator handles overflow and underflow automatically.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What happens if the result is negative? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">If subtractions exceed additions, the result is shown as a negative duration (e.g., -0:15:00). This can be useful for checking how much time is over or under a target.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does "decimal hours" mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Decimal hours express the duration as a single number — e.g., 1 hour 30 minutes = 1.5 hours. This is useful for billing (e.g., at $50/hr, 1.5h = $75).</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'date-time' 'date-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Date Calculator</a>
+      <a href="{% url 'tools:tool' 'date-time' 'business-days-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Business Days Calculator</a>
+      <a href="{% url 'tools:tool' 'date-time' 'epoch-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Epoch Converter</a>
+      <a href="{% url 'tools:tool' 'calculators' 'tip-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tip Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var rows = [];
+
+function addRow(sign) {
+  var id = Date.now();
+  rows.push({ id: id, sign: sign });
+  render();
+}
+
+function removeRow(id) {
+  rows = rows.filter(function(r) { return r.id !== id; });
+  render();
+}
+
+function render() {
+  var container = document.getElementById('rows-container');
+  if (!rows.length) {
+    container.innerHTML = '<p style="text-align:center;color:#9ca3af;font-size:.875rem;padding:1rem 0;">Click "+ Add time" to add your first duration.</p>';
+    return;
+  }
+  container.innerHTML = rows.map(function(r) {
+    var color = r.sign === '+' ? '#16a34a' : '#dc2626';
+    var label = r.sign === '+' ? '+ Add' : '− Sub';
+    return '<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem;">' +
+      '<span style="font-weight:700;color:' + color + ';min-width:2.5rem;font-size:1rem;">' + label + '</span>' +
+      '<input type="number" id="h-' + r.id + '" min="0" placeholder="0" style="width:4rem;padding:.5rem;border:1px solid #d1d5db;border-radius:.375rem;font-size:.9375rem;text-align:center;" value="0">' +
+      '<span style="color:#6b7280;font-size:.875rem;">h</span>' +
+      '<input type="number" id="m-' + r.id + '" min="0" placeholder="0" style="width:4rem;padding:.5rem;border:1px solid #d1d5db;border-radius:.375rem;font-size:.9375rem;text-align:center;" value="0">' +
+      '<span style="color:#6b7280;font-size:.875rem;">min</span>' +
+      '<input type="number" id="s-' + r.id + '" min="0" placeholder="0" style="width:4rem;padding:.5rem;border:1px solid #d1d5db;border-radius:.375rem;font-size:.9375rem;text-align:center;" value="0">' +
+      '<span style="color:#6b7280;font-size:.875rem;">sec</span>' +
+      '<button onclick="removeRow(' + r.id + ')" style="margin-left:auto;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.125rem;line-height:1;">×</button>' +
+      '</div>';
+  }).join('');
+}
+
+function calculate() {
+  if (!rows.length) { showError('Add at least one time duration.'); return; }
+  var totalSec = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var h = parseInt(document.getElementById('h-' + r.id).value) || 0;
+    var m = parseInt(document.getElementById('m-' + r.id).value) || 0;
+    var s = parseInt(document.getElementById('s-' + r.id).value) || 0;
+    var sec = h * 3600 + m * 60 + s;
+    totalSec += r.sign === '+' ? sec : -sec;
+  }
+  showError('');
+  var neg = totalSec < 0;
+  var abs = Math.abs(totalSec);
+  var rh = Math.floor(abs / 3600);
+  var rm = Math.floor((abs % 3600) / 60);
+  var rs = abs % 60;
+  var hms = (neg ? '-' : '') + rh + ':' + String(rm).padStart(2,'0') + ':' + String(rs).padStart(2,'0');
+  var decHr = (totalSec / 3600).toFixed(4);
+  var totalMin = (totalSec / 60).toFixed(2);
+  document.getElementById('result-hms').textContent = hms;
+  document.getElementById('result-extra').textContent = decHr + ' decimal hours · ' + totalMin + ' total minutes · ' + Math.abs(totalSec) + ' total seconds';
+  document.getElementById('result').style.display = 'block';
+}
+
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+addRow('+');
+addRow('+');
+</script>
+{% endblock %}

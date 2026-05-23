@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sales Tax Calculator — US State Tax Rates & Custom Rate | AIUtilities{% endblock %}
+{% block description %}Calculate sales tax for any US state or enter a custom rate. Get the tax amount and total price instantly. Free online sales tax calculator — no signup required.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'sales-tax-calculator' %}{% endblock %}
+{% block og_title %}Sales Tax Calculator — US State Rates & Custom | AIUtilities{% endblock %}
+{% block og_description %}Calculate US sales tax by state or custom rate — free, instant online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'sales-tax-calculator' %}{% endblock %}
+{% block twitter_title %}Sales Tax Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate sales tax for any US state or custom rate — free, instant.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Sales Tax Calculator","description":"Calculate sales tax for any US state or custom rate instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'sales-tax-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"eCommerce Tools","item":"{{ SITE_URL }}/tools/ecommerce/"},{"@type":"ListItem","position":3,"name":"Sales Tax Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'ecommerce' 'sales-tax-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🛒 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Sales Tax Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate sales tax for any US state or enter a custom rate. Get the tax amount and total price with tax included — instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All 50 US states</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom rate</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant result</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Price Before Tax ($)</label>
+          <input type="number" id="price" class="ai-tool-input" placeholder="e.g. 99.99" min="0" step="0.01" oninput="calculate()">
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">State (statewide base rate)</label>
+          <select id="state" class="ai-tool-input" onchange="onStateChange()">
+            <option value="">— Select a state —</option>
+            <option value="0">Alaska (no state tax)</option>
+            <option value="4">Alabama (4%)</option>
+            <option value="6.5">Arizona (6.5%)</option>
+            <option value="6.5">Arkansas (6.5%)</option>
+            <option value="7.25">California (7.25%)</option>
+            <option value="2.9">Colorado (2.9%)</option>
+            <option value="6.35">Connecticut (6.35%)</option>
+            <option value="0">Delaware (0%)</option>
+            <option value="6">Florida (6%)</option>
+            <option value="4">Georgia (4%)</option>
+            <option value="4">Hawaii (4%)</option>
+            <option value="6">Idaho (6%)</option>
+            <option value="6.25">Illinois (6.25%)</option>
+            <option value="7">Indiana (7%)</option>
+            <option value="6">Iowa (6%)</option>
+            <option value="6.5">Kansas (6.5%)</option>
+            <option value="6">Kentucky (6%)</option>
+            <option value="4.45">Louisiana (4.45%)</option>
+            <option value="5.5">Maine (5.5%)</option>
+            <option value="6">Maryland (6%)</option>
+            <option value="6.25">Massachusetts (6.25%)</option>
+            <option value="6">Michigan (6%)</option>
+            <option value="6.875">Minnesota (6.875%)</option>
+            <option value="7">Mississippi (7%)</option>
+            <option value="4.225">Missouri (4.225%)</option>
+            <option value="0">Montana (0%)</option>
+            <option value="5.5">Nebraska (5.5%)</option>
+            <option value="6.85">Nevada (6.85%)</option>
+            <option value="0">New Hampshire (0%)</option>
+            <option value="6.625">New Jersey (6.625%)</option>
+            <option value="5">New Mexico (5%)</option>
+            <option value="4">New York (4%)</option>
+            <option value="4.75">North Carolina (4.75%)</option>
+            <option value="5">North Dakota (5%)</option>
+            <option value="5.75">Ohio (5.75%)</option>
+            <option value="4.5">Oklahoma (4.5%)</option>
+            <option value="0">Oregon (0%)</option>
+            <option value="6">Pennsylvania (6%)</option>
+            <option value="7">Rhode Island (7%)</option>
+            <option value="6">South Carolina (6%)</option>
+            <option value="4.5">South Dakota (4.5%)</option>
+            <option value="7">Tennessee (7%)</option>
+            <option value="6.25">Texas (6.25%)</option>
+            <option value="6.1">Utah (6.1%)</option>
+            <option value="6">Vermont (6%)</option>
+            <option value="5.3">Virginia (5.3%)</option>
+            <option value="6.5">Washington (6.5%)</option>
+            <option value="6">West Virginia (6%)</option>
+            <option value="5">Wisconsin (5%)</option>
+            <option value="4">Wyoming (4%)</option>
+            <option value="custom">Custom rate…</option>
+          </select>
+        </div>
+        <div id="custom-row" style="display:none;">
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Custom Tax Rate (%)</label>
+          <input type="number" id="custom-rate" class="ai-tool-input" placeholder="e.g. 8.5" min="0" max="30" step="0.01" oninput="calculate()">
+        </div>
+      </div>
+
+      <div id="result" style="display:none;padding:1.25rem;background:#f0fdf4;border:1px solid #86efac;border-radius:.5rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;">
+          <div>
+            <div style="font-size:.75rem;color:#6b7280;margin-bottom:.25rem;">Tax Rate</div>
+            <div id="rate-out" style="font-size:1.25rem;font-weight:800;color:#15803d;font-family:monospace;">0%</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:#6b7280;margin-bottom:.25rem;">Tax Amount</div>
+            <div id="tax-out" style="font-size:1.25rem;font-weight:800;color:#15803d;font-family:monospace;">$0.00</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:#6b7280;margin-bottom:.25rem;">Total (with tax)</div>
+            <div id="total-out" style="font-size:1.25rem;font-weight:800;color:#15803d;font-family:monospace;">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">US States With No Sales Tax</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Oregon</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">No statewide sales tax. Relies heavily on income tax revenue. No local sales taxes either — 0% total.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Montana</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">No state or local sales tax. Some resort areas may have local option taxes, but general retail purchases are tax-free.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">New Hampshire</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">No sales tax. Live Free or Die state funds government primarily through property taxes and business taxes.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Delaware & Alaska</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">No statewide sales tax. Delaware has no local taxes either. Alaska has no state tax but some local sales taxes apply.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Calculate Sales Tax</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter the price before tax</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the item price or subtotal in dollars. The tool updates automatically as you type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select a state or custom rate</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose your state for the statewide base rate, or select "Custom rate" and enter any percentage including local taxes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The tax rate, tax amount in dollars, and total price with tax are shown instantly in a summary box.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are state rates the only rate I need? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No — most US states allow counties and cities to add local sales taxes on top of the state rate. For example, California's base rate is 7.25% but Los Angeles County adds more, making the combined rate 10.25%. Use the custom rate field to enter the combined rate for your location.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How is sales tax calculated? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Tax amount = Price × Rate ÷ 100. Total = Price + Tax amount. For example: $100 × 8.5% = $8.50 tax → $108.50 total.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are the state rates current? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">State rates are based on 2024 statewide base rates. These change occasionally — always verify the current rate with your state's department of revenue for official tax filings.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'ecommerce' 'profit-margin-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Profit Margin Calculator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'amazon-fee-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Amazon Fee Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+      <a href="{% url 'tools:tool' 'ecommerce' 'shipping-cost-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Shipping Cost Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function onStateChange() {
+  var val = document.getElementById('state').value;
+  document.getElementById('custom-row').style.display = val === 'custom' ? 'block' : 'none';
+  calculate();
+}
+
+function calculate() {
+  var price = parseFloat(document.getElementById('price').value);
+  if (isNaN(price) || price < 0) { document.getElementById('result').style.display = 'none'; return; }
+  var stateVal = document.getElementById('state').value;
+  var rate;
+  if (stateVal === 'custom') {
+    rate = parseFloat(document.getElementById('custom-rate').value);
+    if (isNaN(rate)) { document.getElementById('result').style.display = 'none'; return; }
+  } else if (stateVal === '') {
+    document.getElementById('result').style.display = 'none'; return;
+  } else {
+    rate = parseFloat(stateVal);
+  }
+  var tax = price * rate / 100;
+  var total = price + tax;
+  document.getElementById('rate-out').textContent = rate.toFixed(2) + '%';
+  document.getElementById('tax-out').textContent = '$' + tax.toFixed(2);
+  document.getElementById('total-out').textContent = '$' + total.toFixed(2);
+  document.getElementById('result').style.display = 'block';
+}
+</script>
+{% endblock %}

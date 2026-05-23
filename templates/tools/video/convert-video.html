@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Convert Video Online Free — MP4, WebM, MOV, AVI | AIUtilities{% endblock %}
+{% block description %}Convert video files between MP4, WebM, MOV, AVI, and MKV formats free online. No upload — FFmpeg runs in your browser. Private and instant.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'convert-video' %}{% endblock %}
+{% block og_title %}Convert Video Online Free — MP4, WebM, MOV | AIUtilities{% endblock %}
+{% block og_description %}Convert video between formats in your browser — no upload, no server.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'convert-video' %}{% endblock %}
+{% block twitter_title %}Video Converter Free | AIUtilities{% endblock %}
+{% block twitter_description %}Convert MP4, WebM, MOV, AVI video formats in your browser — free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Video Converter","description":"Convert video files between MP4, WebM, MOV, AVI, and MKV in the browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'convert-video' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Video Tools","item":"{{ SITE_URL }}/tools/video/"},{"@type":"ListItem","position":3,"name":"Convert Video","item":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'convert-video' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔄 Free · No upload · Browser only</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Online Video Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert MP4, WebM, MOV, AVI, and MKV video files in your browser using FFmpeg WebAssembly — no upload, no account, completely private.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ MP4, WebM, MOV</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No upload</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Select Video File</label>
+        <input type="file" id="video-file" accept="video/*" class="ai-tool-input">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Convert To</label>
+        <select id="output-format" class="ai-tool-input">
+          <option value="mp4">MP4 (H.264) — Best compatibility</option>
+          <option value="webm">WebM — Web browsers</option>
+          <option value="avi">AVI — Windows legacy</option>
+          <option value="mov">MOV — Apple QuickTime</option>
+        </select>
+      </div>
+      <button type="button" onclick="convertVideo()" class="ai-tool-btn" id="convert-btn">Convert Video</button>
+
+      <div id="status" style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;font-size:.875rem;color:#1e40af;"></div>
+      <div id="err" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      <div id="result" style="display:none;margin-top:1.25rem;text-align:center;">
+        <a id="download-link" style="display:inline-block;padding:.6rem 1.5rem;background:#16a34a;color:#fff;border-radius:.5rem;font-size:.9375rem;font-weight:600;text-decoration:none;">Download Converted Video</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Format Guide</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">MP4 (H.264)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The universal standard. Works on every device, platform, and browser. Best choice for sharing, uploading, and storage. Recommended default.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">WebM</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Open-source format optimised for web streaming. Smaller files than MP4. Best for embedding video in websites and web apps.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">MOV</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Apple's QuickTime format. Native on macOS and iOS. Use when targeting Apple users or Final Cut Pro workflows.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">AVI</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Microsoft's legacy container. Large file sizes but widely supported by older software and devices. Use when compatibility with legacy tools is required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Convert Your Video</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Select your video file</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose any video file from your device. Supported inputs include MP4, WebM, MOV, AVI, MKV, and more.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose output format</strong><br><span style="font-size:.875rem;color:#6b7280;">Select the target format. MP4 is recommended for most uses — WebM for web, MOV for Apple workflows.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Convert and download</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Convert Video". Wait for FFmpeg to process (time depends on file size), then download the converted file.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will quality be lost during conversion? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Re-encoding always involves some quality loss, but it's minimal at default settings. For the highest quality output, use lossless settings in native FFmpeg if available.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How long does conversion take? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Conversion time depends on file size and your CPU. A 5-minute HD video typically takes 2–5 minutes in the browser. Keep the tab open during processing.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does this work on mobile? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">FFmpeg WASM works on modern mobile browsers but is significantly slower due to limited CPU performance. For large files, a desktop browser is strongly recommended.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'video' 'compress-mp4' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress MP4</a>
+      <a href="{% url 'tools:tool' 'video' 'mp4-to-mp3' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MP4 to MP3</a>
+      <a href="{% url 'tools:tool' 'video' 'trim-video' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Trim Video</a>
+      <a href="{% url 'tools:tool' 'video' 'gif-maker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">GIF Maker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var formatMime = { mp4: 'video/mp4', webm: 'video/webm', avi: 'video/x-msvideo', mov: 'video/quicktime' };
+var formatCodec = { mp4: ['-vcodec','libx264','-acodec','aac'], webm: ['-vcodec','libvpx','-acodec','libvorbis'], avi: ['-vcodec','mpeg4','-acodec','mp3'], mov: ['-vcodec','libx264','-acodec','aac'] };
+
+function showStatus(msg) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+async function convertVideo() {
+  var fileInput = document.getElementById('video-file');
+  if (!fileInput.files.length) { showError('Please select a video file first.'); return; }
+  var file = fileInput.files[0];
+  var fmt = document.getElementById('output-format').value;
+  showError('');
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('convert-btn').disabled = true;
+  showStatus('Loading FFmpeg… (first run may take 10–20 seconds)');
+  try {
+    var { createFFmpeg, fetchFile } = FFmpeg;
+    var ffmpeg = createFFmpeg({ log: false });
+    await ffmpeg.load();
+    showStatus('Converting video…');
+    var ext = file.name.split('.').pop().toLowerCase() || 'mp4';
+    var inputName = 'input.' + ext;
+    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+    var args = ['-i', inputName].concat(formatCodec[fmt]).concat(['output.' + fmt]);
+    await ffmpeg.run.apply(ffmpeg, args);
+    var data = ffmpeg.FS('readFile', 'output.' + fmt);
+    var blob = new Blob([data.buffer], { type: formatMime[fmt] });
+    var url = URL.createObjectURL(blob);
+    var link = document.getElementById('download-link');
+    link.href = url;
+    link.download = file.name.replace(/\.[^.]+$/, '') + '.' + fmt;
+    showStatus('');
+    document.getElementById('result').style.display = 'block';
+  } catch(e) {
+    showStatus('');
+    showError('Conversion failed: ' + e.message);
+  }
+  document.getElementById('convert-btn').disabled = false;
+}
+</script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+{% endblock %}

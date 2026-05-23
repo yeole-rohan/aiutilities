@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Trim Video Online Free — Cut MP4 in Browser | AIUtilities{% endblock %}
+{% block description %}Trim and cut video files online for free. Set start and end times, download the clipped segment. No upload — runs in your browser with FFmpeg WASM.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'trim-video' %}{% endblock %}
+{% block og_title %}Trim Video Online Free — Cut MP4 in Browser | AIUtilities{% endblock %}
+{% block og_description %}Cut and trim video clips in your browser — no upload, no server, 100% private.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'trim-video' %}{% endblock %}
+{% block twitter_title %}Trim Video Free | AIUtilities{% endblock %}
+{% block twitter_description %}Trim MP4 video clips online — no upload, browser-based.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Video Trimmer","description":"Trim and cut video files in the browser using FFmpeg WebAssembly. No upload required.","url":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'trim-video' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Video Tools","item":"{{ SITE_URL }}/tools/video/"},{"@type":"ListItem","position":3,"name":"Trim Video","item":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'trim-video' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">✂️ Free · No upload · Browser only</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Online Video Trimmer</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Cut any video to a specific start and end time. Everything runs in your browser using FFmpeg WebAssembly — no upload, no server, completely private.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No upload</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Set start & end time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ MP4, MOV, MKV</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Select Video File</label>
+        <input type="file" id="video-file" accept="video/*" class="ai-tool-input" onchange="onFileChange(this)">
+      </div>
+      <div id="preview-wrap" style="display:none;margin-bottom:1.25rem;">
+        <video id="preview" controls style="width:100%;border-radius:.5rem;background:#000;max-height:300px;"></video>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Start Time (HH:MM:SS)</label>
+          <input type="text" id="start-time" class="ai-tool-input" placeholder="00:00:00" value="00:00:00">
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">End Time (HH:MM:SS)</label>
+          <input type="text" id="end-time" class="ai-tool-input" placeholder="00:00:30" value="00:00:30">
+        </div>
+      </div>
+      <button type="button" onclick="trimVideo()" class="ai-tool-btn" id="trim-btn">Trim Video</button>
+
+      <div id="status" style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;font-size:.875rem;color:#1e40af;"></div>
+      <div id="err" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      <div id="result" style="display:none;margin-top:1.25rem;text-align:center;">
+        <a id="download-link" style="display:inline-block;padding:.6rem 1.5rem;background:#16a34a;color:#fff;border-radius:.5rem;font-size:.9375rem;font-weight:600;text-decoration:none;">Download Trimmed Video</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Use the Video Trimmer?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Remove Intros & Outros</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Cut out the beginning and end of a recording — remove dead air, intros, or sponsor segments to keep just the content you need.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Extract Clips</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Pull a specific moment from a long video — ideal for highlight reels, social media clips, or evidence snippets.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Reduce File Size</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Shorter clips are smaller files — trimming before sharing saves upload time and storage space.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">100% Private</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Your video never leaves your device. FFmpeg runs entirely in the browser — no server, no account, no data retention.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Trim Your Video</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Select your video file</strong><br><span style="font-size:.875rem;color:#6b7280;">Pick any MP4, MOV, or MKV file. A preview player appears so you can find the exact timestamps.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set start and end times</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter the start and end times in HH:MM:SS format. Use the preview player to find the right timestamps.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the trimmed clip</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Trim Video" and wait for processing. Download the resulting clip in the same format as the original.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I trim without re-encoding (lossless)? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool re-encodes using H.264 for maximum compatibility. For lossless stream-copy trimming, use a native FFmpeg command with <code>-c copy</code> on your desktop.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What time format should I use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Use HH:MM:SS format — e.g., 00:01:30 for 1 minute 30 seconds. The preview player shows the current time in the same format.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I make multiple cuts? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool extracts a single continuous segment. To make multiple cuts, trim each segment separately and combine the results with the Merge PDF… or a video editor.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'video' 'compress-mp4' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress MP4</a>
+      <a href="{% url 'tools:tool' 'video' 'mp4-to-mp3' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MP4 to MP3</a>
+      <a href="{% url 'tools:tool' 'video' 'convert-video' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Convert Video</a>
+      <a href="{% url 'tools:tool' 'video' 'gif-maker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">GIF Maker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function onFileChange(input) {
+  if (!input.files.length) return;
+  var url = URL.createObjectURL(input.files[0]);
+  var vid = document.getElementById('preview');
+  vid.src = url;
+  document.getElementById('preview-wrap').style.display = 'block';
+}
+function showStatus(msg) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+async function trimVideo() {
+  var fileInput = document.getElementById('video-file');
+  if (!fileInput.files.length) { showError('Please select a video file first.'); return; }
+  var file = fileInput.files[0];
+  var start = document.getElementById('start-time').value.trim() || '00:00:00';
+  var end = document.getElementById('end-time').value.trim();
+  if (!end) { showError('Please enter an end time.'); return; }
+  showError('');
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('trim-btn').disabled = true;
+  showStatus('Loading FFmpeg… (first run may take 10–20 seconds)');
+  try {
+    var { createFFmpeg, fetchFile } = FFmpeg;
+    var ffmpeg = createFFmpeg({ log: false });
+    await ffmpeg.load();
+    showStatus('Trimming video…');
+    var ext = file.name.split('.').pop().toLowerCase() || 'mp4';
+    var inputName = 'input.' + ext;
+    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+    await ffmpeg.run('-i', inputName, '-ss', start, '-to', end, '-vcodec', 'libx264', '-acodec', 'aac', 'output.' + ext);
+    var data = ffmpeg.FS('readFile', 'output.' + ext);
+    var blob = new Blob([data.buffer], { type: 'video/mp4' });
+    var url = URL.createObjectURL(blob);
+    var link = document.getElementById('download-link');
+    link.href = url;
+    link.download = file.name.replace(/\.[^.]+$/, '') + '_trimmed.' + ext;
+    showStatus('');
+    document.getElementById('result').style.display = 'block';
+  } catch(e) {
+    showStatus('');
+    showError('Trimming failed: ' + e.message);
+  }
+  document.getElementById('trim-btn').disabled = false;
+}
+</script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+{% endblock %}

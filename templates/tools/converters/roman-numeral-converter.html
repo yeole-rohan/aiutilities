@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Roman Numeral Converter — Integer to Roman Numerals & Back | AIUtilities{% endblock %}
+{% block description %}Convert integers to Roman numerals and Roman numerals to integers instantly. Free online Roman numeral converter — no signup required.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'roman-numeral-converter' %}{% endblock %}
+{% block og_title %}Roman Numeral Converter — Integer ↔ Roman | AIUtilities{% endblock %}
+{% block og_description %}Convert between integers and Roman numerals instantly — free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'roman-numeral-converter' %}{% endblock %}
+{% block twitter_title %}Roman Numeral Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert integers to Roman numerals and back — free, instant.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Roman Numeral Converter","description":"Convert integers to Roman numerals and Roman numerals to integers instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'roman-numeral-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Roman Numeral Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'roman-numeral-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🏛️ Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Roman Numeral Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between Arabic integers and Roman numerals instantly. Supports numbers from 1 to 3,999. Type a number or Roman numeral below.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 1 to 3,999</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Both directions</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant result</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:end;margin-bottom:1.25rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Integer (1–3999)</label>
+          <input type="number" id="int-input" class="ai-tool-input" placeholder="e.g. 2024" min="1" max="3999" oninput="fromInt()">
+        </div>
+        <div style="text-align:center;font-size:1.5rem;color:#6366f1;padding-bottom:.5rem;">⇌</div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Roman Numeral</label>
+          <input type="text" id="roman-input" class="ai-tool-input" placeholder="e.g. MMXXIV" style="font-family:monospace;text-transform:uppercase;" oninput="fromRoman()">
+        </div>
+      </div>
+      <div id="err" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Roman Numeral Reference Table</h2>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+        <thead><tr style="background:#f8fafc;"><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Symbol</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Value</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Symbol</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Value</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">I</td><td style="padding:.5rem .75rem;">1</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">L</td><td style="padding:.5rem .75rem;">50</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">IV</td><td style="padding:.5rem .75rem;">4</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">XC</td><td style="padding:.5rem .75rem;">90</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">V</td><td style="padding:.5rem .75rem;">5</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">C</td><td style="padding:.5rem .75rem;">100</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">IX</td><td style="padding:.5rem .75rem;">9</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">CD</td><td style="padding:.5rem .75rem;">400</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">X</td><td style="padding:.5rem .75rem;">10</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">D</td><td style="padding:.5rem .75rem;">500</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">XL</td><td style="padding:.5rem .75rem;">40</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">CM</td><td style="padding:.5rem .75rem;">900</td></tr>
+          <tr><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">—</td><td style="padding:.5rem .75rem;">—</td><td style="padding:.5rem .75rem;font-family:monospace;font-weight:700;">M</td><td style="padding:.5rem .75rem;">1,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Convert Roman Numerals</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter an integer or Roman numeral</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a number (1–3999) in the left field, or a Roman numeral like MMXXIV in the right field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">See the instant conversion</strong><br><span style="font-size:.875rem;color:#6b7280;">The opposite field updates automatically as you type. No button needed — conversion happens in real time.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Use the reference table</strong><br><span style="font-size:.875rem;color:#6b7280;">The table below shows all base symbols and subtractive pairs. Use it to verify or manually build Roman numerals.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is the maximum 3,999? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Standard Roman numerals top out at MMMCMXCIX (3,999). Numbers above 3,999 require non-standard notation with vinculum (overlines) which is rarely used in practice.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is subtractive notation? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">When a smaller numeral appears before a larger one, it is subtracted. IV = 4 (5−1), IX = 9 (10−1), XL = 40, XC = 90, CD = 400, CM = 900. This is the modern standard.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Where are Roman numerals still used today? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Clock faces, book chapters, movie sequels (Rocky IV), Super Bowl numbers, year numbering in formal documents, and copyright dates commonly use Roman numerals.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'binary-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Binary Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'area-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Area Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'calculators' 'time-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Time Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var vals = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+
+function toRoman(n) {
+  if (n < 1 || n > 3999) return null;
+  var r = '';
+  vals.forEach(function(v) { while (n >= v[0]) { r += v[1]; n -= v[0]; } });
+  return r;
+}
+
+function fromRomanStr(s) {
+  s = s.toUpperCase();
+  var map = { I:1, V:5, X:10, L:50, C:100, D:500, M:1000 };
+  var n = 0;
+  for (var i = 0; i < s.length; i++) {
+    var cur = map[s[i]], nxt = map[s[i+1]];
+    if (!cur) return null;
+    if (nxt && nxt > cur) { n -= cur; } else { n += cur; }
+  }
+  return n;
+}
+
+var updating = false;
+
+function fromInt() {
+  if (updating) return;
+  updating = true;
+  var v = parseInt(document.getElementById('int-input').value);
+  showError('');
+  if (!isNaN(v)) {
+    var r = toRoman(v);
+    if (r) {
+      document.getElementById('roman-input').value = r;
+    } else {
+      showError('Number must be between 1 and 3,999.');
+      document.getElementById('roman-input').value = '';
+    }
+  } else {
+    document.getElementById('roman-input').value = '';
+  }
+  updating = false;
+}
+
+function fromRoman() {
+  if (updating) return;
+  updating = true;
+  var s = document.getElementById('roman-input').value.trim().toUpperCase();
+  document.getElementById('roman-input').value = s;
+  showError('');
+  if (s) {
+    var n = fromRomanStr(s);
+    if (n !== null && n >= 1 && n <= 3999 && toRoman(n) === s) {
+      document.getElementById('int-input').value = n;
+    } else {
+      showError('Invalid or non-standard Roman numeral.');
+      document.getElementById('int-input').value = '';
+    }
+  } else {
+    document.getElementById('int-input').value = '';
+  }
+  updating = false;
+}
+
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+</script>
+{% endblock %}

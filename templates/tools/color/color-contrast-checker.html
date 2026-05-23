@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Color Contrast Checker — WCAG Accessibility Checker Free | AIUtilities{% endblock %}
+{% block description %}Check WCAG color contrast ratios for foreground and background colors. See AA and AAA compliance for normal and large text. Free online accessibility color contrast checker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-contrast-checker' %}{% endblock %}
+{% block og_title %}Color Contrast Checker — WCAG Accessibility | AIUtilities{% endblock %}
+{% block og_description %}Check WCAG AA and AAA color contrast compliance instantly — free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-contrast-checker' %}{% endblock %}
+{% block twitter_title %}Color Contrast Checker | AIUtilities{% endblock %}
+{% block twitter_description %}Check WCAG color contrast ratios for accessibility — free, instant.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Color Contrast Checker","description":"Check WCAG AA and AAA color contrast ratios for web accessibility.","url":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-contrast-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Color Tools","item":"{{ SITE_URL }}/tools/color/"},{"@type":"ListItem","position":3,"name":"Color Contrast Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'color' 'color-contrast-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">♿ Free · Instant · WCAG 2.1</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Color Contrast Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Check if your foreground and background color combination meets WCAG 2.1 AA and AAA contrast requirements. Essential for accessible web design.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ WCAG AA & AAA</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Contrast ratio</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Live preview</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Foreground (Text) Color</label>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <input type="color" id="fg-picker" value="#000000" oninput="syncHex('fg')" style="width:3rem;height:2.5rem;border:none;cursor:pointer;border-radius:.375rem;">
+            <input type="text" id="fg-hex" class="ai-tool-input" value="#000000" maxlength="7" oninput="syncPicker('fg')" style="font-family:monospace;">
+          </div>
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Background Color</label>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <input type="color" id="bg-picker" value="#ffffff" oninput="syncHex('bg')" style="width:3rem;height:2.5rem;border:none;cursor:pointer;border-radius:.375rem;">
+            <input type="text" id="bg-hex" class="ai-tool-input" value="#ffffff" maxlength="7" oninput="syncPicker('bg')" style="font-family:monospace;">
+          </div>
+        </div>
+      </div>
+
+      <div id="preview-box" style="border-radius:.5rem;padding:1.5rem;text-align:center;border:1px solid #e2e8f0;margin-bottom:1.5rem;background:#ffffff;">
+        <p id="preview-text" style="font-size:1.25rem;font-weight:600;margin:0 0 .5rem;color:#000000;">Sample Heading Text</p>
+        <p id="preview-small" style="font-size:.875rem;margin:0;color:#000000;">Normal-sized body text for reading</p>
+      </div>
+
+      <div id="results" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+        <div style="text-align:center;padding:1rem;border-radius:.5rem;border:2px solid #e2e8f0;">
+          <div style="font-size:2rem;font-weight:800;font-family:monospace;color:#0f172a;" id="ratio-display">21:1</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Contrast Ratio</div>
+        </div>
+        <div style="display:grid;gap:.5rem;" id="badge-grid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">WCAG Contrast Requirements</h2>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+        <thead><tr style="background:#f8fafc;"><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Level</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Text Type</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Min Ratio</th><th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-weight:600;border-bottom:2px solid #e2e8f0;">Notes</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-weight:600;color:#ca8a04;">AA</td><td style="padding:.5rem .75rem;">Normal text</td><td style="padding:.5rem .75rem;font-family:monospace;">4.5:1</td><td style="padding:.5rem .75rem;color:#6b7280;">Standard requirement</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-weight:600;color:#ca8a04;">AA</td><td style="padding:.5rem .75rem;">Large text (18pt / 14pt bold)</td><td style="padding:.5rem .75rem;font-family:monospace;">3:1</td><td style="padding:.5rem .75rem;color:#6b7280;">Headings & large UI elements</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.5rem .75rem;font-weight:600;color:#16a34a;">AAA</td><td style="padding:.5rem .75rem;">Normal text</td><td style="padding:.5rem .75rem;font-family:monospace;">7:1</td><td style="padding:.5rem .75rem;color:#6b7280;">Enhanced accessibility</td></tr>
+          <tr><td style="padding:.5rem .75rem;font-weight:600;color:#16a34a;">AAA</td><td style="padding:.5rem .75rem;">Large text</td><td style="padding:.5rem .75rem;font-family:monospace;">4.5:1</td><td style="padding:.5rem .75rem;color:#6b7280;">Enhanced for headings</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Check Color Contrast</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose your colors</strong><br><span style="font-size:.875rem;color:#6b7280;">Use the color pickers or type hex codes for your text and background colors. The preview updates instantly.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Check the contrast ratio</strong><br><span style="font-size:.875rem;color:#6b7280;">The ratio is calculated using the WCAG 2.1 luminance formula. Higher is better — 1:1 is no contrast (same color), 21:1 is maximum (black on white).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">See compliance badges</strong><br><span style="font-size:.875rem;color:#6b7280;">Green badges indicate the combination passes WCAG AA or AAA for normal and large text. Adjust colors until you pass the required level.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which WCAG level do I need to meet? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">WCAG AA is the standard for most web projects and is legally required under WCAG-referenced laws (ADA, EAA, EN 301 549). AAA is the enhanced level — aim for it when possible but it's not always achievable for all text.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What counts as "large text"? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Large text is defined as 18pt (24px) or 14pt (18.67px) bold. Headings typically qualify as large text. Normal body copy must meet the stricter 4.5:1 ratio.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does contrast matter for images? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">WCAG 1.4.3 covers text — including text over images. If text is placed on a photo, the contrast must still meet requirements. Use a solid color overlay or text shadow to ensure compliance.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'color' 'color-picker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Color Picker</a>
+      <a href="{% url 'tools:tool' 'color' 'hex-to-rgb' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Hex to RGB</a>
+      <a href="{% url 'tools:tool' 'color' 'palette-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Palette Generator</a>
+      <a href="{% url 'tools:tool' 'color' 'gradient-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Gradient Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  if (hex.length !== 6) return null;
+  var r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+  if (isNaN(r)||isNaN(g)||isNaN(b)) return null;
+  return [r,g,b];
+}
+
+function luminance(r,g,b) {
+  var c = [r,g,b].map(function(v) { v /= 255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+  return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2];
+}
+
+function contrastRatio(l1, l2) {
+  var light = Math.max(l1,l2), dark = Math.min(l1,l2);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+function badge(label, pass) {
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.35rem .6rem;border-radius:.375rem;background:' + (pass?'#f0fdf4':'#fef2f2') + ';border:1px solid ' + (pass?'#86efac':'#fca5a5') + ';">' +
+    '<span style="font-size:.75rem;color:#374151;">' + label + '</span>' +
+    '<span style="font-size:.75rem;font-weight:700;color:' + (pass?'#15803d':'#dc2626') + ';">' + (pass?'PASS':'FAIL') + '</span></div>';
+}
+
+function update() {
+  var fg = hexToRgb(document.getElementById('fg-hex').value);
+  var bg = hexToRgb(document.getElementById('bg-hex').value);
+  if (!fg || !bg) return;
+  var fgCss = document.getElementById('fg-hex').value;
+  var bgCss = document.getElementById('bg-hex').value;
+  document.getElementById('preview-box').style.background = bgCss;
+  document.getElementById('preview-text').style.color = fgCss;
+  document.getElementById('preview-small').style.color = fgCss;
+  var lFg = luminance(fg[0],fg[1],fg[2]), lBg = luminance(bg[0],bg[1],bg[2]);
+  var ratio = contrastRatio(lFg, lBg);
+  document.getElementById('ratio-display').textContent = ratio.toFixed(2) + ':1';
+  var grid = [
+    badge('AA Normal (4.5:1)', ratio >= 4.5),
+    badge('AA Large (3:1)', ratio >= 3),
+    badge('AAA Normal (7:1)', ratio >= 7),
+    badge('AAA Large (4.5:1)', ratio >= 4.5),
+  ];
+  document.getElementById('badge-grid').innerHTML = grid.join('');
+}
+
+function syncHex(which) {
+  document.getElementById(which+'-hex').value = document.getElementById(which+'-picker').value;
+  update();
+}
+
+function syncPicker(which) {
+  var hex = document.getElementById(which+'-hex').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) document.getElementById(which+'-picker').value = hex;
+  update();
+}
+
+update();
+</script>
+{% endblock %}

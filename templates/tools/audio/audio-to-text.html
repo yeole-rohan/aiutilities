@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Audio to Text — Speech to Text Transcription Free Online | AIUtilities{% endblock %}
+{% block description %}Transcribe audio to text online for free using the Web Speech API. Record from your microphone or speak to type in real time — no upload, no server.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'audio' 'audio-to-text' %}{% endblock %}
+{% block og_title %}Audio to Text — Free Speech Transcription Online | AIUtilities{% endblock %}
+{% block og_description %}Transcribe speech to text in real time — no upload, no server, browser only.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'audio' 'audio-to-text' %}{% endblock %}
+{% block twitter_title %}Audio to Text Free | AIUtilities{% endblock %}
+{% block twitter_description %}Real-time speech-to-text transcription in your browser — free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Audio to Text","description":"Real-time speech-to-text transcription using the Web Speech API. No upload required.","url":"{{ SITE_URL }}{% url 'tools:tool' 'audio' 'audio-to-text' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Audio Tools","item":"{{ SITE_URL }}/tools/audio/"},{"@type":"ListItem","position":3,"name":"Audio to Text","item":"{{ SITE_URL }}{% url 'tools:tool' 'audio' 'audio-to-text' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎙️ Free · Microphone · No upload</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Audio to Text — Speech Transcription</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Transcribe your speech to text in real time using the browser's built-in Web Speech API. Speak into your microphone — text appears instantly. No upload, no account, completely free.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time transcription</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No upload</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 40+ languages</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Language</label>
+        <select id="lang" class="ai-tool-input">
+          <option value="en-US">English (US)</option>
+          <option value="en-GB">English (UK)</option>
+          <option value="es-ES">Spanish</option>
+          <option value="fr-FR">French</option>
+          <option value="de-DE">German</option>
+          <option value="it-IT">Italian</option>
+          <option value="pt-BR">Portuguese (Brazil)</option>
+          <option value="ja-JP">Japanese</option>
+          <option value="ko-KR">Korean</option>
+          <option value="zh-CN">Chinese (Simplified)</option>
+          <option value="ar-SA">Arabic</option>
+          <option value="hi-IN">Hindi</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;">
+        <button type="button" onclick="startListening()" id="start-btn" class="ai-tool-btn" style="width:auto;flex:1;">🎙️ Start Recording</button>
+        <button type="button" onclick="stopListening()" id="stop-btn" class="ai-tool-btn" style="width:auto;flex:1;background:#dc2626;display:none;">⏹ Stop</button>
+      </div>
+
+      <div id="status" style="display:none;margin-bottom:.75rem;padding:.5rem .75rem;background:#dcfce7;border:1px solid #86efac;border-radius:.375rem;font-size:.8125rem;color:#15803d;'>🔴 Recording… speak now.</div>
+      <div id="err" style="display:none;margin-bottom:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+
+      <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Transcription</label>
+      <textarea id="transcript" class="ai-tool-input" rows="8" placeholder="Your transcribed text will appear here as you speak…" style="resize:vertical;font-size:.9375rem;line-height:1.6;"></textarea>
+
+      <div style="display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap;">
+        <button type="button" onclick="copyText()" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Copy Text</button>
+        <button type="button" onclick="clearText()" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Clear</button>
+        <button type="button" onclick="downloadText()" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Download .txt</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Use Cases</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Meeting Notes</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Transcribe meetings in real time instead of typing. Capture everything that's said and clean up the transcript afterwards.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Voice Dictation</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Speak your emails, blog posts, or notes instead of typing. Much faster than keyboard input for long-form content.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Accessibility</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Useful for users who find typing difficult. Speak naturally and get a text transcript to edit, copy, or save.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Language Practice</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Practice speaking a foreign language and see how accurately the speech recognition transcribes your pronunciation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Transcribe Speech to Text</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Select your language</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose the language you'll be speaking. The Web Speech API supports English, Spanish, French, German, Japanese, and many more.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Start Recording"</strong><br><span style="font-size:.875rem;color:#6b7280;">Allow microphone access when prompted. Speak naturally — text appears in the transcript box as you talk.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy or download the text</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Stop" when done. Edit the transcript directly in the box, then copy it or download as a .txt file.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which browsers support this? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The Web Speech API is best supported in Google Chrome and Microsoft Edge. Firefox and Safari have partial support. For the best experience, use Chrome on desktop.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my audio sent to a server? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The Web Speech API may send audio to the browser vendor's servers (Google/Microsoft) for recognition — this is handled by the browser, not by us. We never receive your audio or transcript.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I transcribe an existing audio file? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool transcribes live microphone input. To transcribe an audio file, play it through your speakers while recording, or use a dedicated file-upload transcription service.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'audio' 'mp3-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MP3 Converter</a>
+      <a href="{% url 'tools:tool' 'audio' 'audio-trimmer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Audio Trimmer</a>
+      <a href="{% url 'tools:tool' 'audio' 'audio-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Audio Compressor</a>
+      <a href="{% url 'tools:tool' 'text' 'text-to-speech' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Text to Speech</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var recognition = null;
+var finalTranscript = '';
+
+function showStatus(show) {
+  document.getElementById('status').style.display = show ? 'block' : 'none';
+}
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function startListening() {
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showError('Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
+    return;
+  }
+  showError('');
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = document.getElementById('lang').value;
+
+  recognition.onstart = function() {
+    showStatus(true);
+    document.getElementById('start-btn').style.display = 'none';
+    document.getElementById('stop-btn').style.display = 'block';
+  };
+
+  recognition.onresult = function(e) {
+    var interim = '';
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalTranscript += e.results[i][0].transcript + ' ';
+      } else {
+        interim += e.results[i][0].transcript;
+      }
+    }
+    document.getElementById('transcript').value = finalTranscript + interim;
+  };
+
+  recognition.onerror = function(e) {
+    showError('Recognition error: ' + e.error + '. Make sure microphone access is allowed.');
+    stopListening();
+  };
+
+  recognition.onend = function() {
+    showStatus(false);
+    document.getElementById('start-btn').style.display = 'block';
+    document.getElementById('stop-btn').style.display = 'none';
+  };
+
+  recognition.start();
+}
+
+function stopListening() {
+  if (recognition) { recognition.stop(); recognition = null; }
+}
+
+function copyText() {
+  var txt = document.getElementById('transcript').value;
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).catch(function() {
+    document.getElementById('transcript').select();
+    document.execCommand('copy');
+  });
+}
+
+function clearText() {
+  finalTranscript = '';
+  document.getElementById('transcript').value = '';
+}
+
+function downloadText() {
+  var txt = document.getElementById('transcript').value;
+  if (!txt) return;
+  var blob = new Blob([txt], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'transcript.txt';
+  a.click();
+}
+</script>
+{% endblock %}

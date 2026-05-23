@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Business Days Calculator — Count Working Days Between Dates | AIUtilities{% endblock %}
+{% block description %}Calculate the number of business days between two dates, excluding weekends. Optionally exclude US public holidays. Free online business days calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'business-days-calculator' %}{% endblock %}
+{% block og_title %}Business Days Calculator — Working Days Between Dates | AIUtilities{% endblock %}
+{% block og_description %}Count business days between two dates, excluding weekends and holidays — free online tool.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'business-days-calculator' %}{% endblock %}
+{% block twitter_title %}Business Days Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Count business days between dates, excluding weekends — free, instant.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Business Days Calculator","description":"Calculate business days between two dates, excluding weekends and US public holidays.","url":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'business-days-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Date & Time","item":"{{ SITE_URL }}/tools/date-time/"},{"@type":"ListItem","position":3,"name":"Business Days Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'business-days-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📅 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Business Days Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Count the number of business (working) days between any two dates, excluding weekends and optionally US federal holidays. Ideal for SLAs, project timelines, and contracts.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Excludes weekends</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ US holiday option</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant result</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Start Date</label>
+          <input type="date" id="start-date" class="ai-tool-input" oninput="calculate()">
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">End Date</label>
+          <input type="date" id="end-date" class="ai-tool-input" oninput="calculate()">
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:#374151;cursor:pointer;margin-bottom:1.25rem;">
+        <input type="checkbox" id="skip-holidays" onchange="calculate()" style="width:1rem;height:1rem;">
+        Exclude US federal holidays
+      </label>
+      <button type="button" onclick="calculate()" class="ai-tool-btn">Calculate Business Days</button>
+
+      <div id="err" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      <div id="result" style="display:none;margin-top:1.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:center;">
+          <div style="padding:.75rem;background:#f0fdf4;border:1px solid #86efac;border-radius:.5rem;">
+            <div id="biz-days" style="font-size:2rem;font-weight:800;color:#15803d;font-family:monospace;">0</div>
+            <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Business Days</div>
+          </div>
+          <div style="padding:.75rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;">
+            <div id="cal-days" style="font-size:2rem;font-weight:800;color:#1e40af;font-family:monospace;">0</div>
+            <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Calendar Days</div>
+          </div>
+          <div style="padding:.75rem;background:#faf5ff;border:1px solid #d8b4fe;border-radius:.5rem;">
+            <div id="weeks-days" style="font-size:2rem;font-weight:800;color:#7c3aed;font-family:monospace;">0</div>
+            <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Weekends Skipped</div>
+          </div>
+        </div>
+        <div id="holiday-note" style="display:none;margin-top:.75rem;font-size:.8125rem;color:#6b7280;text-align:center;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Uses</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">SLAs & Contracts</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Contracts often specify "30 business days" — use this to find the exact calendar date for delivery, payment, or response deadlines.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Project Planning</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Calculate realistic timelines for project phases — knowing how many working days are available between sprint starts and release dates.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Leave & HR</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Calculate how many business days an employee is absent during leave, or check how many working days remain in a quarter for planning purposes.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Shipping & Delivery</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Estimate delivery dates for "5 business day" shipping by counting forward from the dispatch date, skipping weekends and holidays.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Calculate Business Days</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Pick your start and end dates</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the date pickers to select your start and end dates. The calculator works for any date range, past or future.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Choose holiday exclusion</strong><br><span style="font-size:.875rem;color:#6b7280;">Check "Exclude US federal holidays" to also skip New Year's Day, Independence Day, Thanksgiving, Christmas, and other US holidays.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The business day count, total calendar days, and weekends skipped are displayed in a summary. Holiday exclusions are noted if enabled.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are the start and end dates included? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The calculator counts business days from the start date up to and including the end date (inclusive). If both dates are the same business day, the result is 1.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Which US holidays are excluded? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The tool uses a fixed list of 10 US federal holidays: New Year's Day, MLK Day, Presidents Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving, and Christmas. Floating holidays are approximated.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What if my country has different holidays? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Uncheck "Exclude US federal holidays" to get the count based on weekends only — then subtract your country's holidays manually. This tool currently supports US holidays only.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'date-time' 'date-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Date Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'time-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Time Calculator</a>
+      <a href="{% url 'tools:tool' 'date-time' 'countdown-timer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Countdown Timer</a>
+      <a href="{% url 'tools:tool' 'date-time' 'epoch-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Epoch Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function usHolidaysForYear(y) {
+  var nthWeekday = function(y, m, n, wd) {
+    var d = new Date(y, m, 1), count = 0;
+    while (true) {
+      if (d.getDay() === wd) { count++; if (count === n) return new Date(d); }
+      d.setDate(d.getDate() + 1);
+    }
+  };
+  var lastWeekday = function(y, m, wd) {
+    var d = new Date(y, m + 1, 0);
+    while (d.getDay() !== wd) d.setDate(d.getDate() - 1);
+    return d;
+  };
+  var fmt = function(d) { return d.toISOString().slice(0, 10); };
+  var holidays = [
+    y + '-01-01',
+    fmt(nthWeekday(y, 0, 3, 1)),
+    fmt(nthWeekday(y, 1, 3, 1)),
+    fmt(lastWeekday(y, 4, 1)),
+    y + '-06-19',
+    y + '-07-04',
+    fmt(nthWeekday(y, 8, 1, 1)),
+    fmt(nthWeekday(y, 9, 2, 1)),
+    y + '-11-11',
+    fmt(nthWeekday(y, 10, 4, 4)),
+    y + '-12-25',
+  ];
+  return new Set(holidays);
+}
+
+function calculate() {
+  var startVal = document.getElementById('start-date').value;
+  var endVal = document.getElementById('end-date').value;
+  var skipH = document.getElementById('skip-holidays').checked;
+  document.getElementById('err').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+
+  if (!startVal || !endVal) return;
+  var start = new Date(startVal + 'T00:00:00');
+  var end = new Date(endVal + 'T00:00:00');
+  if (end < start) { showError('End date must be on or after start date.'); return; }
+
+  var calDays = Math.round((end - start) / 86400000) + 1;
+  var cur = new Date(start);
+  var bizDays = 0, weekendDays = 0, holidayCount = 0;
+  var holidayCache = {};
+
+  while (cur <= end) {
+    var dow = cur.getDay();
+    if (dow === 0 || dow === 6) {
+      weekendDays++;
+    } else {
+      if (skipH) {
+        var y = cur.getFullYear();
+        if (!holidayCache[y]) holidayCache[y] = usHolidaysForYear(y);
+        var dateStr = cur.toISOString().slice(0, 10);
+        if (holidayCache[y].has(dateStr)) { holidayCount++; } else { bizDays++; }
+      } else {
+        bizDays++;
+      }
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  document.getElementById('biz-days').textContent = bizDays;
+  document.getElementById('cal-days').textContent = calDays;
+  document.getElementById('weeks-days').textContent = weekendDays;
+
+  if (skipH && holidayCount > 0) {
+    document.getElementById('holiday-note').textContent = holidayCount + ' US federal holiday' + (holidayCount > 1 ? 's' : '') + ' excluded.';
+    document.getElementById('holiday-note').style.display = 'block';
+  } else {
+    document.getElementById('holiday-note').style.display = 'none';
+  }
+
+  document.getElementById('result').style.display = 'block';
+}
+
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+var today = new Date().toISOString().slice(0,10);
+document.getElementById('start-date').value = today;
+var end30 = new Date(); end30.setDate(end30.getDate() + 30);
+document.getElementById('end-date').value = end30.toISOString().slice(0,10);
+calculate();
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Area Converter — m², ft², acres, hectares, km² | AIUtilities{% endblock %}
+{% block description %}Convert area units instantly — square metres, square feet, acres, hectares, square kilometres, and more. Free online area converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'area-converter' %}{% endblock %}
+{% block og_title %}Area Converter — m², ft², acres, hectares | AIUtilities{% endblock %}
+{% block og_description %}Convert between area units — m², ft², acres, hectares, km² — free, instant.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'area-converter' %}{% endblock %}
+{% block twitter_title %}Area Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert m², ft², acres, hectares, km² instantly — free online tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Area Converter","description":"Convert between area units including m², ft², acres, hectares, and km².","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'area-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converters","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Area Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'area-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📐 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Area Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert between square metres, square feet, acres, hectares, square kilometres, square miles, and more. Enter any value to see all conversions instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 8 units</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant all-at-once</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ High precision</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.75rem;margin-bottom:1.25rem;align-items:end;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Value</label>
+          <input type="number" id="value" class="ai-tool-input" placeholder="Enter area value" min="0" oninput="convert()">
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">From</label>
+          <select id="from-unit" class="ai-tool-input" onchange="convert()">
+            <option value="m2">Square metres (m²)</option>
+            <option value="km2">Square kilometres (km²)</option>
+            <option value="cm2">Square centimetres (cm²)</option>
+            <option value="mm2">Square millimetres (mm²)</option>
+            <option value="ft2">Square feet (ft²)</option>
+            <option value="in2">Square inches (in²)</option>
+            <option value="yd2">Square yards (yd²)</option>
+            <option value="mi2">Square miles (mi²)</option>
+            <option value="ac">Acres</option>
+            <option value="ha">Hectares</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="results" style="display:none;">
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+          <tbody id="result-rows"></tbody>
+        </table>
+      </div>
+      <p id="placeholder" style="text-align:center;color:#9ca3af;font-size:.875rem;padding:1rem 0;">Enter a value above to see conversions.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Area Comparisons</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">1 Hectare</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">= 10,000 m² = 2.471 acres = 107,639 ft². About the size of a football pitch plus end zones. Used in agriculture and land measurement.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">1 Acre</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">= 4,047 m² = 43,560 ft² = 0.4047 hectares. Roughly the size of a US football field (without end zones). Standard unit in US and UK land sales.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">1 km²</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">= 1,000,000 m² = 100 hectares = 247.1 acres = 0.386 square miles. Used for city districts and national park measurements.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">1 Square Mile</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">= 2.59 km² = 259 hectares = 640 acres = 27,878,400 ft². Standard US land survey unit — townships are 36 square miles.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Convert Area Units</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your area value</strong><br><span style="font-size:.875rem;color:#6b7280;">Type any area measurement — it can be decimal (e.g. 2.5 acres) or a whole number (e.g. 500 m²).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select your input unit</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose the unit you're converting from — m², ft², acres, hectares, km², etc.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read all conversions at once</strong><br><span style="font-size:.875rem;color:#6b7280;">All equivalent values appear in a table instantly — no need to convert one unit at a time.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What's the difference between hectares and acres? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">A hectare (ha) is a metric unit equal to 10,000 m². An acre is an imperial unit equal to 4,047 m². One hectare equals about 2.471 acres. Hectares are used in most countries; acres in the US and UK.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How precise are the conversions? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Conversions use internationally standardized exact values where available. Results are displayed to 6 significant figures — sufficient for surveying, construction, and land transactions.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What unit does real estate use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">It depends on the country. The US uses square feet (for buildings) and acres (for land). The UK uses square feet for buildings and acres or hectares for land. Most other countries use m² and hectares.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'converters' 'length-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Length Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'roman-numeral-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Roman Numeral Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'weight-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Weight Converter</a>
+      <a href="{% url 'tools:tool' 'converters' 'data-storage-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Data Storage Converter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var units = [
+  { key: 'm2',  label: 'Square metres (m²)',       factor: 1 },
+  { key: 'km2', label: 'Square kilometres (km²)',  factor: 1e-6 },
+  { key: 'cm2', label: 'Square centimetres (cm²)', factor: 10000 },
+  { key: 'mm2', label: 'Square millimetres (mm²)', factor: 1e6 },
+  { key: 'ft2', label: 'Square feet (ft²)',         factor: 10.7639104 },
+  { key: 'in2', label: 'Square inches (in²)',       factor: 1550.0031 },
+  { key: 'yd2', label: 'Square yards (yd²)',        factor: 1.19599005 },
+  { key: 'mi2', label: 'Square miles (mi²)',        factor: 3.86102159e-7 },
+  { key: 'ac',  label: 'Acres',                     factor: 0.000247105381 },
+  { key: 'ha',  label: 'Hectares',                  factor: 0.0001 },
+];
+var toM2 = {};
+units.forEach(function(u) { toM2[u.key] = 1 / u.factor; });
+
+function convert() {
+  var v = parseFloat(document.getElementById('value').value);
+  var from = document.getElementById('from-unit').value;
+  document.getElementById('placeholder').style.display = 'none';
+  if (isNaN(v) || v === '') { document.getElementById('results').style.display = 'none'; document.getElementById('placeholder').style.display = 'block'; return; }
+  var m2 = v * toM2[from];
+  var html = units.map(function(u) {
+    var val = m2 * u.factor;
+    var display = val >= 0.001 && val < 1e12 ? +val.toPrecision(6) : val.toExponential(4);
+    return '<tr style="border-bottom:1px solid #f1f5f9;">' +
+      '<td style="padding:.5rem .75rem;color:#6b7280;font-weight:500;">' + u.label + '</td>' +
+      '<td style="padding:.5rem .75rem;color:#0f172a;font-family:monospace;font-weight:600;">' + display + '</td></tr>';
+  }).join('');
+  document.getElementById('result-rows').innerHTML = html;
+  document.getElementById('results').style.display = 'block';
+}
+</script>
+{% endblock %}

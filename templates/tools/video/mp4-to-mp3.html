@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}MP4 to MP3 — Extract Audio from Video Free Online | AIUtilities{% endblock %}
+{% block description %}Extract audio from any MP4 video and save it as an MP3 file. Runs in your browser — no upload, no server, completely private.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'mp4-to-mp3' %}{% endblock %}
+{% block og_title %}MP4 to MP3 — Extract Audio from Video Free | AIUtilities{% endblock %}
+{% block og_description %}Convert MP4 video to MP3 audio in your browser — free and private.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'mp4-to-mp3' %}{% endblock %}
+{% block twitter_title %}MP4 to MP3 Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Extract MP3 audio from MP4 video — free, browser-based, no upload.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"MP4 to MP3 Converter","description":"Extract audio from MP4 video and save as MP3, entirely in the browser.","url":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'mp4-to-mp3' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Video Tools","item":"{{ SITE_URL }}/tools/video/"},{"@type":"ListItem","position":3,"name":"MP4 to MP3","item":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'mp4-to-mp3' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎵 Free · No upload · Browser only</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">MP4 to MP3 Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Extract the audio track from any MP4 video and download it as an MP3 file — all processing happens in your browser using FFmpeg WebAssembly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No upload</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ MP4, MOV, MKV, AVI</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Select Video File</label>
+        <input type="file" id="video-file" accept="video/*" class="ai-tool-input">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Audio Bitrate</label>
+        <select id="bitrate" class="ai-tool-input">
+          <option value="128k">128 kbps — Standard quality</option>
+          <option value="192k" selected>192 kbps — Good quality</option>
+          <option value="256k">256 kbps — High quality</option>
+          <option value="320k">320 kbps — Maximum quality</option>
+        </select>
+      </div>
+      <button type="button" onclick="convertToMp3()" class="ai-tool-btn" id="convert-btn">Extract MP3</button>
+
+      <div id="status" style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;font-size:.875rem;color:#1e40af;"></div>
+      <div id="err" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      <div id="result" style="display:none;margin-top:1.25rem;text-align:center;">
+        <a id="download-link" style="display:inline-block;padding:.6rem 1.5rem;background:#16a34a;color:#fff;border-radius:.5rem;font-size:.9375rem;font-weight:600;text-decoration:none;">Download MP3</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Uses</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Podcasts & Interviews</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Extract audio from recorded interviews, webinars, or meeting recordings to publish as podcast episodes.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Music & Soundtracks</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Extract music or background audio from video files for use in playlists, samples, or audio projects.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Lectures & Lessons</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Convert lecture recordings to audio so students can listen on the go without needing to watch the video.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Voice Memos</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Strip audio from selfie videos or screen recordings to get just the spoken content as a lightweight MP3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Convert MP4 to MP3</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Choose your video file</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Select Video File" and pick any MP4, MOV, MKV, or AVI file. It never leaves your device.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select audio bitrate</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose 192 kbps for a good balance of quality and file size. Pick 320 kbps for maximum audio quality.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download your MP3</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Extract MP3" and wait for the browser to process. Then download the MP3 file directly.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What video formats are supported? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">FFmpeg supports most common video formats including MP4, MOV, MKV, AVI, WebM, and FLV. Select your file and the tool will handle the rest.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will the quality match the original? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">At 192 kbps or higher, the output quality is excellent for most purposes. The maximum quality is limited by the original audio track in the video.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is there a file size limit? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">There's no hard limit, but very large files (over 1 GB) may be slow or run out of browser memory. For large files, splitting with a native app first is recommended.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'video' 'compress-mp4' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress MP4</a>
+      <a href="{% url 'tools:tool' 'video' 'trim-video' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Trim Video</a>
+      <a href="{% url 'tools:tool' 'audio' 'mp3-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">MP3 Converter</a>
+      <a href="{% url 'tools:tool' 'audio' 'audio-trimmer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Audio Trimmer</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function showStatus(msg) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+function showError(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+async function convertToMp3() {
+  var fileInput = document.getElementById('video-file');
+  if (!fileInput.files.length) { showError('Please select a video file first.'); return; }
+  var file = fileInput.files[0];
+  var bitrate = document.getElementById('bitrate').value;
+  showError('');
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('convert-btn').disabled = true;
+  showStatus('Loading FFmpeg… (first run may take 10–20 seconds)');
+  try {
+    var { createFFmpeg, fetchFile } = FFmpeg;
+    var ffmpeg = createFFmpeg({ log: false });
+    await ffmpeg.load();
+    showStatus('Extracting audio…');
+    var ext = file.name.split('.').pop().toLowerCase();
+    var inputName = 'input.' + ext;
+    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+    await ffmpeg.run('-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', bitrate, 'output.mp3');
+    var data = ffmpeg.FS('readFile', 'output.mp3');
+    var blob = new Blob([data.buffer], { type: 'audio/mpeg' });
+    var url = URL.createObjectURL(blob);
+    var link = document.getElementById('download-link');
+    link.href = url;
+    link.download = file.name.replace(/\.[^.]+$/, '') + '.mp3';
+    showStatus('');
+    document.getElementById('result').style.display = 'block';
+  } catch(e) {
+    showStatus('');
+    showError('Conversion failed: ' + e.message);
+  }
+  document.getElementById('convert-btn').disabled = false;
+}
+</script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+{% endblock %}

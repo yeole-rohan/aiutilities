@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chmod Calculator — Unix File Permissions in Octal & Symbolic | AIUtilities{% endblock %}
+{% block description %}Calculate Unix file permissions easily. Toggle read, write, execute for owner, group, and others. Get octal and symbolic notation instantly. Free online chmod calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'chmod-calculator' %}{% endblock %}
+{% block og_title %}Chmod Calculator — Unix File Permissions | AIUtilities{% endblock %}
+{% block og_description %}Calculate Unix chmod permissions — octal and symbolic notation. Free online.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'chmod-calculator' %}{% endblock %}
+{% block twitter_title %}Chmod Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Unix file permissions calculator — octal & symbolic. Free online.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Chmod Calculator","description":"Calculate Unix file permissions with octal and symbolic notation.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'chmod-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"Chmod Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'chmod-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔒 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Chmod Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Calculate Unix file permissions by toggling read, write, and execute bits for owner, group, and others. Get the octal value and symbolic notation instantly.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Octal notation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Symbolic notation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant update</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1.5rem;">
+        <thead>
+          <tr>
+            <th style="padding:.5rem .75rem;text-align:left;color:#6b7280;font-size:.8125rem;font-weight:600;border-bottom:2px solid #e2e8f0;">Class</th>
+            <th style="padding:.5rem .75rem;text-align:center;color:#6b7280;font-size:.8125rem;font-weight:600;border-bottom:2px solid #e2e8f0;">Read (r=4)</th>
+            <th style="padding:.5rem .75rem;text-align:center;color:#6b7280;font-size:.8125rem;font-weight:600;border-bottom:2px solid #e2e8f0;">Write (w=2)</th>
+            <th style="padding:.5rem .75rem;text-align:center;color:#6b7280;font-size:.8125rem;font-weight:600;border-bottom:2px solid #e2e8f0;">Execute (x=1)</th>
+            <th style="padding:.5rem .75rem;text-align:center;color:#6b7280;font-size:.8125rem;font-weight:600;border-bottom:2px solid #e2e8f0;">Octal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:.75rem;font-weight:600;color:#0f172a;">Owner (u)</td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="ur" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;" checked></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="uw" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;" checked></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="ux" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;"></td>
+            <td style="padding:.75rem;text-align:center;font-family:monospace;font-size:1.125rem;font-weight:700;color:#6366f1;" id="u-oct">6</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:.75rem;font-weight:600;color:#0f172a;">Group (g)</td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="gr" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;" checked></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="gw" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;"></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="gx" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;"></td>
+            <td style="padding:.75rem;text-align:center;font-family:monospace;font-size:1.125rem;font-weight:700;color:#6366f1;" id="g-oct">4</td>
+          </tr>
+          <tr>
+            <td style="padding:.75rem;font-weight:600;color:#0f172a;">Others (o)</td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="or" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;" checked></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="ow" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;"></td>
+            <td style="padding:.75rem;text-align:center;"><input type="checkbox" id="ox" onchange="update()" style="width:1.25rem;height:1.25rem;cursor:pointer;"></td>
+            <td style="padding:.75rem;text-align:center;font-family:monospace;font-size:1.125rem;font-weight:700;color:#6366f1;" id="o-oct">4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div style="text-align:center;padding:1rem;background:#f0f0ff;border:1px solid #a5b4fc;border-radius:.5rem;">
+          <div style="font-size:.75rem;color:#6366f1;font-weight:600;margin-bottom:.25rem;">OCTAL</div>
+          <div id="octal-out" style="font-size:2rem;font-weight:800;color:#4338ca;font-family:monospace;">644</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">chmod <span id="octal-cmd">644</span> file</div>
+        </div>
+        <div style="text-align:center;padding:1rem;background:#f0f0ff;border:1px solid #a5b4fc;border-radius:.5rem;">
+          <div style="font-size:.75rem;color:#6366f1;font-weight:600;margin-bottom:.25rem;">SYMBOLIC</div>
+          <div id="sym-out" style="font-size:2rem;font-weight:800;color:#4338ca;font-family:monospace;">rw-r--r--</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">ls -l shows: -<span id="sym-cmd">rw-r--r--</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Or enter octal directly</label>
+        <div style="display:flex;gap:.75rem;">
+          <input type="text" id="octal-input" class="ai-tool-input" placeholder="e.g. 755" maxlength="3" style="flex:1;font-family:monospace;font-size:1.25rem;text-align:center;" oninput="fromOctal(this.value)">
+          <button type="button" onclick="fromOctal(document.getElementById('octal-input').value)" class="ai-tool-btn" style="width:auto;flex-shrink:0;">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Permission Presets</h2>
+    <div style="display:grid;gap:.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;cursor:pointer;" onclick="fromOctal('755')">
+        <div><strong style="color:#0f172a;">755</strong> <span style="color:#6b7280;font-size:.875rem;">— rwxr-xr-x</span></div>
+        <span style="font-size:.8125rem;color:#374151;">Executables, web directories</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;cursor:pointer;" onclick="fromOctal('644')">
+        <div><strong style="color:#0f172a;">644</strong> <span style="color:#6b7280;font-size:.875rem;">— rw-r--r--</span></div>
+        <span style="font-size:.8125rem;color:#374151;">Regular files, HTML, config</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;cursor:pointer;" onclick="fromOctal('600')">
+        <div><strong style="color:#0f172a;">600</strong> <span style="color:#6b7280;font-size:.875rem;">— rw-------</span></div>
+        <span style="font-size:.8125rem;color:#374151;">Private keys, secrets</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;cursor:pointer;" onclick="fromOctal('777')">
+        <div><strong style="color:#0f172a;">777</strong> <span style="color:#6b7280;font-size:.875rem;">— rwxrwxrwx</span></div>
+        <span style="font-size:.8125rem;color:#374151;">World-writable (use with caution)</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;cursor:pointer;" onclick="fromOctal('700')">
+        <div><strong style="color:#0f172a;">700</strong> <span style="color:#6b7280;font-size:.875rem;">— rwx------</span></div>
+        <span style="font-size:.8125rem;color:#374151;">Personal scripts, directories</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Chmod Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Toggle permission checkboxes</strong><br><span style="font-size:.875rem;color:#6b7280;">Click the Read, Write, and Execute checkboxes for Owner, Group, and Others to toggle each permission on or off.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The octal value and symbolic notation update instantly. Use the chmod command shown below the results.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Enter octal to reverse-lookup</strong><br><span style="font-size:.875rem;color:#6b7280;">If you have an octal code (like 755), type it in the octal field and the checkboxes update to show what each bit means.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does chmod use numbers? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Each permission is a bit: r=4, w=2, x=1. You add them together — rwx = 4+2+1 = 7, rw- = 4+2 = 6, r-- = 4. Three digits cover owner, group, others (e.g., 755 = rwx|r-x|r-x).</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is the safest permission for web files? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">For web files: 644 (rw-r--r--) for static files, 755 (rwxr-xr-x) for directories and scripts. Never use 777 in production — it allows anyone to write to the file.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does "execute" mean for directories? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">For directories, the execute bit means "can enter" (cd into) the directory. Without it, even if you have read permission, you cannot list or access files inside.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'yaml-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">YAML Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'cron-expression-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Cron Expression Generator</a>
+      <a href="{% url 'tools:tool' 'network' 'subnet-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Subnet Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function sym(r, w, x) { return (r?'r':'-') + (w?'w':'-') + (x?'x':'-'); }
+function oct(r, w, x) { return (r?4:0) + (w?2:0) + (x?1:0); }
+
+function update() {
+  var ur = document.getElementById('ur').checked, uw = document.getElementById('uw').checked, ux = document.getElementById('ux').checked;
+  var gr = document.getElementById('gr').checked, gw = document.getElementById('gw').checked, gx = document.getElementById('gx').checked;
+  var or_ = document.getElementById('or').checked, ow = document.getElementById('ow').checked, ox = document.getElementById('ox').checked;
+  var uo = oct(ur,uw,ux), go = oct(gr,gw,gx), oo = oct(or_,ow,ox);
+  document.getElementById('u-oct').textContent = uo;
+  document.getElementById('g-oct').textContent = go;
+  document.getElementById('o-oct').textContent = oo;
+  var octal = '' + uo + go + oo;
+  var symbolic = sym(ur,uw,ux) + sym(gr,gw,gx) + sym(or_,ow,ox);
+  document.getElementById('octal-out').textContent = octal;
+  document.getElementById('octal-cmd').textContent = octal;
+  document.getElementById('sym-out').textContent = symbolic;
+  document.getElementById('sym-cmd').textContent = symbolic;
+  document.getElementById('octal-input').value = octal;
+}
+
+function fromOctal(val) {
+  val = val.trim();
+  if (!/^[0-7]{3}$/.test(val)) return;
+  var bits = val.split('').map(Number);
+  var setRow = function(prefix, n) {
+    document.getElementById(prefix + 'r').checked = !!(n & 4);
+    document.getElementById(prefix + 'w').checked = !!(n & 2);
+    document.getElementById(prefix + 'x').checked = !!(n & 1);
+  };
+  setRow('u', bits[0]); setRow('g', bits[1]); setRow('o', bits[2]);
+  update();
+}
+
+update();
+</script>
+{% endblock %}

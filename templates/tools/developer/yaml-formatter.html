@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}YAML Formatter & Validator — Format YAML Online Free | AIUtilities{% endblock %}
+{% block description %}Format, validate, and beautify YAML online for free. Paste your YAML to check syntax, fix indentation, and convert to JSON. Instant browser-based YAML formatter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'yaml-formatter' %}{% endblock %}
+{% block og_title %}YAML Formatter & Validator — Free Online | AIUtilities{% endblock %}
+{% block og_description %}Format and validate YAML online — fix syntax, check indentation, convert to JSON.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'developer' 'yaml-formatter' %}{% endblock %}
+{% block twitter_title %}YAML Formatter | AIUtilities{% endblock %}
+{% block twitter_description %}Format and validate YAML online — free, instant.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"YAML Formatter","description":"Format, validate, and convert YAML online. Check syntax and indentation instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'yaml-formatter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Developer Tools","item":"{{ SITE_URL }}/tools/developer/"},{"@type":"ListItem","position":3,"name":"YAML Formatter","item":"{{ SITE_URL }}{% url 'tools:tool' 'developer' 'yaml-formatter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📄 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">YAML Formatter & Validator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste any YAML to validate syntax, fix indentation, and beautify the output. Also converts YAML to JSON. All processing happens in your browser — no upload.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Syntax validation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ YAML → JSON</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Browser-based</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Input YAML</label>
+          <textarea id="yaml-input" class="ai-tool-input" rows="14" placeholder="Paste your YAML here…" style="resize:vertical;font-size:.875rem;font-family:monospace;line-height:1.6;"></textarea>
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Output</label>
+          <textarea id="yaml-output" class="ai-tool-input" rows="14" readonly style="resize:vertical;font-size:.875rem;font-family:monospace;line-height:1.6;background:#f8fafc;"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button type="button" onclick="formatYaml()" class="ai-tool-btn" style="width:auto;flex:1;">Format YAML</button>
+        <button type="button" onclick="toJson()" class="ai-tool-btn" style="width:auto;flex:1;background:#6366f1;">Convert to JSON</button>
+        <button type="button" onclick="copyOutput()" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;cursor:pointer;white-space:nowrap;">Copy Output</button>
+        <button type="button" onclick="clear_()" style="background:none;border:1px solid #d1d5db;color:#374151;padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;cursor:pointer;">Clear</button>
+      </div>
+      <div id="err" style="display:none;margin-top:.75rem;padding:.75rem 1rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.5rem;font-size:.8125rem;color:#dc2626;font-family:monospace;"></div>
+      <div id="ok" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#f0fdf4;border:1px solid #86efac;border-radius:.5rem;font-size:.8125rem;color:#15803d;'></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What This Tool Does</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Validate YAML</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Check if your YAML is syntactically correct. Get a clear error message with the line and reason if it's invalid — no guessing.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Format & Beautify</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Normalize indentation and formatting — useful for messy YAML from APIs, CI configs, or copy-pasted snippets.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Convert to JSON</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Transform YAML to pretty-printed JSON in one click — useful when an API or tool requires JSON input from YAML config.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Browser-Based</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Your YAML never leaves your browser. Useful for sensitive config files with secrets, API keys, or credentials.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Format YAML</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste your YAML</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy any YAML content — Docker Compose, Kubernetes manifests, GitHub Actions, Ansible playbooks, or API responses — and paste it in the left box.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Format or convert</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Format YAML" to validate and beautify, or "Convert to JSON" to get the equivalent JSON representation.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Copy the result</strong><br><span style="font-size:.875rem;color:#6b7280;">The formatted output appears on the right. Click "Copy Output" to copy it to your clipboard in one click.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What YAML version is supported? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool uses the js-yaml library, which supports YAML 1.2. All modern YAML used in Docker, Kubernetes, GitHub Actions, and similar tools is fully supported.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I convert JSON to YAML? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Not in this tool — use the JSON Formatter tool instead, which focuses on JSON operations. This tool converts YAML → JSON. A JSON → YAML converter may be added separately.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it support multi-document YAML? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Multi-document YAML (separated by ---) is partially supported for formatting. For JSON conversion, only the first document is converted. Future updates may add full multi-doc support.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'chmod-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Chmod Calculator</a>
+      <a href="{% url 'tools:tool' 'developer' 'regex-tester' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Regex Tester</a>
+      <a href="{% url 'tools:tool' 'developer' 'markdown-editor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Markdown Editor</a>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script>
+function showErr(msg) {
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+  document.getElementById('ok').style.display = 'none';
+}
+function showOk(msg) {
+  var el = document.getElementById('ok');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+  document.getElementById('err').style.display = 'none';
+}
+
+function formatYaml() {
+  var input = document.getElementById('yaml-input').value.trim();
+  if (!input) { showErr('Please paste some YAML first.'); return; }
+  try {
+    var parsed = jsyaml.load(input);
+    var formatted = jsyaml.dump(parsed, { indent: 2, lineWidth: 120 });
+    document.getElementById('yaml-output').value = formatted;
+    showOk('Valid YAML — formatted successfully.');
+  } catch(e) {
+    document.getElementById('yaml-output').value = '';
+    showErr('YAML Error: ' + e.message);
+  }
+}
+
+function toJson() {
+  var input = document.getElementById('yaml-input').value.trim();
+  if (!input) { showErr('Please paste some YAML first.'); return; }
+  try {
+    var parsed = jsyaml.load(input);
+    var json = JSON.stringify(parsed, null, 2);
+    document.getElementById('yaml-output').value = json;
+    showOk('Converted to JSON successfully.');
+  } catch(e) {
+    document.getElementById('yaml-output').value = '';
+    showErr('YAML Error: ' + e.message);
+  }
+}
+
+function copyOutput() {
+  var out = document.getElementById('yaml-output').value;
+  if (!out) return;
+  navigator.clipboard.writeText(out).catch(function() {
+    document.getElementById('yaml-output').select();
+    document.execCommand('copy');
+  });
+}
+
+function clear_() {
+  document.getElementById('yaml-input').value = '';
+  document.getElementById('yaml-output').value = '';
+  showErr('');
+}
+</script>
+{% endblock %}

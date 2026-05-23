@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Character Counter — Count Characters, Words & Reading Time | AIUtilities{% endblock %}
+{% block description %}Count characters, words, sentences, paragraphs, and estimate reading time instantly. Free online character counter — paste any text to analyze it.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'character-counter' %}{% endblock %}
+{% block og_title %}Character Counter — Characters, Words & Reading Time | AIUtilities{% endblock %}
+{% block og_description %}Count characters, words, sentences, and reading time — free, instant.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'character-counter' %}{% endblock %}
+{% block twitter_title %}Character Counter | AIUtilities{% endblock %}
+{% block twitter_description %}Count characters, words, and estimate reading time — free online.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Character Counter","description":"Count characters, words, sentences, paragraphs, and estimate reading time.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'character-counter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Character Counter","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'character-counter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📊 Free · Real-time · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Character Counter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste or type any text to instantly count characters, words, sentences, paragraphs, and get an estimated reading time. Updates in real time as you type.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Characters & words</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Reading time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="stat-grid">
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-chars" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Characters</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-chars-no-space" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Chars (no spaces)</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-words" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Words</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-sentences" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Sentences</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-paragraphs" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Paragraphs</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:#f8fafc;border-radius:.5rem;border:1px solid #e2e8f0;">
+          <div id="stat-read" style="font-size:1.75rem;font-weight:800;color:#6366f1;font-family:monospace;">0s</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:.25rem;">Reading time</div>
+        </div>
+      </div>
+      <textarea id="text-input" class="ai-tool-input" rows="10" placeholder="Paste or type your text here… stats update in real time." style="resize:vertical;font-size:.9375rem;line-height:1.6;" oninput="analyze()"></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:.5rem;">
+        <button type="button" onclick="document.getElementById('text-input').value='';analyze();" style="background:none;border:1px solid #d1d5db;color:#6b7280;padding:.3rem .75rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Clear</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Why Count Characters?</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Social Media Limits</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Twitter/X: 280 chars · LinkedIn: 3,000 · Instagram bio: 150 · Meta ads headline: 40. Stay within limits before posting.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">SEO Meta Tags</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Meta title: 50–60 chars · Meta description: 150–160 chars. Staying in range ensures Google displays your tags in full.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Content Planning</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Check word count for blog posts, essays, and reports. Reading time helps set expectations for readers before they start.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Academic Writing</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Essays and assignments often have strict word count limits. Track progress and trim or expand as needed to hit your target.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Character Counter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste or type your text</strong><br><span style="font-size:.875rem;color:#6b7280;">Copy any text and paste it into the box, or start typing. The stats update instantly with every keystroke.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Read the stats at a glance</strong><br><span style="font-size:.875rem;color:#6b7280;">Six stats are shown simultaneously: total characters, characters without spaces, words, sentences, paragraphs, and estimated reading time.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Edit directly in the box</strong><br><span style="font-size:.875rem;color:#6b7280;">You can edit the text right in the counter — trim, add, or rewrite and watch the stats update in real time.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How is reading time calculated? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Reading time is based on the average adult reading speed of 200 words per minute (wpm). The estimate is displayed in minutes and seconds. Actual reading time varies by complexity and reader.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my text stored or sent anywhere? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No. All counting happens in your browser using JavaScript. Nothing is sent to any server. Your text stays private on your device.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How are sentences counted? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Sentences are counted by splitting on period, exclamation mark, and question mark followed by a space or end of text. Abbreviations (e.g., Mr., Dr.) may slightly over-count sentences.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+      <a href="{% url 'tools:tool' 'text' 'text-compare' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Text Compare</a>
+      <a href="{% url 'tools:tool' 'text' 'case-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Case Converter</a>
+      <a href="{% url 'tools:tool' 'seo' 'keyword-density-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Keyword Density Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function analyze() {
+  var text = document.getElementById('text-input').value;
+  var chars = text.length;
+  var charsNoSpace = text.replace(/\s/g, '').length;
+  var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  var sentences = text.trim() ? text.split(/[.!?]+\s/).filter(function(s) { return s.trim().length > 0; }).length : 0;
+  var paragraphs = text.trim() ? text.split(/\n\s*\n/).filter(function(p) { return p.trim().length > 0; }).length : 0;
+  var readSec = Math.round(words / 200 * 60);
+  var readStr = readSec < 60 ? readSec + 's' : Math.floor(readSec/60) + 'm ' + (readSec%60) + 's';
+
+  document.getElementById('stat-chars').textContent = chars.toLocaleString();
+  document.getElementById('stat-chars-no-space').textContent = charsNoSpace.toLocaleString();
+  document.getElementById('stat-words').textContent = words.toLocaleString();
+  document.getElementById('stat-sentences').textContent = sentences.toLocaleString();
+  document.getElementById('stat-paragraphs').textContent = paragraphs.toLocaleString();
+  document.getElementById('stat-read').textContent = readStr;
+}
+</script>
+{% endblock %}

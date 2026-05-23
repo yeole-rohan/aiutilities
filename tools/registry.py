@@ -20,6 +20,7 @@ CATEGORIES = [
             {"slug": "mortgage-calculator", "name": "Mortgage Calculator", "description": "Monthly mortgage payment and amortisation schedule."},
             {"slug": "bac-calculator", "name": "BAC Calculator", "description": "Estimate blood alcohol content from drinks and time."},
             {"slug": "scientific-calculator", "name": "Scientific Calculator", "description": "Full scientific calculator with trig, log, and exponent functions."},
+            {"slug": "time-calculator", "name": "Time Calculator", "description": "Add and subtract time durations — hours, minutes, and seconds."},
         ],
     },
     {
@@ -36,6 +37,8 @@ CATEGORIES = [
             {"slug": "speed-converter", "name": "Speed Converter", "description": "Convert mph, km/h, m/s, and knots."},
             {"slug": "time-zone-converter", "name": "Time Zone Converter", "description": "Convert times between any two time zones."},
             {"slug": "binary-converter", "name": "Binary Converter", "description": "Convert between binary, decimal, hex, and octal."},
+            {"slug": "roman-numeral-converter", "name": "Roman Numeral Converter", "description": "Convert integers to Roman numerals and back."},
+            {"slug": "area-converter", "name": "Area Converter", "description": "Convert between m², ft², acres, hectares, km², and more."},
         ],
     },
     {
@@ -113,6 +116,8 @@ CATEGORIES = [
             {"slug": "article-rewriter", "name": "Article Rewriter", "description": "Rewrite full articles to be unique and plagiarism-free with AI.", "ai": True},
             {"slug": "news-article-summarizer", "name": "News Article Summarizer", "description": "Summarize any news article into bullet points and a TL;DR with AI.", "ai": True},
             {"slug": "sentence-rewriter", "name": "Sentence Rewriter", "description": "Rewrite any sentence 5 ways — vary structure, tone, and style with AI.", "ai": True},
+            {"slug": "character-counter", "name": "Character Counter", "description": "Count characters, words, sentences, and estimate reading time."},
+            {"slug": "text-compare", "name": "Text Compare", "description": "Side-by-side text diff with highlighted additions and deletions."},
         ],
     },
     {
@@ -132,6 +137,8 @@ CATEGORIES = [
             {"slug": "markdown-editor", "name": "Markdown Editor", "description": "Write and preview Markdown with live rendering."},
             {"slug": "jwt-decoder", "name": "JWT Decoder", "description": "Decode and inspect JSON Web Tokens."},
             {"slug": "cron-expression-generator", "name": "Cron Expression Generator", "description": "Build and validate cron schedule expressions."},
+            {"slug": "chmod-calculator", "name": "Chmod Calculator", "description": "Calculate Unix file permissions with symbolic and octal notation."},
+            {"slug": "yaml-formatter", "name": "YAML Formatter", "description": "Format, validate, and convert YAML online."},
         ],
     },
     {
@@ -160,6 +167,7 @@ CATEGORIES = [
             {"slug": "whois-lookup", "name": "WHOIS Lookup", "description": "Look up domain registration details."},
             {"slug": "http-status-checker", "name": "HTTP Status Checker", "description": "Check the HTTP status code for any URL."},
             {"slug": "open-port-checker", "name": "Open Port Checker", "description": "Check if a port is open on any host."},
+            {"slug": "subnet-calculator", "name": "Subnet Calculator", "description": "Calculate CIDR subnet ranges, netmask, host count, and broadcast address."},
         ],
     },
     {
@@ -174,6 +182,7 @@ CATEGORIES = [
             {"slug": "serp-preview", "name": "SERP Preview Tool", "description": "Preview how your page looks in Google search results."},
             {"slug": "xml-sitemap-generator", "name": "XML Sitemap Generator", "description": "Generate an XML sitemap for any website."},
             {"slug": "opengraph-generator", "name": "Open Graph Generator", "description": "Generate Open Graph meta tags for social sharing."},
+            {"slug": "keyword-density-checker", "name": "Keyword Density Checker", "description": "Analyse keyword frequency and density in any text or article."},
         ],
     },
     {
@@ -186,6 +195,7 @@ CATEGORIES = [
             {"slug": "hex-to-rgb", "name": "Hex to RGB Converter", "description": "Convert hex color codes to RGB values."},
             {"slug": "palette-generator", "name": "Palette Generator", "description": "Generate harmonious color palettes."},
             {"slug": "gradient-generator", "name": "Gradient Generator", "description": "Create CSS linear and radial gradients."},
+            {"slug": "color-contrast-checker", "name": "Color Contrast Checker", "description": "Check WCAG color contrast ratios for accessible web design."},
         ],
     },
     {
@@ -272,6 +282,7 @@ CATEGORIES = [
             {"slug": "product-description-generator", "name": "Product Description Generator", "description": "Write compelling product descriptions.", "ai": True},
             {"slug": "etsy-product-description-generator", "name": "Etsy Product Description Generator", "description": "Generate Etsy listing title, description, and 13 tags with AI.", "ai": True},
             {"slug": "product-review-generator", "name": "Product Review Generator", "description": "Generate authentic, detailed product reviews with AI.", "ai": True},
+            {"slug": "sales-tax-calculator", "name": "Sales Tax Calculator", "description": "Calculate sales tax for any US state or custom rate."},
         ],
     },
     {
@@ -298,6 +309,7 @@ CATEGORIES = [
             {"slug": "timezone-converter", "name": "Time Zone Converter", "description": "Convert times between any two time zones."},
             {"slug": "countdown-timer", "name": "Countdown Timer", "description": "Create a countdown timer to any date."},
             {"slug": "age-calculator", "name": "Age Calculator", "description": "Calculate exact age from a date of birth."},
+            {"slug": "business-days-calculator", "name": "Business Days Calculator", "description": "Calculate business days between two dates, excluding weekends and holidays."},
         ],
     },
     {

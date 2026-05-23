@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Text Compare — Side-by-Side Diff Tool Online Free | AIUtilities{% endblock %}
+{% block description %}Compare two blocks of text side by side with highlighted additions and deletions. Free online text diff tool — no upload, no signup, instant results.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-compare' %}{% endblock %}
+{% block og_title %}Text Compare — Side-by-Side Diff Tool Free | AIUtilities{% endblock %}
+{% block og_description %}Compare two texts and highlight differences — free, instant, browser-based.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-compare' %}{% endblock %}
+{% block twitter_title %}Text Compare Tool | AIUtilities{% endblock %}
+{% block twitter_description %}Compare two texts and see differences highlighted — free online diff tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Text Compare","description":"Side-by-side text diff tool that highlights additions, deletions, and changes.","url":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-compare' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Text Tools","item":"{{ SITE_URL }}/tools/text/"},{"@type":"ListItem","position":3,"name":"Text Compare","item":"{{ SITE_URL }}{% url 'tools:tool' 'text' 'text-compare' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔍 Free · Browser-based · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Text Compare — Diff Tool</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Paste two versions of any text and see exactly what changed — added lines highlighted in green, removed lines in red. Useful for document versions, code, and content revisions.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Line-by-line diff</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Color-coded</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ No upload</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:64rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Original Text</label>
+          <textarea id="text-a" class="ai-tool-input" rows="10" placeholder="Paste the original version here…" style="resize:vertical;font-size:.875rem;font-family:monospace;line-height:1.6;"></textarea>
+        </div>
+        <div>
+          <label style="font-weight:600;color:#0f172a;display:block;margin-bottom:.5rem;">Modified Text</label>
+          <textarea id="text-b" class="ai-tool-input" rows="10" placeholder="Paste the modified version here…" style="resize:vertical;font-size:.875rem;font-family:monospace;line-height:1.6;"></textarea>
+        </div>
+      </div>
+      <button type="button" onclick="compare()" class="ai-tool-btn">Compare →</button>
+      <div id="summary" style="display:none;margin-top:.75rem;font-size:.8125rem;color:#6b7280;"></div>
+    </div>
+  </div>
+</section>
+
+<section id="diff-section" style="display:none;background:#f8fafc;padding:0 1rem 2.5rem;">
+  <div style="max-width:64rem;margin:0 auto;">
+    <h2 style="font-size:1.125rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Diff Result</h2>
+    <div id="diff-output" style="background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;font-size:.875rem;font-family:monospace;"></div>
+    <div style="margin-top:.75rem;display:flex;gap:1.25rem;font-size:.8125rem;">
+      <span style="display:flex;align-items:center;gap:.35rem;"><span style="width:.875rem;height:.875rem;background:#dcfce7;border:1px solid #86efac;border-radius:.2rem;display:inline-block;"></span>Added</span>
+      <span style="display:flex;align-items:center;gap:.35rem;"><span style="width:.875rem;height:.875rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.2rem;display:inline-block;"></span>Removed</span>
+      <span style="display:flex;align-items:center;gap:.35rem;"><span style="width:.875rem;height:.875rem;background:#fff;border:1px solid #e2e8f0;border-radius:.2rem;display:inline-block;"></span>Unchanged</span>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Use Cases</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Document Revisions</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Compare two versions of a contract, report, or policy document to see exactly what was changed, added, or removed.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Code Review</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Quickly spot changes between two versions of a script, config file, or code snippet without needing a git diff.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Content Editing</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">See what an editor changed in your blog post, article, or email — highlight every addition and deletion at a glance.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Plagiarism Check</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Compare a student's essay to a source document and see which sentences were copied verbatim or lightly modified.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Compare Text</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Paste both versions</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste the original text on the left and the modified version on the right. Any length of text is supported.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Compare"</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool computes a line-by-line diff and shows removed lines in red and added lines in green.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the diff</strong><br><span style="font-size:.875rem;color:#6b7280;">Scroll through the color-coded output. A summary shows how many lines were added, removed, and unchanged.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is this a word-level or line-level diff? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool performs a line-level diff — each line is compared as a whole. Lines that differ are shown as a removed line (red) followed by the added version (green). This is the most readable format for prose and config files.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is there a size limit? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No hard limit, but very large texts (thousands of lines) may take a moment to process. For files over a few MB, a dedicated git diff tool is faster.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is case-sensitivity considered? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the diff is case-sensitive by default. "Hello" and "hello" will be shown as different lines. This is consistent with how most code diff tools work.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'text' 'character-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Character Counter</a>
+      <a href="{% url 'tools:tool' 'developer' 'diff-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Diff Checker</a>
+      <a href="{% url 'tools:tool' 'text' 'remove-duplicate-lines' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Remove Duplicate Lines</a>
+      <a href="{% url 'tools:tool' 'text' 'word-counter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Word Counter</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function lcs(a, b) {
+  var m = a.length, n = b.length;
+  var dp = [];
+  for (var i = 0; i <= m; i++) { dp[i] = []; for (var j = 0; j <= n; j++) dp[i][j] = 0; }
+  for (var i = 1; i <= m; i++) for (var j = 1; j <= n; j++) {
+    dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] + 1 : Math.max(dp[i-1][j], dp[i][j-1]);
+  }
+  var res = [], i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (a[i-1] === b[j-1]) { res.unshift({type:'eq', val:a[i-1]}); i--; j--; }
+    else if (dp[i-1][j] >= dp[i][j-1]) { res.unshift({type:'del', val:a[i-1]}); i--; }
+    else { res.unshift({type:'ins', val:b[j-1]}); j--; }
+  }
+  while (i-- > 0) res.unshift({type:'del', val:a[i]});
+  while (j-- > 0) res.unshift({type:'ins', val:b[j]});
+  return res;
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function compare() {
+  var a = document.getElementById('text-a').value.split('\n');
+  var b = document.getElementById('text-b').value.split('\n');
+  var diff = lcs(a, b);
+  var added = 0, removed = 0, same = 0;
+  var html = diff.map(function(d) {
+    if (d.type === 'eq') { same++; return '<div style="padding:.25rem .75rem;border-bottom:1px solid #f1f5f9;white-space:pre-wrap;word-break:break-all;"><span style="color:#9ca3af;margin-right:.5rem;user-select:none;"> </span>' + esc(d.val) + '</div>'; }
+    if (d.type === 'del') { removed++; return '<div style="padding:.25rem .75rem;border-bottom:1px solid #fca5a5;background:#fef2f2;white-space:pre-wrap;word-break:break-all;"><span style="color:#ef4444;margin-right:.5rem;user-select:none;">−</span>' + esc(d.val) + '</div>'; }
+    added++;
+    return '<div style="padding:.25rem .75rem;border-bottom:1px solid #86efac;background:#dcfce7;white-space:pre-wrap;word-break:break-all;"><span style="color:#16a34a;margin-right:.5rem;user-select:none;">+</span>' + esc(d.val) + '</div>';
+  }).join('');
+  document.getElementById('diff-output').innerHTML = html || '<div style="padding:1rem;color:#9ca3af;">No differences found — the texts are identical.</div>';
+  document.getElementById('summary').innerHTML = '<span style="color:#16a34a;">' + added + ' lines added</span> · <span style="color:#dc2626;">' + removed + ' lines removed</span> · <span style="color:#6b7280;">' + same + ' unchanged</span>';
+  document.getElementById('summary').style.display = 'block';
+  document.getElementById('diff-section').style.display = 'block';
+  document.getElementById('diff-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+{% endblock %}
