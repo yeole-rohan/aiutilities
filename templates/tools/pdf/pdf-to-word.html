@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PDF to Word Converter — Convert PDF to DOCX Online | AIUtilities{% endblock %}
+{% block description %}Convert PDF to Word (DOCX) online. Understand your options — browser-based text extraction, free online converters, and desktop tools explained. Find the best approach for your PDF type.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'pdf-to-word' %}{% endblock %}
+{% block og_title %}PDF to Word Converter — Convert PDF to DOCX | AIUtilities{% endblock %}
+{% block og_description %}Convert PDF to Word online — text extraction tool and converter guide. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'pdf-to-word' %}{% endblock %}
+{% block twitter_title %}PDF to Word Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Extract text from PDF or convert to DOCX. Free tool and guide.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"PDF to Word","description":"Extract text from PDF files and convert to editable Word format.","url":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'pdf-to-word' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"PDF Tools","item":"{{ SITE_URL }}/tools/pdf/"},{"@type":"ListItem","position":3,"name":"PDF to Word","item":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'pdf-to-word' %}"}]}]}
+</script>
+</head>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📄 Free · Text extraction · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">PDF to Word Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Extract the text content from any PDF and copy it into Word or any editor. For full layout-preserving DOCX conversion, use the free tools listed below.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Text extraction</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Converter guide</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:.75rem;">Extract Text from PDF (Browser-Based)</h3>
+      <p style="font-size:.875rem;color:#6b7280;margin-bottom:1rem;">Upload a text-based PDF to extract its content. For scanned PDFs (images), text extraction won't work — use an OCR-based converter instead.</p>
+      <div id="p2w-drop" style="border:2px dashed #c7d2fe;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;background:#fafaf8;margin-bottom:1.25rem;" onclick="document.getElementById('p2w-input').click()">
+        <p style="color:#6366f1;font-weight:600;margin:0;">Click to upload or drag &amp; drop PDF</p>
+        <p id="p2w-filename" style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">PDF files only</p>
+      </div>
+      <input type="file" id="p2w-input" accept="application/pdf" style="display:none;" onchange="extractText(this.files[0])">
+      <div id="p2w-spinner" style="display:none;text-align:center;color:#6b7280;font-size:.875rem;">Reading PDF…</div>
+      <div id="p2w-error" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;margin-bottom:.75rem;"></div>
+      <div id="p2w-output-wrap" style="display:none;margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <label class="ai-tool-label" style="margin:0;">Extracted Text</label>
+          <button type="button" id="p2w-copy" onclick="copyP2W()" style="background:#6366f1;color:#fff;border:none;border-radius:.375rem;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;">Copy</button>
+        </div>
+        <textarea id="p2w-output" class="ai-tool-input" rows="12" style="resize:vertical;font-family:inherit;" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Full PDF to Word Converters (Free)</h2>
+    <p style="color:#374151;text-align:center;margin-bottom:1.5rem;font-size:.875rem;">For full layout-preserving DOCX conversion — including tables, images, and formatting — use one of these trusted free tools:</p>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Google Docs</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Upload the PDF to Google Drive, open with Google Docs, then download as DOCX. Works well for most text-based PDFs. Free with a Google account.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Microsoft Word</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Open the PDF directly in Microsoft Word 2013 or later — it automatically converts to editable DOCX. Works best with text-based PDFs.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">LibreOffice Writer</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Free, open-source desktop software. Open a PDF with the Draw extension, then export as DOCX. Handles complex layouts better than web converters.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Smallpdf / ILovePDF</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Free online converters with decent layout preservation. Files are uploaded to their servers — check their privacy policy before converting sensitive documents.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Text Extractor</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload a text-based PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop or click to upload a PDF. The tool reads the embedded text content — it doesn't work on scanned image PDFs.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Copy the extracted text</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Copy" to copy all extracted text, then paste into Word, Google Docs, or any editor.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">For full conversion</strong><br><span style="font-size:.875rem;color:#6b7280;">Use Google Docs or Microsoft Word to open the PDF directly — they preserve tables, images, and formatting that plain text extraction misses.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why doesn't my scanned PDF extract any text? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Scanned PDFs are images of documents — they contain no actual text characters, only pixels. Extracting text requires OCR (Optical Character Recognition). Use Google Docs (which has built-in OCR) or Adobe Acrobat's OCR feature.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Will the formatting be preserved? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The text extractor returns plain text only — no tables, columns, images, or formatting. For formatting, use Google Docs or Microsoft Word to open the PDF directly.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are my files private? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The text extractor on this page runs entirely in your browser — files are never uploaded. Third-party converters (Smallpdf, ILovePDF) do upload your file to their servers.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'pdf' 'merge-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Merge PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'split-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Split PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'compress-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'jpg-to-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JPG to PDF</a>
+    </div>
+  </div>
+</section>
+
+<script>
+async function extractText(file) {
+  if (!file) return;
+  document.getElementById('p2w-filename').textContent = file.name;
+  document.getElementById('p2w-spinner').style.display = 'block';
+  document.getElementById('p2w-output-wrap').style.display = 'none';
+  document.getElementById('p2w-error').style.display = 'none';
+
+  try {
+    var buf = await file.arrayBuffer();
+    /* Extract text by parsing the raw PDF byte stream for BT...ET blocks and string literals */
+    var bytes = new Uint8Array(buf);
+    var text = new TextDecoder('latin1').decode(bytes);
+    var result = [];
+    var btRegex = /BT([\s\S]*?)ET/g;
+    var match;
+    while ((match = btRegex.exec(text)) !== null) {
+      var block = match[1];
+      var strRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)|<([0-9A-Fa-f\s]+)>/g;
+      var sm;
+      while ((sm = strRegex.exec(block)) !== null) {
+        if (sm[1] !== undefined) {
+          var s = sm[1]
+            .replace(/\\n/g, '\n')
+            .replace(/\\r/g, '\r')
+            .replace(/\\t/g, '\t')
+            .replace(/\\\(/g, '(')
+            .replace(/\\\)/g, ')')
+            .replace(/\\\\/g, '\\');
+          result.push(s);
+        } else if (sm[2] !== undefined) {
+          var hex = sm[2].replace(/\s/g,'');
+          var chars = [];
+          for (var i=0; i<hex.length; i+=2) chars.push(String.fromCharCode(parseInt(hex.substr(i,2),16)));
+          result.push(chars.join(''));
+        }
+      }
+      result.push('\n');
+    }
+    var out = result.join('').trim();
+    if (!out) { throw new Error('No extractable text found. This may be a scanned PDF.'); }
+    document.getElementById('p2w-output').value = out;
+    document.getElementById('p2w-output-wrap').style.display = 'block';
+  } catch(e) {
+    var el = document.getElementById('p2w-error');
+    el.textContent = e.message || 'Failed to extract text from PDF.';
+    el.style.display = 'block';
+  }
+  document.getElementById('p2w-spinner').style.display = 'none';
+}
+
+function copyP2W() {
+  navigator.clipboard.writeText(document.getElementById('p2w-output').value).then(function(){
+    document.getElementById('p2w-copy').textContent = 'Copied!';
+    setTimeout(function(){ document.getElementById('p2w-copy').textContent = 'Copy'; }, 1500);
+  });
+}
+
+var drop = document.getElementById('p2w-drop');
+drop.addEventListener('dragover', function(e){ e.preventDefault(); });
+drop.addEventListener('drop', function(e){ e.preventDefault(); extractText(e.dataTransfer.files[0]); });
+</script>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Age Calculator — Calculate Exact Age from Date of Birth | AIUtilities{% endblock %}
+{% block description %}Calculate your exact age in years, months, days, hours, and minutes from any birth date. Free online age calculator.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'age-calculator' %}{% endblock %}
+{% block og_title %}Age Calculator — Exact Age from Date of Birth | AIUtilities{% endblock %}
+{% block og_description %}Calculate exact age in years, months, days, hours, and minutes. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'age-calculator' %}{% endblock %}
+{% block twitter_title %}Age Calculator | AIUtilities{% endblock %}
+{% block twitter_description %}Calculate your exact age from any date of birth. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Age Calculator","description":"Calculate exact age in years, months, days, hours, and minutes from any birth date.","url":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'age-calculator' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Date & Time Tools","item":"{{ SITE_URL }}/tools/date-time/"},{"@type":"ListItem","position":3,"name":"Age Calculator","item":"{{ SITE_URL }}{% url 'tools:tool' 'date-time' 'age-calculator' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🧮 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Age Calculator</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Enter a date of birth and calculate the exact age in years, months, days, hours, and minutes. Also shows the next birthday and days until it.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Years, months, days</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Next birthday</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="margin-bottom:1rem;">
+        <label class="ai-tool-label" for="ac-dob">Date of Birth</label>
+        <input type="date" id="ac-dob" class="ai-tool-input" onchange="calcAge()">
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <label class="ai-tool-label" for="ac-on">Age on date (default: today)</label>
+        <input type="date" id="ac-on" class="ai-tool-input" onchange="calcAge()">
+      </div>
+      <button type="button" onclick="calcAge()" class="ai-tool-btn">Calculate Age →</button>
+
+      <div id="ac-result" style="display:none;margin-top:1.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:1.25rem;">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="ac-years" style="font-size:2rem;font-weight:800;color:#6366f1;">—</div>
+            <div style="font-size:.8125rem;color:#6b7280;">Years</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="ac-months" style="font-size:2rem;font-weight:800;color:#6366f1;">—</div>
+            <div style="font-size:.8125rem;color:#6b7280;">Months</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem;text-align:center;">
+            <div id="ac-days" style="font-size:2rem;font-weight:800;color:#6366f1;">—</div>
+            <div style="font-size:.8125rem;color:#6b7280;">Days</div>
+          </div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.75rem;padding:1rem;">
+          <p style="margin:0;font-size:.875rem;color:#374151;" id="ac-summary"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Age Calculator</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter your date of birth</strong><br><span style="font-size:.875rem;color:#6b7280;">Type or pick your birth date using the date input.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Optionally set a target date</strong><br><span style="font-size:.875rem;color:#6b7280;">Leave it as today to calculate your current age, or change it to find your age on any past or future date.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read your results</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool shows your exact age in years, months, and days — plus total days lived and your next birthday countdown.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How is age calculated? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The tool subtracts the birth date from the target date, adjusting for months and days that have not fully elapsed so the result is always exact.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I calculate age on a future date? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — change the "Calculate age as of" date to any future date and the calculator will show the age on that day.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it account for leap years? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the calculation uses actual calendar dates so leap years (366 days) are handled correctly.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'calculators' 'bmi-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">BMI Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'tip-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Tip Calculator</a>
+      <a href="{% url 'tools:tool' 'calculators' 'percentage-calculator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Percentage Calculator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function calcAge() {
+  var dobVal = document.getElementById('ac-dob').value;
+  if (!dobVal) return;
+  var dob = new Date(dobVal);
+  var onVal = document.getElementById('ac-on').value;
+  var on = onVal ? new Date(onVal) : new Date();
+
+  if (dob > on) {
+    document.getElementById('ac-summary').textContent = 'Date of birth is in the future.';
+    document.getElementById('ac-result').style.display = 'block';
+    return;
+  }
+
+  var years = on.getFullYear() - dob.getFullYear();
+  var months = on.getMonth() - dob.getMonth();
+  var days = on.getDate() - dob.getDate();
+
+  if (days < 0) { months--; var tempDate = new Date(on.getFullYear(), on.getMonth(), 0); days += tempDate.getDate(); }
+  if (months < 0) { years--; months += 12; }
+
+  var totalDays = Math.floor((on - dob) / 86400000);
+  var totalHours = Math.floor((on - dob) / 3600000);
+
+  var nextBday = new Date(on.getFullYear(), dob.getMonth(), dob.getDate());
+  if (nextBday <= on) nextBday.setFullYear(on.getFullYear() + 1);
+  var daysUntil = Math.ceil((nextBday - on) / 86400000);
+
+  document.getElementById('ac-years').textContent = years;
+  document.getElementById('ac-months').textContent = months;
+  document.getElementById('ac-days').textContent = days;
+  document.getElementById('ac-summary').innerHTML =
+    'Total: <strong>' + totalDays.toLocaleString() + ' days</strong> (' + totalHours.toLocaleString() + ' hours)<br>' +
+    'Next birthday: <strong>' + nextBday.toDateString() + '</strong> — ' + daysUntil + ' days away';
+  document.getElementById('ac-result').style.display = 'block';
+}
+</script>
+{% endblock %}

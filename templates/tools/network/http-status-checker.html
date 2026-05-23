@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}HTTP Status Checker — Check URL Response Codes | AIUtilities{% endblock %}
+{% block description %}Check the HTTP status code for any URL instantly. See redirects, response headers, and whether a page returns 200 OK, 301, 404, 500, and more. Free online tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'http-status-checker' %}{% endblock %}
+{% block og_title %}HTTP Status Checker — Check URL Response Codes | AIUtilities{% endblock %}
+{% block og_description %}Check HTTP response codes and redirects for any URL. Free, instant.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'http-status-checker' %}{% endblock %}
+{% block twitter_title %}HTTP Status Checker | AIUtilities{% endblock %}
+{% block twitter_description %}Check HTTP status codes and redirects for any URL. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"HTTP Status Checker","description":"Check HTTP status codes and response headers for any URL.","url":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'http-status-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Network Tools","item":"{{ SITE_URL }}/tools/network/"},{"@type":"ListItem","position":3,"name":"HTTP Status Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'http-status-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌐 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">HTTP Status Code Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Enter any URL to check its HTTP response status code. Find out whether a page is live (200), redirecting (301/302), missing (404), or returning an error (500). Check multiple URLs at once.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 200, 301, 404, 500+</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Bulk check</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ CORS-aware</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <label class="ai-tool-label" for="hsc-urls">URLs (one per line)</label>
+      <textarea id="hsc-urls" class="ai-tool-input" rows="5" placeholder="https://example.com&#10;https://google.com&#10;https://httpbin.org/status/404" style="font-family:monospace;resize:vertical;"></textarea>
+      <button type="button" onclick="checkStatus()" class="ai-tool-btn" style="margin-top:1rem;">Check Status →</button>
+
+      <div id="hsc-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Checking…</div>
+      <div id="hsc-results" style="display:none;margin-top:1.5rem;display:grid;gap:.625rem;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">HTTP Status Code Reference</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#16a34a;margin-bottom:.5rem;">2xx — Success</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;"><strong>200 OK</strong> — request succeeded.<br><strong>201 Created</strong> — resource created.<br><strong>204 No Content</strong> — success with no body (e.g. after DELETE).</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#2563eb;margin-bottom:.5rem;">3xx — Redirects</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;"><strong>301 Moved Permanently</strong> — URL has changed forever (SEO juice passes).<br><strong>302 Found</strong> — temporary redirect.<br><strong>307/308</strong> — preserve HTTP method on redirect.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#d97706;margin-bottom:.5rem;">4xx — Client Errors</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;"><strong>400 Bad Request</strong> — malformed request.<br><strong>401 Unauthorized</strong> — auth required.<br><strong>403 Forbidden</strong> — no permission.<br><strong>404 Not Found</strong> — page doesn't exist.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#dc2626;margin-bottom:.5rem;">5xx — Server Errors</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;"><strong>500 Internal Server Error</strong> — generic server fault.<br><strong>502 Bad Gateway</strong> — upstream failed.<br><strong>503 Service Unavailable</strong> — overloaded or down.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the HTTP Status Checker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter one or more URLs</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste URLs into the text area — one per line. Include the https:// prefix.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Check Status"</strong><br><span style="font-size:.875rem;color:#6b7280;">Each URL is fetched in parallel from your browser. CORS-restricted sites will show an estimated status based on the error type.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Review results</strong><br><span style="font-size:.875rem;color:#6b7280;">Each URL shows its final status code, colour-coded green (2xx), blue (3xx), yellow (4xx), or red (5xx/error).</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why do some URLs show "CORS blocked"? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Browsers enforce CORS (Cross-Origin Resource Sharing) policies. Many servers block cross-origin requests, so the browser cannot read the response status. A CORS block on its own usually means the server is live and responding — it's not a 404 or 5xx.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What's the difference between 301 and 302? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">301 is a permanent redirect — search engines transfer link equity (PageRank) to the destination and update their index. 302 is temporary — search engines keep the original URL indexed and don't pass full link equity.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many URLs can I check at once? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Up to 20 URLs per batch. All requests run in parallel. Checking too many at once may slow your browser.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'dns-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">DNS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'ip-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">IP Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'whois-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">WHOIS Lookup</a>
+      <a href="{% url 'tools:tool' 'seo' 'serp-preview' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SERP Preview</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var STATUS_COLORS = {2:'#16a34a', 3:'#2563eb', 4:'#d97706', 5:'#dc2626'};
+
+function statusColor(code) {
+  return STATUS_COLORS[Math.floor(code/100)] || '#6b7280';
+}
+
+function checkStatus() {
+  var raw = document.getElementById('hsc-urls').value.trim();
+  if (!raw) return;
+  var urls = raw.split('\n').map(function(u){ return u.trim(); }).filter(Boolean).slice(0, 20);
+  document.getElementById('hsc-spinner').style.display = 'block';
+  var container = document.getElementById('hsc-results');
+  container.innerHTML = '';
+  container.style.display = 'grid';
+
+  var promises = urls.map(function(url) {
+    var u = url.startsWith('http') ? url : 'https://' + url;
+    return fetch(u, {method:'HEAD', mode:'no-cors', redirect:'follow', cache:'no-store'})
+      .then(function(r) {
+        var code = r.status || 0;
+        return {url: url, code: code, ok: code >= 200 && code < 400, cors: r.type === 'opaque'};
+      })
+      .catch(function() {
+        return {url: url, code: 0, ok: false, cors: false, err: true};
+      });
+  });
+
+  Promise.all(promises).then(function(results) {
+    document.getElementById('hsc-spinner').style.display = 'none';
+    container.innerHTML = results.map(function(r) {
+      var code = r.code;
+      var label = r.cors ? 'Reachable (CORS)' : (r.err ? 'Error / Unreachable' : code + ' ' + httpText(code));
+      var color = r.cors ? '#059669' : (r.err ? '#dc2626' : statusColor(code));
+      var bg = r.cors ? '#f0fdf4' : (r.err ? '#fef2f2' : (code>=200&&code<300?'#f0fdf4':(code>=300&&code<400?'#eff6ff':(code>=400&&code<500?'#fffbeb':'#fef2f2'))));
+      return '<div style="display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;background:' + bg + ';border:1px solid #e2e8f0;border-radius:.5rem;">' +
+        '<span style="min-width:5rem;font-weight:700;color:' + color + ';font-family:monospace;">' + label + '</span>' +
+        '<span style="font-size:.8125rem;color:#374151;word-break:break-all;">' + r.url + '</span></div>';
+    }).join('');
+  });
+}
+
+function httpText(code) {
+  var t = {200:'OK',201:'Created',204:'No Content',301:'Moved Permanently',302:'Found',304:'Not Modified',307:'Temporary Redirect',308:'Permanent Redirect',400:'Bad Request',401:'Unauthorized',403:'Forbidden',404:'Not Found',405:'Method Not Allowed',410:'Gone',429:'Too Many Requests',500:'Internal Server Error',502:'Bad Gateway',503:'Service Unavailable',504:'Gateway Timeout'};
+  return t[code] || '';
+}
+</script>
+{% endblock %}

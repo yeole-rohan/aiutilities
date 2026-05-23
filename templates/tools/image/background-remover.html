@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Background Remover — Remove Image Background Online | AIUtilities{% endblock %}
+{% block description %}Remove the background from any image automatically. Supports JPG, PNG, and WebP. Uses machine learning via the remove.bg API. Free trial available, no signup to try.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'background-remover' %}{% endblock %}
+{% block og_title %}Background Remover — Remove Image Background Online | AIUtilities{% endblock %}
+{% block og_description %}Remove image backgrounds automatically with AI. Free trial available.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'image' 'background-remover' %}{% endblock %}
+{% block twitter_title %}Background Remover | AIUtilities{% endblock %}
+{% block twitter_description %}Remove image backgrounds automatically with AI. Free trial.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Background Remover","description":"Remove image backgrounds automatically using AI.","url":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'background-remover' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Image Tools","item":"{{ SITE_URL }}/tools/image/"},{"@type":"ListItem","position":3,"name":"Background Remover","item":"{{ SITE_URL }}{% url 'tools:tool' 'image' 'background-remover' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🤖 AI-powered · Free trial · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">AI Background Remover</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Remove the background from any photo automatically using AI. Get a transparent PNG ready for product shots, profile photos, presentations, and more.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ AI-powered</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Transparent PNG output</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ JPG / PNG / WebP input</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1.5rem;font-size:.875rem;color:#1e40af;">
+        <strong>API key required.</strong> This tool uses the <strong>remove.bg API</strong> which provides accurate AI background removal. Enter your free API key below — free accounts get 50 previews/month. <a href="https://www.remove.bg/api" target="_blank" rel="noopener" style="color:#2563eb;">Get a free API key →</a>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <label class="ai-tool-label" for="bg-apikey">remove.bg API Key</label>
+        <input type="text" id="bg-apikey" class="ai-tool-input" placeholder="Paste your API key here" style="font-family:monospace;">
+        <p style="font-size:.75rem;color:#9ca3af;margin-top:.375rem;">Your key is only used client-side to call remove.bg — it's never stored or sent to our servers.</p>
+      </div>
+
+      <label class="ai-tool-label">Upload Image</label>
+      <div id="bg-drop" style="border:2px dashed #c7d2fe;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;background:#fafaf8;margin-bottom:1.25rem;" onclick="document.getElementById('bg-input').click()">
+        <p style="color:#6366f1;font-weight:600;margin:0;">Click to upload or drag &amp; drop</p>
+        <p style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">JPG, PNG, WebP — max 12 MB</p>
+      </div>
+      <input type="file" id="bg-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="bgFileSelected(this.files[0])">
+
+      <div id="bg-preview-wrap" style="display:none;margin-bottom:1.25rem;">
+        <img id="bg-preview" style="max-width:100%;border-radius:.5rem;border:1px solid #e2e8f0;" alt="Preview">
+      </div>
+
+      <div id="bg-error" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;margin-bottom:.75rem;"></div>
+      <button type="button" id="bg-btn" onclick="removeBackground()" class="ai-tool-btn" disabled>Remove Background →</button>
+      <div id="bg-progress" style="display:none;margin-top:.75rem;text-align:center;color:#6b7280;font-size:.875rem;">Processing with remove.bg AI…</div>
+
+      <div id="bg-result" style="display:none;margin-top:1.5rem;">
+        <p style="font-size:.875rem;font-weight:600;color:#166534;margin-bottom:.75rem;">✅ Background removed!</p>
+        <img id="bg-result-img" style="max-width:100%;border-radius:.5rem;border:1px solid #e2e8f0;background:repeating-conic-gradient(#ddd 0% 25%,#fff 0% 50%) 0 0/16px 16px;" alt="Background removed">
+        <a id="bg-download" href="#" download="background-removed.png" style="display:inline-block;margin-top:.75rem;background:#6366f1;color:#fff;border-radius:.5rem;padding:.625rem 1.25rem;font-size:.875rem;font-weight:600;text-decoration:none;">Download PNG</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Use Cases for Background Removal</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Product Photography</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Place products on white or transparent backgrounds for Amazon, Shopify, or Etsy listings — without an expensive photography studio.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Profile Photos</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Replace messy backgrounds in LinkedIn and professional headshots with clean, branded, or white backgrounds in seconds.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Presentations &amp; Designs</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Cut out people, logos, and objects to layer into Canva, PowerPoint, Figma, and other design tools without manual masking.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Social Media</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Create stickers, memes, and composited images for Instagram, TikTok, and other platforms with clean, transparent cutouts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Remove an Image Background</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Get a free API key</strong><br><span style="font-size:.875rem;color:#6b7280;">Sign up at remove.bg — free accounts include 50 API previews per month (up to 0.25 megapixels). Paid plans offer full-resolution downloads.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter your API key and upload an image</strong><br><span style="font-size:.875rem;color:#6b7280;">Paste the key, then drop or click to upload a JPG, PNG, or WebP (max 12 MB).</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the transparent PNG</strong><br><span style="font-size:.875rem;color:#6b7280;">The AI removes the background and returns a PNG with transparency. Download it for use in any design tool.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is my API key safe? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — your API key is only used to make the direct API call from your browser to remove.bg. It is never stored in a database or sent to our servers. Clear your browser storage after use if on a shared device.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What image types work best? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Images with clear subjects against distinct backgrounds work best — people, animals, products, cars. Transparent objects, fine hair, and complex patterns are more challenging but remove.bg's AI still handles them well.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many free uses do I get? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The free remove.bg tier gives 50 API previews (small previews up to 0.25 MP) per month. For full-resolution output, paid credits start at a fraction of a cent per image.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Compressor</a>
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'image-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Converter</a>
+      <a href="{% url 'tools:tool' 'image' 'add-text-to-image' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Add Text to Image</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var bgFile = null;
+
+function bgFileSelected(file) {
+  if (!file) return;
+  bgFile = file;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('bg-preview').src = e.target.result;
+    document.getElementById('bg-preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('bg-btn').disabled = false;
+  document.getElementById('bg-result').style.display = 'none';
+}
+
+function showBGError(msg) {
+  var el = document.getElementById('bg-error');
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+
+async function removeBackground() {
+  var apiKey = document.getElementById('bg-apikey').value.trim();
+  if (!apiKey) { showBGError('Please enter your remove.bg API key.'); return; }
+  if (!bgFile) { showBGError('Please upload an image.'); return; }
+  showBGError('');
+  document.getElementById('bg-progress').style.display = 'block';
+  document.getElementById('bg-btn').disabled = true;
+  document.getElementById('bg-result').style.display = 'none';
+
+  var formData = new FormData();
+  formData.append('image_file', bgFile);
+  formData.append('size', 'auto');
+
+  try {
+    var resp = await fetch('https://api.remove.bg/v1.0/removebg', {
+      method: 'POST',
+      headers: { 'X-Api-Key': apiKey },
+      body: formData,
+    });
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      showBGError((err.errors && err.errors[0] && err.errors[0].title) || 'API error: ' + resp.status);
+      return;
+    }
+    var blob = await resp.blob();
+    var url = URL.createObjectURL(blob);
+    document.getElementById('bg-result-img').src = url;
+    document.getElementById('bg-download').href = url;
+    document.getElementById('bg-result').style.display = 'block';
+  } catch(e) {
+    showBGError('Network error — check your connection and API key.');
+  }
+  document.getElementById('bg-progress').style.display = 'none';
+  document.getElementById('bg-btn').disabled = false;
+}
+
+var drop = document.getElementById('bg-drop');
+drop.addEventListener('dragover', function(e){ e.preventDefault(); });
+drop.addEventListener('drop', function(e){ e.preventDefault(); bgFileSelected(e.dataTransfer.files[0]); });
+</script>
+{% endblock %}

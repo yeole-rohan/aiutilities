@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}IP Lookup — Find IP Address Location & ISP | AIUtilities{% endblock %}
+{% block description %}Look up any IP address to get geolocation, country, city, ISP, timezone, and more. Free IP lookup tool — no signup required.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'ip-lookup' %}{% endblock %}
+{% block og_title %}IP Lookup — Find IP Address Location & ISP | AIUtilities{% endblock %}
+{% block og_description %}Get geolocation, ISP, timezone, and more for any IP address. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'ip-lookup' %}{% endblock %}
+{% block twitter_title %}IP Lookup | AIUtilities{% endblock %}
+{% block twitter_description %}Look up any IP address — get country, city, ISP, timezone. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"IP Lookup","description":"Look up any IP address to get geolocation, country, city, ISP, and timezone.","url":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'ip-lookup' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Network Tools","item":"{{ SITE_URL }}/tools/network/"},{"@type":"ListItem","position":3,"name":"IP Lookup","item":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'ip-lookup' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌐 Free · No signup · Instant</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">IP Address Lookup</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Look up any IPv4 or IPv6 address to get its country, city, region, ISP, timezone, latitude, and longitude. Leave blank to look up your own IP.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Geolocation</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ ISP & ASN</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ IPv4 & IPv6</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;">
+        <input type="text" id="ip-input" class="ai-tool-input" placeholder="Enter IP address (leave blank for your IP)" style="flex:1;font-family:monospace;">
+        <button type="button" onclick="lookupIP()" class="ai-tool-btn" style="white-space:nowrap;">Look Up →</button>
+      </div>
+      <button type="button" onclick="lookupMyIP()" style="background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">My IP</button>
+
+      <div id="ip-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Looking up…</div>
+      <div id="ip-error" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+
+      <div id="ip-result" style="display:none;margin-top:1.5rem;">
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+          <tbody id="ip-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What IP Lookup Tells You</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Geolocation</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Country, region, city, postal code, and GPS coordinates (latitude/longitude). Accuracy varies — city-level is approximate.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">ISP & ASN</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Internet Service Provider name, organization, and Autonomous System Number (ASN) — the routing identity of the network.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Timezone</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">IANA timezone name and UTC offset — useful for scheduling and server configuration.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Connection Type</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Whether the IP is a hosting provider, VPN, Tor exit node, proxy, or a regular residential/business connection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the IP Lookup Tool</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter an IP address (or leave blank)</strong><br><span style="font-size:.875rem;color:#6b7280;">Type any IPv4 (e.g. 8.8.8.8) or IPv6 address, or click "My IP" to look up your own address automatically.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Look Up"</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool queries the ipapi.co API and returns all available data about the IP within seconds.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Read the results</strong><br><span style="font-size:.875rem;color:#6b7280;">Country, city, region, ISP, ASN, timezone, and coordinates are displayed in a clean table.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How accurate is IP geolocation? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Country-level accuracy is ~99%. City-level is typically within 25–50 miles for most IPs. Mobile and VPN IPs can be much less accurate.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can I look up private IPs? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Private IPs (192.168.x.x, 10.x.x.x, 172.16–31.x.x) are not routable on the public internet, so they have no geolocation data. The API will return an error for these.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is the lookup data stored? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">No. Your query goes directly from your browser to the ipapi.co API. We do not log or store any IP addresses you look up.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'dns-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">DNS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'whois-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">WHOIS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'http-status-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTTP Status Checker</a>
+      <a href="{% url 'tools:tool' 'network' 'open-port-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Open Port Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function showError(msg) {
+  var el = document.getElementById('ip-error');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function renderResult(data) {
+  var rows = [
+    ['IP Address', data.ip],
+    ['Country', (data.country_flag_emoji || '') + ' ' + (data.country_name || data.country || '—')],
+    ['Region', data.region || '—'],
+    ['City', data.city || '—'],
+    ['Postal Code', data.postal || '—'],
+    ['Timezone', data.timezone || '—'],
+    ['UTC Offset', data.utc_offset ? 'UTC ' + data.utc_offset : '—'],
+    ['Latitude', data.latitude !== undefined ? data.latitude : '—'],
+    ['Longitude', data.longitude !== undefined ? data.longitude : '—'],
+    ['ISP / Organization', data.org || '—'],
+    ['ASN', data.asn || '—'],
+    ['Currency', data.currency_name ? data.currency_name + ' (' + data.currency + ')' : (data.currency || '—')],
+    ['Languages', data.languages || '—'],
+  ];
+  var html = rows.map(function(r) {
+    return '<tr style="border-bottom:1px solid #f1f5f9;">' +
+      '<td style="padding:.5rem .75rem;color:#6b7280;font-weight:500;width:40%;">' + r[0] + '</td>' +
+      '<td style="padding:.5rem .75rem;color:#0f172a;font-family:monospace;">' + r[1] + '</td></tr>';
+  }).join('');
+  document.getElementById('ip-table').innerHTML = html;
+  document.getElementById('ip-result').style.display = 'block';
+}
+
+function lookupIP() {
+  var ip = document.getElementById('ip-input').value.trim();
+  var url = ip ? 'https://ipapi.co/' + encodeURIComponent(ip) + '/json/' : 'https://ipapi.co/json/';
+  showError('');
+  document.getElementById('ip-spinner').style.display = 'block';
+  document.getElementById('ip-result').style.display = 'none';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('ip-spinner').style.display = 'none';
+      if (data.error) { showError(data.reason || 'Invalid IP address.'); return; }
+      renderResult(data);
+    })
+    .catch(function() {
+      document.getElementById('ip-spinner').style.display = 'none';
+      showError('Network error — please check your connection and try again.');
+    });
+}
+
+function lookupMyIP() {
+  document.getElementById('ip-input').value = '';
+  lookupIP();
+}
+
+document.getElementById('ip-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') lookupIP();
+});
+</script>
+{% endblock %}

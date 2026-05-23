@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Binary Converter — Binary, Decimal, Hex, Octal | AIUtilities{% endblock %}
+{% block description %}Convert numbers between binary, decimal, hexadecimal, and octal instantly. Type in any field and all bases update in real time. Free online number base converter.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'binary-converter' %}{% endblock %}
+{% block og_title %}Binary Converter — Binary, Decimal, Hex, Octal | AIUtilities{% endblock %}
+{% block og_description %}Convert between binary, decimal, hex, and octal instantly. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'converters' 'binary-converter' %}{% endblock %}
+{% block twitter_title %}Binary Converter | AIUtilities{% endblock %}
+{% block twitter_description %}Convert binary, decimal, hex, and octal instantly. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Binary Converter","description":"Convert numbers between binary, decimal, hexadecimal, and octal instantly.","url":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'binary-converter' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Converter Tools","item":"{{ SITE_URL }}/tools/converters/"},{"@type":"ListItem","position":3,"name":"Binary Converter","item":"{{ SITE_URL }}{% url 'tools:tool' 'converters' 'binary-converter' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">💻 Instant · No signup · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Binary Converter</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Convert numbers between binary (base 2), decimal (base 10), hexadecimal (base 16), and octal (base 8) instantly. Type a value in any field to see all conversions.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Binary / Decimal / Hex / Octal</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Real-time</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:40rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;gap:1.25rem;">
+        <div>
+          <label class="ai-tool-label" for="bc-dec">Decimal (Base 10)</label>
+          <input type="text" id="bc-dec" class="ai-tool-input" style="font-family:monospace;" placeholder="255" oninput="convertBase('dec')">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-bin">Binary (Base 2)</label>
+          <input type="text" id="bc-bin" class="ai-tool-input" style="font-family:monospace;" placeholder="11111111" oninput="convertBase('bin')">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-hex">Hexadecimal (Base 16)</label>
+          <input type="text" id="bc-hex" class="ai-tool-input" style="font-family:monospace;" placeholder="FF" oninput="convertBase('hex')">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="bc-oct">Octal (Base 8)</label>
+          <input type="text" id="bc-oct" class="ai-tool-input" style="font-family:monospace;" placeholder="377" oninput="convertBase('oct')">
+        </div>
+      </div>
+      <div id="bc-error" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+      <button type="button" onclick="resetBase()" style="margin-top:1rem;background:none;border:1px solid #d1d5db;color:#6b7280;padding:.4rem .9rem;border-radius:.375rem;font-size:.8125rem;cursor:pointer;">Reset</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Number Bases Cheat Sheet</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Binary (Base 2)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Uses only 0 and 1. The language of computers. Each digit is a bit. 8 bits = 1 byte. Used in bitwise operations, flags, and low-level programming.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Octal (Base 8)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Uses digits 0–7. Historically used in Unix file permissions (e.g., chmod 755). Less common today but still appears in legacy systems.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Decimal (Base 10)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Uses digits 0–9. The standard number system humans use. All other bases convert through decimal as an intermediate step.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Hex (Base 16)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Uses 0–9 and A–F. Compact representation of binary — each hex digit = 4 bits. Used in colors (#FF5733), memory addresses, and cryptographic hashes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Binary Converter</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a number in any base</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a decimal, binary, hexadecimal, or octal number into the corresponding field.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">All bases update instantly</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool converts in real time — change any field and all others reflect the same value.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Handle errors</strong><br><span style="font-size:.875rem;color:#6b7280;">Invalid characters for the chosen base are flagged with a red border.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a binary number? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Binary (base-2) uses only 0 and 1. Each digit represents a power of 2. For example, binary 1010 equals 8+0+2+0 = 10 in decimal.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is hexadecimal used for? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Hexadecimal (base-16, using 0–9 and A–F) is used in programming because one hex digit represents exactly 4 binary bits, making large binary values more compact and readable.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is an octal number? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Octal (base-8, digits 0–7) is used in Unix file permissions. For example, chmod 755 means owner can read/write/execute (7), group and others can read/execute (5).</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'developer' 'json-formatter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">JSON Formatter</a>
+      <a href="{% url 'tools:tool' 'developer' 'base64-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Base64 Encoder</a>
+      <a href="{% url 'tools:tool' 'developer' 'url-encoder' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">URL Encoder</a>
+      <a href="{% url 'tools:tool' 'ai' 'ai-code-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">AI Code Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var updating = false;
+function showError(msg) {
+  var el = document.getElementById('bc-error');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+function convertBase(from) {
+  if (updating) return;
+  updating = true;
+  showError('');
+  var raw = document.getElementById('bc-' + from).value.trim().toUpperCase();
+  if (!raw) { ['dec','bin','hex','oct'].filter(function(b){ return b!==from; }).forEach(function(b){ document.getElementById('bc-'+b).value=''; }); updating=false; return; }
+  var bases = {dec:10, bin:2, hex:16, oct:8};
+  var decVal = parseInt(raw, bases[from]);
+  if (isNaN(decVal)) { showError('Invalid ' + from.charAt(0).toUpperCase()+from.slice(1) + ' value'); updating=false; return; }
+  if (from !== 'dec') document.getElementById('bc-dec').value = decVal.toString(10);
+  if (from !== 'bin') document.getElementById('bc-bin').value = decVal.toString(2);
+  if (from !== 'hex') document.getElementById('bc-hex').value = decVal.toString(16).toUpperCase();
+  if (from !== 'oct') document.getElementById('bc-oct').value = decVal.toString(8);
+  updating = false;
+}
+function resetBase() {
+  ['dec','bin','hex','oct'].forEach(function(b){ document.getElementById('bc-'+b).value=''; });
+  showError('');
+}
+</script>
+{% endblock %}

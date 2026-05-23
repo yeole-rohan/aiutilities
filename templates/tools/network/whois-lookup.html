@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}WHOIS Lookup — Domain Registration Info | AIUtilities{% endblock %}
+{% block description %}Look up WHOIS and RDAP registration details for any domain — registrar, creation date, expiry date, nameservers, and registrant. Free online WHOIS tool.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'whois-lookup' %}{% endblock %}
+{% block og_title %}WHOIS Lookup — Domain Registration Info | AIUtilities{% endblock %}
+{% block og_description %}Check domain registrar, creation date, expiry, and nameservers. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'whois-lookup' %}{% endblock %}
+{% block twitter_title %}WHOIS Lookup | AIUtilities{% endblock %}
+{% block twitter_description %}Look up domain registration details instantly. Free WHOIS tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"WHOIS Lookup","description":"Look up WHOIS and RDAP registration details for any domain.","url":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'whois-lookup' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Network Tools","item":"{{ SITE_URL }}/tools/network/"},{"@type":"ListItem","position":3,"name":"WHOIS Lookup","item":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'whois-lookup' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌐 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">WHOIS Lookup</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Look up domain registration details — registrar, creation and expiry dates, nameservers, and registrant information — using the modern RDAP protocol.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ RDAP protocol</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Expiry & creation dates</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Nameservers</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:flex;gap:.75rem;margin-bottom:1rem;">
+        <input type="text" id="whois-domain" class="ai-tool-input" placeholder="e.g. example.com" style="flex:1;font-family:monospace;">
+        <button type="button" onclick="whoisLookup()" class="ai-tool-btn" style="white-space:nowrap;">Look Up →</button>
+      </div>
+
+      <div id="whois-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Fetching RDAP data…</div>
+      <div id="whois-error" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+
+      <div id="whois-result" style="display:none;margin-top:1.5rem;">
+        <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+          <tbody id="whois-table"></tbody>
+        </table>
+        <div id="whois-ns" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What WHOIS Tells You</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Registrar</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The company where the domain was purchased (e.g. GoDaddy, Namecheap, Google Domains). Useful when transferring domains.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Dates</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Registration date (when the domain was first created), last updated, and expiry date. Check expiry to see if a domain is about to become available.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Status</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">ICANN status codes like clientTransferProhibited, serverDeleteProhibited, and redemptionPeriod indicate the domain's lock and lifecycle state.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Nameservers</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The DNS servers authoritative for the domain. Changing nameservers is how you point a domain to a different hosting provider.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the WHOIS Lookup Tool</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a domain name</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the domain (e.g. example.com) without http:// or www.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Look Up"</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool queries the RDAP (Registration Data Access Protocol) API — the modern, structured replacement for traditional WHOIS.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Review registration details</strong><br><span style="font-size:.875rem;color:#6b7280;">Registrar, creation date, expiry date, status codes, and nameservers are all displayed in a clean table.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is registrant contact information hidden? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">GDPR and most registrars now redact personal contact data by default (WHOIS privacy). You'll see "Redacted for privacy" or the registrar's proxy contact details instead.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is RDAP? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">RDAP (Registration Data Access Protocol) is the modern JSON-based successor to the old WHOIS protocol. It provides structured, machine-readable domain registration data and supports access control.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does "clientTransferProhibited" mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This ICANN status code means the domain is locked at the registrar level — it cannot be transferred to another registrar without the current registrar explicitly unlocking it first.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'dns-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">DNS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'ip-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">IP Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'http-status-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTTP Status Checker</a>
+      <a href="{% url 'tools:tool' 'security' 'ssl-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SSL Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function showWHOISError(msg) {
+  var el = document.getElementById('whois-error');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleDateString(undefined, {year:'numeric',month:'long',day:'numeric'}); }
+  catch(e) { return s; }
+}
+
+function whoisLookup() {
+  var domain = document.getElementById('whois-domain').value.trim().replace(/^https?:\/\//,'').split('/')[0].toLowerCase();
+  if (!domain) { showWHOISError('Please enter a domain name.'); return; }
+  showWHOISError('');
+  document.getElementById('whois-spinner').style.display = 'block';
+  document.getElementById('whois-result').style.display = 'none';
+
+  fetch('https://rdap.org/domain/' + encodeURIComponent(domain))
+    .then(function(r) {
+      if (!r.ok) throw new Error('not found');
+      return r.json();
+    })
+    .then(function(data) {
+      document.getElementById('whois-spinner').style.display = 'none';
+      var events = {};
+      (data.events || []).forEach(function(e) { events[e.eventAction] = e.eventDate; });
+
+      var registrar = '';
+      (data.entities || []).forEach(function(ent) {
+        if ((ent.roles || []).includes('registrar')) {
+          registrar = (ent.vcardArray && ent.vcardArray[1]) ? ent.vcardArray[1].find(function(v){ return v[0]==='fn'; }) : null;
+          registrar = registrar ? registrar[3] : (ent.handle || '');
+        }
+      });
+
+      var status = (data.status || []).join(', ') || '—';
+
+      var rows = [
+        ['Domain', data.ldhName || domain],
+        ['Registrar', registrar || '—'],
+        ['Created', fmtDate(events.registration)],
+        ['Last Updated', fmtDate(events['last changed'])],
+        ['Expires', fmtDate(events.expiration)],
+        ['Status', status],
+      ];
+
+      document.getElementById('whois-table').innerHTML = rows.map(function(r) {
+        return '<tr style="border-bottom:1px solid #f1f5f9;">' +
+          '<td style="padding:.5rem .75rem;color:#6b7280;font-weight:500;width:40%;">' + r[0] + '</td>' +
+          '<td style="padding:.5rem .75rem;color:#0f172a;font-family:monospace;word-break:break-all;">' + r[1] + '</td></tr>';
+      }).join('');
+
+      var ns = (data.nameservers || []).map(function(n){ return n.ldhName || ''; }).filter(Boolean);
+      document.getElementById('whois-ns').innerHTML = ns.length ?
+        '<strong style="font-size:.8125rem;color:#374151;">Nameservers:</strong><div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem;">' +
+        ns.map(function(n){ return '<span style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.375rem;padding:.25rem .625rem;font-family:monospace;font-size:.8125rem;color:#166534;">' + n + '</span>'; }).join('') + '</div>' : '';
+
+      document.getElementById('whois-result').style.display = 'block';
+    })
+    .catch(function() {
+      document.getElementById('whois-spinner').style.display = 'none';
+      showWHOISError('Domain not found or RDAP data unavailable for this TLD.');
+    });
+}
+
+document.getElementById('whois-domain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') whoisLookup();
+});
+</script>
+{% endblock %}

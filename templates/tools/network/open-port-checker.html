@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Open Port Checker — Check If a Port Is Open | AIUtilities{% endblock %}
+{% block description %}Check whether common ports are open or closed on any host. Includes a reference for well-known port numbers and services. Free online open port checker.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'open-port-checker' %}{% endblock %}
+{% block og_title %}Open Port Checker — Check If a Port Is Open | AIUtilities{% endblock %}
+{% block og_description %}Check open ports on any host and look up common port numbers. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'open-port-checker' %}{% endblock %}
+{% block twitter_title %}Open Port Checker | AIUtilities{% endblock %}
+{% block twitter_description %}Check open ports and look up common port numbers. Free online tool.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Open Port Checker","description":"Check whether common ports are open or closed on any host.","url":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'open-port-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Network Tools","item":"{{ SITE_URL }}/tools/network/"},{"@type":"ListItem","position":3,"name":"Open Port Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'open-port-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌐 Free · Informational · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Open Port Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Look up common port numbers and services, and test HTTP/HTTPS reachability for any host. Use the port reference to identify what services run on each port.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Port reference guide</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ HTTP reachability test</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Common services list</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1.5rem;font-size:.875rem;color:#92400e;">
+        <strong>Browser limitation:</strong> Browsers cannot open raw TCP connections to arbitrary ports due to security restrictions. This tool tests HTTP/HTTPS reachability for web ports (80, 443, 8080, 8443). For raw port scanning, use a command-line tool like <code>nmap</code> or <code>nc</code>.
+      </div>
+
+      <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">HTTP/HTTPS Reachability Test</h3>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.75rem;margin-bottom:1rem;align-items:end;">
+        <div>
+          <label class="ai-tool-label" for="opc-host">Host (domain or IP)</label>
+          <input type="text" id="opc-host" class="ai-tool-input" placeholder="e.g. example.com" style="font-family:monospace;">
+        </div>
+        <button type="button" onclick="testHost()" class="ai-tool-btn" style="align-self:end;">Test →</button>
+      </div>
+
+      <div id="opc-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Testing reachability…</div>
+      <div id="opc-results" style="display:none;margin-top:1rem;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">Common Port Numbers Reference</h2>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+        <thead>
+          <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+            <th style="padding:.75rem 1rem;text-align:left;color:#374151;font-weight:700;">Port</th>
+            <th style="padding:.75rem 1rem;text-align:left;color:#374151;font-weight:700;">Protocol</th>
+            <th style="padding:.75rem 1rem;text-align:left;color:#374151;font-weight:700;">Service</th>
+            <th style="padding:.75rem 1rem;text-align:left;color:#374151;font-weight:700;">Description</th>
+          </tr>
+        </thead>
+        <tbody id="port-table"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the Port Checker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a host</strong><br><span style="font-size:.875rem;color:#6b7280;">Type a domain name (e.g. example.com) or IP address to test HTTP and HTTPS reachability on ports 80 and 443.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Test"</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool attempts HTTP HEAD requests to common web ports. CORS-restricted hosts may show as "Reachable" even without full response details.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">For full port scanning</strong><br><span style="font-size:.875rem;color:#6b7280;">Use <code>nmap -p 1-1000 &lt;host&gt;</code> from your terminal for complete TCP port scanning — browsers cannot open raw TCP sockets.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why can't browsers scan all ports? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">For security, browsers block raw TCP socket connections from JavaScript. Websites could otherwise use your browser to port-scan machines on your local network (a form of CSRF). Use nmap, Netcat (nc), or Nessus for full port scanning.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What port does SSH use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">SSH uses TCP port 22 by default. Many administrators change this to a non-standard port (e.g. 2222) to reduce automated brute-force attempts — though this is security through obscurity, not a real defense.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is a "well-known port"? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Well-known ports (0–1023) are assigned by IANA to standardized services. Ports 1024–49151 are registered ports for applications. Ports 49152–65535 are ephemeral (dynamic) ports used for temporary client connections.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'ip-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">IP Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'dns-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">DNS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'http-status-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTTP Status Checker</a>
+      <a href="{% url 'tools:tool' 'security' 'ssl-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SSL Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var PORTS = [
+  [21,'TCP','FTP','File Transfer Protocol — control channel'],
+  [22,'TCP','SSH','Secure Shell — encrypted remote login'],
+  [23,'TCP','Telnet','Unencrypted remote login (legacy, insecure)'],
+  [25,'TCP','SMTP','Simple Mail Transfer Protocol — sending email'],
+  [53,'TCP/UDP','DNS','Domain Name System — domain resolution'],
+  [80,'TCP','HTTP','HyperText Transfer Protocol — web traffic'],
+  [110,'TCP','POP3','Post Office Protocol — email retrieval'],
+  [143,'TCP','IMAP','Internet Message Access Protocol — email access'],
+  [443,'TCP','HTTPS','HTTP Secure — encrypted web traffic'],
+  [465,'TCP','SMTPS','SMTP over TLS/SSL'],
+  [587,'TCP','SMTP','SMTP submission (email clients)'],
+  [993,'TCP','IMAPS','IMAP over TLS/SSL'],
+  [995,'TCP','POP3S','POP3 over TLS/SSL'],
+  [1433,'TCP','MSSQL','Microsoft SQL Server'],
+  [3306,'TCP','MySQL','MySQL database'],
+  [3389,'TCP','RDP','Remote Desktop Protocol'],
+  [5432,'TCP','PostgreSQL','PostgreSQL database'],
+  [5900,'TCP','VNC','Virtual Network Computing — remote desktop'],
+  [6379,'TCP','Redis','Redis in-memory data store'],
+  [8080,'TCP','HTTP-alt','Common HTTP alternate / development server'],
+  [8443,'TCP','HTTPS-alt','Common HTTPS alternate'],
+  [27017,'TCP','MongoDB','MongoDB database'],
+];
+
+document.getElementById('port-table').innerHTML = PORTS.map(function(p, i) {
+  var bg = i % 2 === 0 ? '#fff' : '#f8fafc';
+  return '<tr style="background:' + bg + ';border-bottom:1px solid #f1f5f9;">' +
+    '<td style="padding:.625rem 1rem;font-family:monospace;font-weight:700;color:#6366f1;">' + p[0] + '</td>' +
+    '<td style="padding:.625rem 1rem;font-size:.8125rem;color:#6b7280;">' + p[1] + '</td>' +
+    '<td style="padding:.625rem 1rem;font-weight:600;color:#0f172a;">' + p[2] + '</td>' +
+    '<td style="padding:.625rem 1rem;font-size:.8125rem;color:#374151;">' + p[3] + '</td></tr>';
+}).join('');
+
+var WEB_PORTS = [
+  {port:80, scheme:'http'},
+  {port:443, scheme:'https'},
+  {port:8080, scheme:'http'},
+  {port:8443, scheme:'https'},
+];
+
+function testHost() {
+  var host = document.getElementById('opc-host').value.trim().replace(/^https?:\/\//,'').split('/')[0];
+  if (!host) return;
+  document.getElementById('opc-spinner').style.display = 'block';
+  var container = document.getElementById('opc-results');
+  container.style.display = 'none';
+
+  var promises = WEB_PORTS.map(function(p) {
+    var url = p.scheme + '://' + host + ':' + p.port + '/';
+    return fetch(url, {method:'HEAD', mode:'no-cors', cache:'no-store', signal: AbortSignal.timeout(5000)})
+      .then(function(r) { return {port: p.port, scheme: p.scheme, open: true, opaque: r.type === 'opaque'}; })
+      .catch(function() { return {port: p.port, scheme: p.scheme, open: false}; });
+  });
+
+  Promise.all(promises).then(function(results) {
+    document.getElementById('opc-spinner').style.display = 'none';
+    container.innerHTML = '<div style="display:grid;gap:.5rem;">' + results.map(function(r) {
+      var color = r.open ? '#16a34a' : '#dc2626';
+      var bg = r.open ? '#f0fdf4' : '#fef2f2';
+      var badge = r.open ? (r.opaque ? 'REACHABLE' : 'OPEN') : 'CLOSED / FILTERED';
+      return '<div style="display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;background:' + bg + ';border:1px solid #e2e8f0;border-radius:.5rem;">' +
+        '<span style="font-family:monospace;font-weight:700;color:#6366f1;min-width:4rem;">:' + r.port + '</span>' +
+        '<span style="font-size:.8125rem;color:#6b7280;min-width:3.5rem;">' + r.scheme.toUpperCase() + '</span>' +
+        '<span style="font-weight:700;color:' + color + ';font-size:.8125rem;">' + badge + '</span>' +
+        '</div>';
+    }).join('') + '</div>';
+    container.style.display = 'block';
+  });
+}
+
+document.getElementById('opc-host').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') testHost();
+});
+</script>
+{% endblock %}

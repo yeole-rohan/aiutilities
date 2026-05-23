@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SSL Certificate Checker — Check SSL/TLS Status | AIUtilities{% endblock %}
+{% block description %}Check SSL certificate validity, expiry date, issuer, and HTTPS configuration for any domain. Free online SSL checker — no signup required.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'ssl-checker' %}{% endblock %}
+{% block og_title %}SSL Certificate Checker — Check SSL/TLS Status | AIUtilities{% endblock %}
+{% block og_description %}Verify SSL certificate validity, expiry, and issuer for any domain. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'security' 'ssl-checker' %}{% endblock %}
+{% block twitter_title %}SSL Certificate Checker | AIUtilities{% endblock %}
+{% block twitter_description %}Check SSL certificate validity and expiry for any domain. Free.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"SSL Certificate Checker","description":"Check SSL certificate validity, expiry date, and issuer for any domain.","url":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'ssl-checker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Security Tools","item":"{{ SITE_URL }}/tools/security/"},{"@type":"ListItem","position":3,"name":"SSL Certificate Checker","item":"{{ SITE_URL }}{% url 'tools:tool' 'security' 'ssl-checker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔒 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">SSL Certificate Checker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Check whether a domain has a valid SSL/TLS certificate, test HTTPS reachability, and learn what information an SSL certificate contains. Never let a certificate expire unnoticed.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ HTTPS reachability</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Expiry awareness</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ SSL guide included</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1.5rem;font-size:.875rem;color:#1e40af;">
+        <strong>Browser note:</strong> Browsers cannot directly read TLS certificate metadata (issuer, expiry) from JavaScript. This tool tests HTTPS reachability and, where the server allows cross-origin requests, checks the HTTP Strict-Transport-Security header. For full certificate details, use <a href="https://www.ssllabs.com/ssltest/" target="_blank" rel="noopener" style="color:#2563eb;">SSL Labs</a> or click the padlock in your browser address bar.
+      </div>
+      <div style="display:flex;gap:.75rem;margin-bottom:1rem;">
+        <input type="text" id="ssl-domain" class="ai-tool-input" placeholder="e.g. example.com" style="flex:1;font-family:monospace;">
+        <button type="button" onclick="checkSSL()" class="ai-tool-btn" style="white-space:nowrap;">Check →</button>
+      </div>
+
+      <div id="ssl-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Checking…</div>
+      <div id="ssl-result" style="display:none;margin-top:1.5rem;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">What an SSL Certificate Contains</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Domain (CN / SAN)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The domain name(s) the certificate is valid for. Modern certificates use Subject Alternative Names (SAN) to cover multiple domains and subdomains in one cert.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Issuer (CA)</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">The Certificate Authority that signed the certificate (e.g. Let's Encrypt, DigiCert, Sectigo). Browsers trust certs signed by known CAs in their root store.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Validity Period</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Not-Before and Not-After dates. Certificates are typically valid for 90 days (Let's Encrypt) to 1–2 years. Expired certs cause browser warnings that scare away visitors.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">Certificate Type</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">DV (Domain Validated), OV (Organization Validated), or EV (Extended Validation). DV certs only prove domain control — OV/EV verify the legal entity behind the domain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the SSL Checker</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a domain name</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the domain (e.g. example.com) without https:// or trailing slashes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Click "Check"</strong><br><span style="font-size:.875rem;color:#6b7280;">The tool tests HTTPS reachability on port 443 and checks for HSTS headers. A successful connection confirms the SSL certificate is valid and trusted.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">For full details, use SSL Labs</strong><br><span style="font-size:.875rem;color:#6b7280;">For certificate chain, cipher suites, and expiry date, use the free SSL Labs test at ssllabs.com/ssltest — it inspects the certificate directly from the server.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What happens if my SSL certificate expires? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Browsers show a full-page warning ("Your connection is not private") and block access. Search engines may de-rank the site. Users will mostly leave immediately. Let's Encrypt auto-renews every 60–90 days if configured correctly.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Is Let's Encrypt safe to use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — Let's Encrypt is a trusted, free CA operated by the non-profit Internet Security Research Group (ISRG). It issues DV certificates trusted by all major browsers. It's used by millions of websites including major platforms.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is HSTS? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">HTTP Strict Transport Security tells browsers to always connect via HTTPS for a specified duration (max-age), even if the user types http://. Once a browser sees this header, it refuses to downgrade to plain HTTP, protecting against SSL stripping attacks.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'dns-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">DNS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'whois-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">WHOIS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'http-status-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTTP Status Checker</a>
+      <a href="{% url 'tools:tool' 'security' 'sha-generator' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SHA Generator</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function checkSSL() {
+  var domain = document.getElementById('ssl-domain').value.trim().replace(/^https?:\/\//,'').split('/')[0];
+  if (!domain) return;
+  document.getElementById('ssl-spinner').style.display = 'block';
+  var result = document.getElementById('ssl-result');
+  result.style.display = 'none';
+
+  var httpsUrl = 'https://' + domain + '/';
+  var start = Date.now();
+
+  fetch(httpsUrl, {method:'HEAD', mode:'no-cors', cache:'no-store', signal: AbortSignal.timeout(8000)})
+    .then(function(r) {
+      var ms = Date.now() - start;
+      document.getElementById('ssl-spinner').style.display = 'none';
+      var hsts = '—';
+      try { hsts = r.headers.get('strict-transport-security') || '—'; } catch(e) {}
+      result.innerHTML =
+        '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.75rem;padding:1.25rem;">' +
+        '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">' +
+        '<span style="font-size:1.5rem;">✅</span>' +
+        '<div><strong style="color:#166534;font-size:1rem;">HTTPS Reachable</strong><br>' +
+        '<span style="font-size:.8125rem;color:#374151;">' + domain + ' responds on port 443</span></div></div>' +
+        '<table style="width:100%;border-collapse:collapse;font-size:.875rem;">' +
+        '<tr><td style="padding:.375rem .5rem;color:#6b7280;width:40%;">Response time</td><td style="padding:.375rem .5rem;color:#0f172a;font-family:monospace;">' + ms + ' ms</td></tr>' +
+        '<tr><td style="padding:.375rem .5rem;color:#6b7280;">HSTS header</td><td style="padding:.375rem .5rem;color:#0f172a;font-family:monospace;word-break:break-all;">' + hsts + '</td></tr>' +
+        '<tr><td style="padding:.375rem .5rem;color:#6b7280;">Certificate</td><td style="padding:.375rem .5rem;color:#166534;font-weight:600;">Valid (browser trusted — connection established)</td></tr>' +
+        '</table>' +
+        '<p style="margin-top:.75rem;font-size:.8125rem;color:#374151;">For full certificate details (expiry, issuer, cipher), click the 🔒 padlock in your browser address bar or use <a href="https://www.ssllabs.com/ssltest/analyze.html?d=' + encodeURIComponent(domain) + '" target="_blank" rel="noopener" style="color:#2563eb;">SSL Labs →</a></p>' +
+        '</div>';
+      result.style.display = 'block';
+    })
+    .catch(function() {
+      document.getElementById('ssl-spinner').style.display = 'none';
+      result.innerHTML =
+        '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:.75rem;padding:1.25rem;">' +
+        '<div style="display:flex;align-items:center;gap:.75rem;">' +
+        '<span style="font-size:1.5rem;">❌</span>' +
+        '<div><strong style="color:#dc2626;font-size:1rem;">HTTPS Not Reachable</strong><br>' +
+        '<span style="font-size:.8125rem;color:#374151;">' + domain + ' did not respond on port 443. The certificate may be invalid, expired, or the server may be down.</span></div></div></div>';
+      result.style.display = 'block';
+    });
+}
+
+document.getElementById('ssl-domain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkSSL();
+});
+</script>
+{% endblock %}

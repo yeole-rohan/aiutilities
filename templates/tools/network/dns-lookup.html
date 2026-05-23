@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}DNS Lookup — Query DNS Records Online | AIUtilities{% endblock %}
+{% block description %}Query A, AAAA, CNAME, MX, NS, TXT, and SOA DNS records for any domain. Free online DNS lookup tool — instant results, no signup.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'dns-lookup' %}{% endblock %}
+{% block og_title %}DNS Lookup — Query DNS Records Online | AIUtilities{% endblock %}
+{% block og_description %}Check A, AAAA, CNAME, MX, NS, TXT, and SOA records for any domain. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'network' 'dns-lookup' %}{% endblock %}
+{% block twitter_title %}DNS Lookup | AIUtilities{% endblock %}
+{% block twitter_description %}Query any DNS record type for any domain. Free, instant results.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"DNS Lookup","description":"Query A, AAAA, CNAME, MX, NS, TXT, and SOA DNS records for any domain.","url":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'dns-lookup' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Network Tools","item":"{{ SITE_URL }}/tools/network/"},{"@type":"ListItem","position":3,"name":"DNS Lookup","item":"{{ SITE_URL }}{% url 'tools:tool' 'network' 'dns-lookup' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🌐 Free · Instant · No signup</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">DNS Lookup Tool</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Query DNS records for any domain — A, AAAA, CNAME, MX, NS, TXT, SOA, and more. Uses Google's public DNS-over-HTTPS API for accurate, real-time results.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ All record types</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Live DNS data</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ TTL values</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="display:grid;grid-template-columns:1fr auto auto;gap:.75rem;margin-bottom:1rem;align-items:end;">
+        <div>
+          <label class="ai-tool-label" for="dns-domain">Domain</label>
+          <input type="text" id="dns-domain" class="ai-tool-input" placeholder="e.g. example.com" style="font-family:monospace;">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="dns-type">Record Type</label>
+          <select id="dns-type" class="ai-tool-select">
+            <option value="A">A</option>
+            <option value="AAAA">AAAA</option>
+            <option value="CNAME">CNAME</option>
+            <option value="MX">MX</option>
+            <option value="NS">NS</option>
+            <option value="TXT">TXT</option>
+            <option value="SOA">SOA</option>
+            <option value="CAA">CAA</option>
+            <option value="SRV">SRV</option>
+          </select>
+        </div>
+        <button type="button" onclick="dnsLookup()" class="ai-tool-btn" style="align-self:end;">Look Up →</button>
+      </div>
+
+      <div id="dns-spinner" style="display:none;margin-top:1rem;text-align:center;color:#6b7280;font-size:.875rem;">Querying DNS…</div>
+      <div id="dns-error" style="display:none;margin-top:.75rem;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;"></div>
+
+      <div id="dns-result" style="display:none;margin-top:1.5rem;">
+        <div id="dns-header" style="font-size:.8125rem;color:#6b7280;margin-bottom:.5rem;"></div>
+        <div id="dns-records" style="display:grid;gap:.5rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:3rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:1.5rem;">DNS Record Types Explained</h2>
+    <div class="ai-features-grid">
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">A &amp; AAAA</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">A maps a domain to an IPv4 address. AAAA maps to an IPv6 address. These are the most common records — they tell browsers where to send traffic.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">MX</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Mail Exchange records direct email for the domain to the correct mail server. Priority values determine which server to try first.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">TXT</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">Text records store human-readable data — SPF, DKIM, and DMARC anti-spam policies, domain ownership verification, and more.</p>
+      </div>
+      <div class="ai-feature-card">
+        <h3 style="font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;">NS &amp; CNAME</h3>
+        <p style="font-size:.8125rem;color:#374151;line-height:1.6;">NS identifies the authoritative nameservers for the domain. CNAME creates an alias from one hostname to another (e.g. www → bare domain).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Use the DNS Lookup Tool</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Enter a domain name</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the domain you want to query (e.g. google.com). Do not include http:// or trailing slashes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Select the record type</strong><br><span style="font-size:.875rem;color:#6b7280;">Choose from A, AAAA, CNAME, MX, NS, TXT, SOA, CAA, or SRV.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Click "Look Up"</strong><br><span style="font-size:.875rem;color:#6b7280;">Results show each record's value and TTL (time-to-live in seconds), sourced live from Google's DNS resolver.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What is TTL in DNS? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">TTL (Time-to-Live) is the number of seconds that a DNS record is cached by resolvers before they re-query the authoritative server. Lower TTLs mean faster propagation of DNS changes.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why is this different from my local DNS? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">This tool queries Google's public resolver (8.8.8.8). Your local DNS may have cached older values. If you recently changed DNS records, this tool shows the globally-propagated values.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What does NXDOMAIN mean? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">NXDOMAIN (Non-Existent Domain) means the queried domain does not exist in DNS. It could be unregistered, expired, or have a typo in the name.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'network' 'ip-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">IP Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'whois-lookup' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">WHOIS Lookup</a>
+      <a href="{% url 'tools:tool' 'network' 'http-status-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">HTTP Status Checker</a>
+      <a href="{% url 'tools:tool' 'security' 'ssl-checker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">SSL Checker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var TYPE_MAP = {1:'A',28:'AAAA',5:'CNAME',15:'MX',2:'NS',16:'TXT',6:'SOA',257:'CAA',33:'SRV'};
+
+function showDNSError(msg) {
+  var el = document.getElementById('dns-error');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function dnsLookup() {
+  var domain = document.getElementById('dns-domain').value.trim().replace(/^https?:\/\//,'').split('/')[0];
+  var type = document.getElementById('dns-type').value;
+  if (!domain) { showDNSError('Please enter a domain name.'); return; }
+  showDNSError('');
+  document.getElementById('dns-spinner').style.display = 'block';
+  document.getElementById('dns-result').style.display = 'none';
+
+  var url = 'https://dns.google/resolve?name=' + encodeURIComponent(domain) + '&type=' + encodeURIComponent(type);
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('dns-spinner').style.display = 'none';
+      if (data.Status === 3) { showDNSError('NXDOMAIN — domain not found in DNS.'); return; }
+      if (!data.Answer || data.Answer.length === 0) { showDNSError('No ' + type + ' records found for ' + domain + '.'); return; }
+      var html = data.Answer.map(function(rec) {
+        return '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem 1rem;font-size:.8125rem;">' +
+          '<div style="font-family:monospace;color:#0f172a;word-break:break-all;">' + rec.data + '</div>' +
+          '<div style="color:#9ca3af;margin-top:.25rem;">TTL: ' + rec.TTL + 's &nbsp;·&nbsp; Type: ' + (TYPE_MAP[rec.type] || rec.type) + '</div>' +
+          '</div>';
+      }).join('');
+      document.getElementById('dns-header').textContent = data.Answer.length + ' record(s) for ' + domain + ' (' + type + ')';
+      document.getElementById('dns-records').innerHTML = html;
+      document.getElementById('dns-result').style.display = 'block';
+    })
+    .catch(function() {
+      document.getElementById('dns-spinner').style.display = 'none';
+      showDNSError('Network error — please try again.');
+    });
+}
+
+document.getElementById('dns-domain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') dnsLookup();
+});
+</script>
+{% endblock %}

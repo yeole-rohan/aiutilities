@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Decrypt PDF — Remove PDF Password Online | AIUtilities{% endblock %}
+{% block description %}Remove password protection from a PDF you own. Enter the password and download an unlocked PDF. Free, private, all processing in-browser.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'decrypt-pdf' %}{% endblock %}
+{% block og_title %}Decrypt PDF — Remove PDF Password Online | AIUtilities{% endblock %}
+{% block og_description %}Remove password from a PDF you own. Free, private, no server upload.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'decrypt-pdf' %}{% endblock %}
+{% block twitter_title %}Decrypt PDF | AIUtilities{% endblock %}
+{% block twitter_description %}Remove password protection from your own PDFs. Free, private.{% endblock %}
+{% block extra_head %}
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Decrypt PDF","description":"Remove password protection from a PDF you own.","url":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'decrypt-pdf' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"PDF Tools","item":"{{ SITE_URL }}/tools/pdf/"},{"@type":"ListItem","position":3,"name":"Decrypt PDF","item":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'decrypt-pdf' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🔓 Client-side · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Decrypt PDF — Remove Password</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Remove password protection from a PDF you own and know the password for. Enter the password, and download an unlocked copy. Runs entirely in your browser — no server upload.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ For authorized use only</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Instant download</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1.5rem;font-size:.875rem;color:#92400e;">
+        <strong>Legal notice:</strong> Only use this tool to unlock PDFs you own or have explicit permission to unlock. Do not use it to circumvent copyright protection or access documents without authorization.
+      </div>
+      <label class="ai-tool-label">Upload Password-Protected PDF</label>
+      <div id="dec-drop" style="border:2px dashed #c7d2fe;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;background:#fafaf8;margin-bottom:1.25rem;" onclick="document.getElementById('dec-input').click()">
+        <p style="color:#6366f1;font-weight:600;margin:0;">Click to upload or drag &amp; drop</p>
+        <p id="dec-filename" style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">Password-protected PDF</p>
+      </div>
+      <input type="file" id="dec-input" accept="application/pdf" style="display:none;" onchange="decFileSelected(this.files[0])">
+      <div style="margin-bottom:1.25rem;">
+        <label class="ai-tool-label" for="dec-pass">PDF Password</label>
+        <input type="password" id="dec-pass" class="ai-tool-input" placeholder="Enter the PDF password" autocomplete="current-password">
+      </div>
+      <div id="dec-error" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;margin-bottom:.75rem;"></div>
+      <button type="button" id="dec-btn" onclick="decryptPDF()" class="ai-tool-btn" disabled>Decrypt &amp; Download →</button>
+      <div id="dec-progress" style="display:none;margin-top:.75rem;text-align:center;color:#6b7280;font-size:.875rem;">Decrypting…</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Remove a PDF Password</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload the password-protected PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop or click to select the locked PDF file.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Enter the password</strong><br><span style="font-size:.875rem;color:#6b7280;">Type the current user password for the PDF. This is the password needed to open it.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download unlocked PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Decrypt &amp; Download" to get the unlocked copy. Everything runs in your browser.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Do I need the password to decrypt? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — this tool uses the correct password to open and re-save the PDF without encryption. It does not crack or bypass passwords. You must already know the password.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are my files and password private? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes. Everything runs locally in your browser using pdf-lib. Your PDF file and password are never sent to any server.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">What if I get "wrong password"? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The password you entered doesn't match the file's user password. Check caps lock, try alternative passwords you may have set, or contact whoever created the PDF.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'pdf' 'encrypt-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Encrypt PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'merge-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Merge PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'compress-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'add-watermark-to-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Add Watermark</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var decFile = null;
+
+function decFileSelected(file) {
+  if (!file) return;
+  decFile = file;
+  document.getElementById('dec-filename').textContent = file.name;
+  document.getElementById('dec-btn').disabled = false;
+}
+
+function showDecError(msg) {
+  var el = document.getElementById('dec-error');
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+
+async function decryptPDF() {
+  if (!decFile) { showDecError('Please upload a PDF.'); return; }
+  var pass = document.getElementById('dec-pass').value;
+  if (!pass) { showDecError('Please enter the PDF password.'); return; }
+  showDecError('');
+  document.getElementById('dec-progress').style.display = 'block';
+  document.getElementById('dec-btn').disabled = true;
+  try {
+    var doc = await PDFLib.PDFDocument.load(await decFile.arrayBuffer(), { password: pass });
+    var bytes = await doc.save();
+    var blob = new Blob([bytes], {type:'application/pdf'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = decFile.name.replace('.pdf','') + '-unlocked.pdf'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    showDecError(e.message && e.message.includes('password') ? 'Incorrect password — please try again.' : 'Failed: ' + e.message);
+  }
+  document.getElementById('dec-progress').style.display = 'none';
+  document.getElementById('dec-btn').disabled = false;
+}
+
+var drop = document.getElementById('dec-drop');
+drop.addEventListener('dragover', function(e){ e.preventDefault(); });
+drop.addEventListener('drop', function(e){ e.preventDefault(); decFileSelected(e.dataTransfer.files[0]); });
+</script>
+{% endblock %}

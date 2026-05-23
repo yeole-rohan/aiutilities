@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Watermark to PDF — Stamp Text Watermarks Online | AIUtilities{% endblock %}
+{% block description %}Add a text watermark to every page of a PDF online. Customize font size, opacity, rotation, and color. Free, private, no server upload.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'add-watermark-to-pdf' %}{% endblock %}
+{% block og_title %}Add Watermark to PDF — Stamp Text Watermarks Online | AIUtilities{% endblock %}
+{% block og_description %}Add text watermarks to any PDF. Customize opacity, size, and angle. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'add-watermark-to-pdf' %}{% endblock %}
+{% block twitter_title %}Add Watermark to PDF | AIUtilities{% endblock %}
+{% block twitter_description %}Stamp text watermarks on PDF pages online. Free, private, instant.{% endblock %}
+{% block extra_head %}
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Add Watermark to PDF","description":"Add a text watermark to every page of a PDF — customize opacity, size, and angle.","url":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'add-watermark-to-pdf' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"PDF Tools","item":"{{ SITE_URL }}/tools/pdf/"},{"@type":"ListItem","position":3,"name":"Add Watermark to PDF","item":"{{ SITE_URL }}{% url 'tools:tool' 'pdf' 'add-watermark-to-pdf' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">📄 Client-side · Private · Free</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">Add Watermark to PDF</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Stamp a text watermark on every page of a PDF. Control font size, opacity, rotation angle, and color. Perfect for marking documents as DRAFT, CONFIDENTIAL, or SAMPLE.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom text</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Opacity &amp; angle</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:44rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <label class="ai-tool-label">Upload PDF</label>
+      <div id="wm-drop" style="border:2px dashed #c7d2fe;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;background:#fafaf8;margin-bottom:1.25rem;" onclick="document.getElementById('wm-input').click()">
+        <p style="color:#6366f1;font-weight:600;margin:0;">Click to upload or drag &amp; drop</p>
+        <p id="wm-filename" style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">PDF files only</p>
+      </div>
+      <input type="file" id="wm-input" accept="application/pdf" style="display:none;" onchange="wmFileSelected(this.files[0])">
+
+      <div style="display:grid;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label class="ai-tool-label" for="wm-text">Watermark Text</label>
+          <input type="text" id="wm-text" class="ai-tool-input" value="CONFIDENTIAL" placeholder="e.g. DRAFT, SAMPLE, CONFIDENTIAL">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="wm-size">Font Size <span id="wm-size-val" style="color:#6366f1;">60</span></label>
+            <input type="range" id="wm-size" min="20" max="120" value="60" class="ai-tool-input" style="padding:.25rem 0;cursor:pointer;" oninput="document.getElementById('wm-size-val').textContent=this.value">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="wm-opacity">Opacity <span id="wm-opacity-val" style="color:#6366f1;">30%</span></label>
+            <input type="range" id="wm-opacity" min="5" max="100" value="30" class="ai-tool-input" style="padding:.25rem 0;cursor:pointer;" oninput="document.getElementById('wm-opacity-val').textContent=this.value+'%'">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div>
+            <label class="ai-tool-label" for="wm-angle">Rotation (degrees)</label>
+            <input type="number" id="wm-angle" class="ai-tool-input" value="45" min="-360" max="360">
+          </div>
+          <div>
+            <label class="ai-tool-label" for="wm-color">Color</label>
+            <select id="wm-color" class="ai-tool-select">
+              <option value="gray">Gray</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="black">Black</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="wm-error" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;margin-bottom:.75rem;"></div>
+      <button type="button" id="wm-btn" onclick="addWatermark()" class="ai-tool-btn" disabled>Add Watermark →</button>
+      <div id="wm-progress" style="display:none;margin-top:.75rem;text-align:center;color:#6b7280;font-size:.875rem;">Adding watermark…</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Add a Watermark to a PDF</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Drop or click to select your PDF file.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set watermark options</strong><br><span style="font-size:.875rem;color:#6b7280;">Enter your watermark text, choose font size, opacity (transparency), rotation angle, and color.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Download the watermarked PDF</strong><br><span style="font-size:.875rem;color:#6b7280;">Click "Add Watermark" to download the stamped PDF. Processing is 100% in-browser.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Can the watermark be removed? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">The text watermark is drawn directly onto each page as PDF vector graphics. While it can be removed with PDF editing software, it provides a visible deterrent and clearly marks the document's status.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Does it work on scanned PDFs? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — the watermark is placed on top of the page content regardless of whether the PDF contains text, images, or scanned pages.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are my files private? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — everything runs locally in your browser using pdf-lib. Nothing is uploaded to any server.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'pdf' 'merge-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Merge PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'rotate-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Rotate PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'encrypt-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Encrypt PDF</a>
+      <a href="{% url 'tools:tool' 'pdf' 'compress-pdf' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Compress PDF</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var wmFile = null;
+var COLORS = {gray:[0.5,0.5,0.5], red:[0.8,0.1,0.1], blue:[0.1,0.2,0.8], black:[0,0,0]};
+
+function wmFileSelected(file) {
+  if (!file) return;
+  wmFile = file;
+  document.getElementById('wm-filename').textContent = file.name;
+  document.getElementById('wm-btn').disabled = false;
+}
+
+function showWMError(msg) {
+  var el = document.getElementById('wm-error');
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+
+async function addWatermark() {
+  if (!wmFile) { showWMError('Please upload a PDF.'); return; }
+  var text = document.getElementById('wm-text').value.trim();
+  if (!text) { showWMError('Please enter watermark text.'); return; }
+  var size = parseInt(document.getElementById('wm-size').value);
+  var opacity = parseInt(document.getElementById('wm-opacity').value) / 100;
+  var angle = parseInt(document.getElementById('wm-angle').value) * Math.PI / 180;
+  var colorName = document.getElementById('wm-color').value;
+  var color = COLORS[colorName] || COLORS.gray;
+
+  showWMError('');
+  document.getElementById('wm-progress').style.display = 'block';
+  document.getElementById('wm-btn').disabled = true;
+
+  try {
+    var { PDFDocument, rgb, degrees } = PDFLib;
+    var doc = await PDFDocument.load(await wmFile.arrayBuffer());
+    var font = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    var pages = doc.getPages();
+    pages.forEach(function(page) {
+      var w = page.getWidth(), h = page.getHeight();
+      var textWidth = font.widthOfTextAtSize(text, size);
+      page.drawText(text, {
+        x: w/2 - textWidth/2,
+        y: h/2 - size/2,
+        size: size,
+        font: font,
+        color: rgb(color[0], color[1], color[2]),
+        opacity: opacity,
+        rotate: degrees(angle * 180 / Math.PI),
+      });
+    });
+    var bytes = await doc.save();
+    var blob = new Blob([bytes], {type:'application/pdf'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = wmFile.name.replace('.pdf','') + '-watermarked.pdf'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { showWMError('Failed: ' + e.message); }
+  document.getElementById('wm-progress').style.display = 'none';
+  document.getElementById('wm-btn').disabled = false;
+}
+
+var drop = document.getElementById('wm-drop');
+drop.addEventListener('dragover', function(e){ e.preventDefault(); });
+drop.addEventListener('drop', function(e){ e.preventDefault(); wmFileSelected(e.dataTransfer.files[0]); });
+</script>
+{% endblock %}

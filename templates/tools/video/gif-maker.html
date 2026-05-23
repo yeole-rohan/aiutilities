@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}GIF Maker — Create GIFs from Images Online | AIUtilities{% endblock %}
+{% block description %}Create animated GIFs from multiple images online. Upload JPG or PNG frames, set the frame delay, and download the GIF. Free, no signup, all in-browser.{% endblock %}
+{% block canonical %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'gif-maker' %}{% endblock %}
+{% block og_title %}GIF Maker — Create GIFs from Images Online | AIUtilities{% endblock %}
+{% block og_description %}Create animated GIFs from images. Set frame delay and download. Free.{% endblock %}
+{% block og_url %}{{ SITE_URL }}{% url 'tools:tool' 'video' 'gif-maker' %}{% endblock %}
+{% block twitter_title %}GIF Maker | AIUtilities{% endblock %}
+{% block twitter_description %}Create animated GIFs from multiple images. Free, instant, no signup.{% endblock %}
+{% block extra_head %}
+<script src="https://unpkg.com/gif.js@0.2.0/dist/gif.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"GIF Maker","description":"Create animated GIFs from multiple image frames online.","url":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'gif-maker' %}","applicationCategory":"WebApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"AIUtilities","url":"{{ SITE_URL }}"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ SITE_URL }}/"},{"@type":"ListItem","position":2,"name":"Video Tools","item":"{{ SITE_URL }}/tools/video/"},{"@type":"ListItem","position":3,"name":"GIF Maker","item":"{{ SITE_URL }}{% url 'tools:tool' 'video' 'gif-maker' %}"}]}]}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="ai-tool-hero">
+  <div style="max-width:56rem;margin:0 auto;">
+    <div class="ai-tool-badge">🎬 Free · No signup · Instant</div>
+    <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.75rem;line-height:1.2;">GIF Maker</h1>
+    <p style="font-size:1.125rem;color:rgba(255,255,255,.8);max-width:38rem;margin:0 auto 1.5rem;">Turn multiple images into an animated GIF. Upload your frames in order, set the delay between frames, and download your GIF. All processing happens in your browser.</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Multiple frames</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ Custom frame delay</span>
+      <span style="background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .9rem;font-size:.8125rem;color:rgba(255,255,255,.85);">✓ 100% private</span>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f8fafc;padding:2.5rem 1rem;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <div class="ai-tool-form-card">
+      <label class="ai-tool-label">Upload Frames (in order)</label>
+      <div id="gif-drop" style="border:2px dashed #c7d2fe;border-radius:.75rem;padding:2rem;text-align:center;cursor:pointer;background:#fafaf8;margin-bottom:1.25rem;" onclick="document.getElementById('gif-input').click()">
+        <p style="color:#6366f1;font-weight:600;margin:0;">Click to upload images or drag &amp; drop</p>
+        <p style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">JPG, PNG · Multiple files · Upload in the order they should play</p>
+      </div>
+      <input type="file" id="gif-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;" onchange="addGIFFrames(this.files)">
+
+      <div id="gif-frames" style="display:flex;flex-wrap:wrap;gap:.625rem;margin-bottom:1.25rem;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label class="ai-tool-label" for="gif-delay">Frame delay (ms) — e.g. 100 = 10fps</label>
+          <input type="number" id="gif-delay" class="ai-tool-input" value="200" min="50" max="5000" step="50">
+        </div>
+        <div>
+          <label class="ai-tool-label" for="gif-size">Max width (px)</label>
+          <input type="number" id="gif-size" class="ai-tool-input" value="480" min="100" max="1280" step="10">
+        </div>
+      </div>
+
+      <div id="gif-error" style="display:none;padding:.5rem .75rem;background:#fef2f2;border:1px solid #fca5a5;border-radius:.375rem;font-size:.8125rem;color:#dc2626;margin-bottom:.75rem;"></div>
+      <button type="button" id="gif-btn" onclick="makeGIF()" class="ai-tool-btn" disabled>Create GIF →</button>
+      <div id="gif-progress" style="display:none;margin-top:.75rem;text-align:center;color:#6b7280;font-size:.875rem;">Creating GIF… <span id="gif-pct"></span></div>
+
+      <div id="gif-result" style="display:none;margin-top:1.5rem;text-align:center;">
+        <img id="gif-out" style="max-width:100%;border-radius:.5rem;border:1px solid #e2e8f0;" alt="Generated GIF">
+        <br>
+        <a id="gif-download" href="#" download="animation.gif" style="display:inline-block;margin-top:.75rem;background:#6366f1;color:#fff;border-radius:.5rem;padding:.625rem 1.25rem;font-size:.875rem;font-weight:600;text-decoration:none;">Download GIF</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#f8fafc;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;">How to Create a GIF</h2>
+    <div style="display:grid;gap:.75rem;">
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">1</div>
+        <div><strong style="color:#0f172a;">Upload your frames</strong><br><span style="font-size:.875rem;color:#6b7280;">Select multiple images in the order you want them to appear. Use Ctrl+Click to multi-select. Each image becomes one frame of the GIF.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">2</div>
+        <div><strong style="color:#0f172a;">Set delay and size</strong><br><span style="font-size:.875rem;color:#6b7280;">Set the frame delay in milliseconds (200ms = 5fps, 100ms = 10fps). Lower max width creates smaller file sizes.</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;">
+        <div style="min-width:2rem;height:2rem;background:#6366f1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.875rem;flex-shrink:0;">3</div>
+        <div><strong style="color:#0f172a;">Click "Create GIF"</strong><br><span style="font-size:.875rem;color:#6b7280;">Preview the animated GIF and download it. Processing happens in your browser — nothing is uploaded.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Frequently Asked Questions</h2>
+    <div style="display:grid;gap:.75rem;">
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">How many frames can I use? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">There's no hard limit, but large numbers of high-resolution frames may be slow. For best performance, keep frames under 20 and use a reasonable max-width like 480–720px.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Why does the GIF look lower quality than the originals? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">GIF format is limited to 256 colors per frame, which causes dithering artifacts — especially on photos. For high-quality animations, consider WebP animated images or MP4 video instead.</div>
+      </details>
+      <details style="border:1px solid #e2e8f0;border-radius:.5rem;overflow:hidden;">
+        <summary style="font-weight:600;color:#0f172a;cursor:pointer;padding:.75rem 1rem;background:#f8fafc;list-style:none;display:flex;justify-content:space-between;align-items:center;">Are my images private? <span style="font-size:.75rem;color:#9ca3af;">&#9660;</span></summary>
+        <div style="padding:.75rem 1rem;border-top:1px solid #e2e8f0;font-size:.875rem;color:#374151;line-height:1.6;">Yes — all GIF creation runs in your browser using gif.js. Images are never uploaded to any server.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 1rem;background:#fff;">
+  <div style="max-width:52rem;margin:0 auto;">
+    <h2 style="font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Related Tools</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <a href="{% url 'tools:tool' 'image' 'image-compressor' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Compressor</a>
+      <a href="{% url 'tools:tool' 'image' 'image-resizer' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Resizer</a>
+      <a href="{% url 'tools:tool' 'image' 'image-converter' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">Image Converter</a>
+      <a href="{% url 'tools:tool' 'social-media' 'youtube-thumbnail-maker' %}" style="padding:.5rem 1rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.875rem;color:#374151;text-decoration:none;background:#f8fafc;">YouTube Thumbnail Maker</a>
+    </div>
+  </div>
+</section>
+
+<script>
+var gifFrameFiles = [];
+
+function showGIFError(msg) {
+  var el = document.getElementById('gif-error');
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+
+function addGIFFrames(files) {
+  Array.from(files).forEach(function(f) {
+    if (!f.type.startsWith('image/')) return;
+    gifFrameFiles.push(f);
+  });
+  renderGIFFrames();
+}
+
+function renderGIFFrames() {
+  var container = document.getElementById('gif-frames');
+  container.innerHTML = gifFrameFiles.map(function(f, i) {
+    var url = URL.createObjectURL(f);
+    return '<div style="position:relative;display:inline-block;">' +
+      '<img src="' + url + '" style="width:80px;height:60px;object-fit:cover;border-radius:.375rem;border:2px solid #e2e8f0;" alt="Frame ' + (i+1) + '">' +
+      '<div style="position:absolute;top:2px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:.625rem;border-radius:.25rem;padding:1px 4px;">' + (i+1) + '</div>' +
+      '<button onclick="removeGIFFrame(' + i + ')" style="position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:.625rem;cursor:pointer;line-height:1;padding:0;">✕</button>' +
+      '</div>';
+  }).join('');
+  document.getElementById('gif-btn').disabled = gifFrameFiles.length < 2;
+}
+
+function removeGIFFrame(i) {
+  gifFrameFiles.splice(i, 1);
+  renderGIFFrames();
+}
+
+function makeGIF() {
+  if (gifFrameFiles.length < 2) { showGIFError('Please upload at least 2 images.'); return; }
+  showGIFError('');
+  document.getElementById('gif-progress').style.display = 'block';
+  document.getElementById('gif-btn').disabled = true;
+  document.getElementById('gif-result').style.display = 'none';
+
+  var maxW = parseInt(document.getElementById('gif-size').value) || 480;
+  var delay = parseInt(document.getElementById('gif-delay').value) || 200;
+
+  var loaded = 0;
+  var images = [];
+
+  gifFrameFiles.forEach(function(f, i) {
+    var img = new Image();
+    var url = URL.createObjectURL(f);
+    img.onload = function() {
+      images[i] = img;
+      loaded++;
+      if (loaded === gifFrameFiles.length) startGIFEncode(images, maxW, delay);
+    };
+    img.src = url;
+  });
+}
+
+function startGIFEncode(images, maxW, delay) {
+  var canvas = document.createElement('canvas');
+  var w = Math.min(images[0].naturalWidth, maxW);
+  var scale = w / images[0].naturalWidth;
+  var h = Math.round(images[0].naturalHeight * scale);
+  canvas.width = w; canvas.height = h;
+  var ctx = canvas.getContext('2d');
+
+  var gif = new GIF({
+    workers: 2,
+    quality: 10,
+    width: w,
+    height: h,
+    workerScript: 'https://unpkg.com/gif.js@0.2.0/dist/gif.worker.js',
+  });
+
+  images.forEach(function(img) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    gif.addFrame(ctx, {copy: true, delay: delay});
+  });
+
+  gif.on('progress', function(p) {
+    document.getElementById('gif-pct').textContent = Math.round(p * 100) + '%';
+  });
+
+  gif.on('finished', function(blob) {
+    var url = URL.createObjectURL(blob);
+    document.getElementById('gif-out').src = url;
+    document.getElementById('gif-download').href = url;
+    document.getElementById('gif-result').style.display = 'block';
+    document.getElementById('gif-progress').style.display = 'none';
+    document.getElementById('gif-btn').disabled = false;
+  });
+
+  gif.render();
+}
+
+var drop = document.getElementById('gif-drop');
+drop.addEventListener('dragover', function(e){ e.preventDefault(); });
+drop.addEventListener('drop', function(e){ e.preventDefault(); addGIFFrames(e.dataTransfer.files); });
+</script>
+{% endblock %}
