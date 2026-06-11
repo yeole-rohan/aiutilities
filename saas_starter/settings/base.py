@@ -148,3 +148,4 @@ GROQ_MODEL = env("GROQ_MODEL", default="llama-3.3-70b-versatile")
 # ── Site metadata ────────────────────────────────────────────────────────────
 SITE_NAME = env("SITE_NAME", default="AIUtilities")
 SITE_DOMAIN = env("SITE_DOMAIN", default="aiutilities.site")
+BING_API_KEY = env("BING_API_KEY", default="")
